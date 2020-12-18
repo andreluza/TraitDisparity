@@ -1,0 +1,358 @@
+rm(list=ls())
+require(geomorph)
+#################################################################################
+#### Carregar Forma do Crânio ####
+#### Shape ventral
+# Carregar arquivo .tps com vista ventral
+#tps.ventral<-readland.tps("Sigmodontinae.ventral.dig.tps",specID = "ID", readcurves = FALSE)
+#dim(tps.ventral)
+
+# Carregar lista (classificadores) vista ventral
+#ventral.listed<-read.table("Sigmodontinae.ventral.listed.txt",h=T)
+#fix(ventral.listed)
+#species.v<-ventral.listed[,4]
+#str(species.v)
+
+# Eliminar Nephelomys pirrensis & Sigmodon zanjonensis (sem shapefile) & Brucepattersonius_sp 
+# Eliminar 9 (fora do recorte espacial): Rheomys underwoodi, Rheomys mexicanus, Oryzomys palustris, Nectomys p. palmipes, Nesoryzomys swarthi, Nesoryzomys indefessus, Nesoryzomys fernandinae, Nesoryzomys darwini, Aegialomys galapagoensis
+# Ending with 228 species
+#tps.ventral<-tps.ventral[,,-which(ventral.listed$Species_Patton2015=="Nephelomys_pirrensis" | ventral.listed$Species_Patton2015=="Sigmodon_zanjonensis" | ventral.listed$Species_Patton2015=="Brucepattersonius_sp" | ventral.listed$Species_Patton2015=="Rheomys_underwoodi" | ventral.listed$Species_Patton2015=="Rheomys_mexicanus" | ventral.listed$Species_Patton2015=="Oryzomys_palustris" | ventral.listed$Species_Patton2015=="Nectomys_palmipes" | ventral.listed$Species_Patton2015=="Nesoryzomys_swarthi" | ventral.listed$Species_Patton2015=="Nesoryzomys_indefessus" | ventral.listed$Species_Patton2015=="Nesoryzomys_fernandinae" | ventral.listed$Species_Patton2015=="Nesoryzomys_darwini" | ventral.listed$Species_Patton2015=="Aegialomys_galapagoensis")] 
+#dim(tps.ventral)
+
+# GPA Ventral
+#gpa.ventral<-gpagen(tps.ventral)
+#names(gpa.ventral)
+#size.v<-gpa.ventral$Csize
+#shape.v<-gpa.ventral$coords
+# GPA bilateral
+#source("bilat.symmetry.r") # Call old bilat.symmetry function; I changed the name to: bilat.symm
+#pairs.matrix<-matrix(c(2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,24,22,28,23,29,19,25,20,26,21,27,30,31,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,55,56),nrow=26,ncol=2,byrow=T)
+#ind<-c(1:dim(tps.ventral)[3]) # vetor indivíduos
+#b.s<-bilat.symmetry(tps.ventral,ind=ind,object.sym=TRUE,land.pairs=pairs.matrix)
+#shape.v<-b.s$symm.shape # componente simétrico da forma
+#plotAllSpecimens(shape.v)
+#save(shape.v,file="shape.v.RData")
+load("shape.v.RData")
+
+# forma média por espécie (ventral)
+ventral.listed.pruned<-read.table("Sigmodontinae.ventral.listed.pruned.txt",h=T)
+#fix(ventral.listed.pruned)
+species.v<-ventral.listed.pruned[,4]
+#str(species.v)
+
+shape.v.2d<-two.d.array(shape.v)
+shape.v.2d.means<-rowsum(shape.v.2d,species.v)/as.vector(table(species.v))
+shape.means.v<-arrayspecs(shape.v.2d.means,dim(shape.v)[1],dim(shape.v)[2])
+shape.means.v
+str(shape.means.v)
+
+size.means.v<-rowsum(size.v,species.v)/as.vector(table(species.v))
+size.means.v
+hist(log(size.means.v))
+size.means.log.v<-log(size.means.v)
+
+#################################################################################
+#### Definido os Sítios ####
+# Carregar Pres/Abs 228 sp 1770 sítios
+presab_original <-read.table("PresAbs_228sp_Neotropical_MainDataBase_Ordenado.txt",h=T)
+# Incluir corte de sítios com <3 sp
+presab <- presab_original [rowSums (presab_original) > 3,]
+## excluir entao especies que nao ocorrem nas celulas remanescentes
+presab <- presab [,which(colSums(presab)>0)]
+
+## conferir estas inconsistencias
+#colnames(presab) [which (colnames(presab) == "Abrothrix_jelskii")] <-"Abrothrix_jeslkii"
+#colnames(presab) [which (colnames(presab) == "Abrothrix_longipilis")] <-"Abrothrix_longilipis"
+#colnames(presab) [which (colnames(presab) == "Galenomys_garleppii")] <-"Galenomys_garleppi"
+#colnames(presab) [which (colnames(presab) == "Neacomys_guianae")] <-"Neacomys_guiane"
+#colnames(presab) [which (colnames(presab) == "Rhipidomys_macconnelli")] <-"Rhipidomys_maconnelli"
+#colnames(presab) [which (colnames(presab) == "Thomasomys_ischyrus")] <-"Thomasomys_ischyurus"
+#colnames(presab) [which (colnames(presab) == "Thomasomys_monochromos")] <-"Thomasomys_monochromus"
+#colnames(presab) [which (colnames(presab) == "Thomasomys_paramorum")] <-"Thomasomys_paramarum"
+#colnames(presab) [which (colnames(presab) == "Wiedomys_pyrrhorhinos")] <-"Wiedomys_pyrrhorhinus"
+#colnames(presab) [which (colnames(presab) == "Zygodontomys_brevicauda")] <-"Zygodontomys_brevicaudata"
+
+
+#colnames(presab) [which (colnames(presab) == "Abrothrix_andina")] <-"Abrothrix_andinus"
+#colnames(presab) [which (colnames(presab) == "Abrothrix_lanosa")] <-"Abrothrix_lanosus"
+#colnames(presab) [which (colnames(presab) == "Abrothrix_longilipis")] <- "Abrothrix_longipilis"
+#colnames(presab) [which (colnames(presab) == "Abrothrix_olivacea")] <- "Abrothrix_olivaceus"
+#colnames(presab) [which (colnames(presab) == "Galenomys_garleppii")] <- "Galenomys_garleppi"
+#colnames(presab) [which (colnames(presab) == "Neomicroxus_bogotensis")] <- "Akodon_bogotensis"
+#colnames(presab) [which (colnames(presab) == "Paynomys_macronyx")] <- "Chelemys_macronyx"
+#colnames(presab) [which (colnames(presab) == "Phyllotis_gerbillus")] <- "Paralomys_gerbillus"
+
+#fix(presab)
+str(presab)
+longlat<-read.table("Lon-lat-Disparity.txt",h=T)
+longlat  <- longlat [rowSums (presab_original) > 3,]
+
+#################################################################################
+### Disparidade Observada Empírica por Sítio ####
+require(SYNCSA)
+
+### Plot Rao Observed Maps ####
+#jet.colors <-
+#  colorRampPalette(c("#00007F", "blue", "#007FFF", "cyan",
+#                     "#7FFF7F", "yellow", "#FF7F00", "red", "#7F0000"),
+#                   space="Lab",interpolate="spline")
+#colors<-c("white",jet.colors(max(rao$FunRao*100)))
+#plot(longlat$LONG,longlat$LAT,col=colors[rao$FunRao*100],pch=15)
+#maps::map("world",add=T)
+
+### Disparidade Nula (permutação) por Sítio ####
+## funcao serve para pegar os atributos observados e simulados e calcular rao nulo e sd nulo em uma filogenia
+
+funcao_disparidade <- function (occ, traits,n_iterations) {
+	data<- as.matrix(traits) # shape.v.2d.means
+	colnames(data)<-seq(1,ncol(data))
+
+	## organizar os dados observados
+	organized_obs_data <- organize.syncsa (comm=as.matrix(occ),traits=data)
+	# calcular Rao e extrai-lo
+	rao_observado <-rao.diversity(organized_obs_data$community,traits=organized_obs_data$traits)$FunRao
+	
+	### SES nulo para ol observado
+	
+	RESULTADOS.RAO <- lapply(seq(1,n_iterations), function (i) {
+		  row.names(organized_obs_data$traits) <- sample(row.names(organized_obs_data$traits))
+		  org.perm <- organize.syncsa(comm=organized_obs_data$community,traits=organized_obs_data$traits)
+		  rao.perm <- rao.diversity(org.perm$community,traits=org.perm$traits)
+		  rao_aleat <-rao.perm$FunRao; rao_aleat
+		})
+
+	mean.rao.NULO <- apply(do.call(cbind,RESULTADOS.RAO),1,mean)
+	sd.rao.NULO <- apply(do.call(cbind,RESULTADOS.RAO),1,sd)
+
+	DF_RESULTADOS <- data.frame (Observado = rao_observado, med_nulo=mean.rao.NULO,sd_nulo=sd.rao.NULO,
+			SES = ((rao_observado - mean.rao.NULO)/sd.rao.NULO))
+
+	return (DF_RESULTADOS)
+
+}
+
+RAO_OBS <- funcao_disparidade (occ = presab,traits= shape.v.2d.means,n_iterations = 100)
+
+require(ape)
+
+#### 1 - Importar as Arvores (100 filogenias resolvidas)
+tree_list <- tree <- read.nexus(file="Sigmodontinae_413species100Trees.trees")
+## corrigir os nomes
+tree_list <- lapply (tree_list, function (i)
+	{i$tip.label <- gsub ("__CRICETIDAE__RODENTIA", "",i$tip.label);i})
+
+require(geiger)
+tree.pruned<-lapply (tree_list, function (phy) 
+	treedata(phy,t(presab))$phy)
+comm.pruned <-lapply (tree_list, function (phy) 
+	treedata(phy,t(presab))$data)[[1]]
+
+## carregar pacote para simular atributos
+require(mvMORPH)
+
+## definir o numero de iteracoes do taxa shuffle
+n_iterations <- 100
+
+# 100 simulações aplicadas em cada uma das 100 filogenias
+simul_BM <-lapply (tree.pruned, function (phy) 
+	mvSIM(phy,nsim=100,model="BM1",param = list(sigma = 1)))
+
+simul_BM_mean <- lapply(simul_BM, function (phy)
+	apply(phy,1,mean))
+
+## organizar os dados - repetir para todas as filogenias 
+require(parallel)
+cl <- makeCluster (8)# numero de nucleos do pc para usar
+clusterExport(cl, c("simul_BM_mean", "comm.pruned","n_iterations","funcao_disparidade"))
+clusterEvalQ(cl,library("SYNCSA"))
+
+RAO_BM <- parLapply (cl,simul_BM_mean, function (phy)	
+		funcao_disparidade (occ = t(comm.pruned),
+			traits= as.data.frame(phy),
+			n_iterations = n_iterations))
+
+stopCluster (cl)
+
+# 100 simulações DE EB aplicadas em cada uma das 100 filogenias
+simul_EB<-lapply (tree.pruned, function (phy) 
+	mvSIM(phy,nsim=100,model="EB",param = list(sigma = 1, beta = -0.5)))
+
+simul_EB_mean <- lapply(simul_EB, function (phy)
+	apply(phy,1,mean))
+
+require(parallel)
+cl <- makeCluster (8)# numero de nucleos do pc para usar
+clusterExport(cl, c("simul_EB_mean", "comm.pruned","n_iterations","funcao_disparidade"))
+clusterEvalQ(cl,library("SYNCSA"))
+
+RAO_EB <- parLapply (cl, simul_EB_mean, function (phy)	
+		funcao_disparidade (occ = t(comm.pruned),
+			traits= as.data.frame(phy),
+			n_iterations = n_iterations))
+
+stopCluster (cl)
+
+# 100 simulações DE OU aplicadas em cada uma das 100 filogenias
+simul_OU <-lapply (tree.pruned, function (phy) 
+	mvSIM(phy,nsim=100,model="OU1",param = list(sigma = 1,alpha=1)))
+
+simul_OU_mean <- lapply(simul_OU, function (phy)
+	apply(phy,1,mean))
+
+
+require(parallel)
+cl <- makeCluster (8)# numero de nucleos do pc para usar
+clusterExport(cl, c("simul_OU_mean", "comm.pruned","n_iterations","funcao_disparidade"))
+clusterEvalQ(cl,library("SYNCSA"))
+
+RAO_OU <- parLapply (cl,simul_OU_mean, function (phy)	
+		funcao_disparidade (occ = t(comm.pruned),
+			traits= as.data.frame(phy),
+			n_iterations = n_iterations))
+
+stopCluster (cl)
+
+#################################################################################
+#### Carregar Forma de mandibula ####
+#### Shape ventral
+# Carregar arquivo .tps com mandibula
+#tps.mandibula<-readland.tps("Sigmodontinae.mandibula.dig.tps",specID = "ID", readcurves = FALSE)
+#dim(tps.mandibula)
+# Carregar lista (classificadores) vista ventral
+#mandibula.listed<-read.table("Sigmodontinae.mandibula.listed.txt",h=T)
+#dim(mandibula.listed)
+#species.mandibula <-mandibula.listed[,'Species_Patton2015']
+#str(species.mandibula)
+
+# Eliminar Nephelomys pirrensis & Sigmodon zanjonensis (sem shapefile) & Brucepattersonius_sp 
+# Eliminar 9 (fora do recorte espacial): Rheomys underwoodi, Rheomys mexicanus, Oryzomys palustris, Nectomys p. palmipes, Nesoryzomys swarthi, Nesoryzomys indefessus, Nesoryzomys fernandinae, Nesoryzomys darwini, Aegialomys galapagoensis
+# Ending with 228 species
+# tps.mandibula <- tps.mandibula[,,-which(mandibula.listed$Species_Patton2015=="Nephelomys_pirrensis" | mandibula.listed$Species_Patton2015=="Sigmodon_zanjonensis" | ventral.listed$Species_Patton2015=="Brucepattersonius_sp" | ventral.listed$Species_Patton2015=="Rheomys_underwoodi" | ventral.listed$Species_Patton2015=="Rheomys_mexicanus" | ventral.listed$Species_Patton2015=="Oryzomys_palustris" | ventral.listed$Species_Patton2015=="Nectomys_palmipes" | ventral.listed$Species_Patton2015=="Nesoryzomys_swarthi" | ventral.listed$Species_Patton2015=="Nesoryzomys_indefessus" | ventral.listed$Species_Patton2015=="Nesoryzomys_fernandinae" | ventral.listed$Species_Patton2015=="Nesoryzomys_darwini" | ventral.listed$Species_Patton2015=="Aegialomys_galapagoensis")] 
+# dim(tps.ventral)
+
+# GPA Ventral
+#gpa.mandibula<-gpagen(tps.mandibula)
+#names(gpa.mandibula)
+#size.mandibula<-gpa.mandibula$Csize
+#shape.mandibula<-gpa.mandibula$coords
+#save(shape.mandibula,file="shape.mandibula.RData")
+load("shape.mandibula.RData")
+
+# forma média por espécie (mandibula)
+shape.mandibula.2d<-two.d.array(shape.mandibula)
+shape.mandibula.2d.means<-rowsum(shape.mandibula.2d,species.mandibula)/as.vector(table(species.mandibula))
+#shape.means.mandibula <-arrayspecs(shape.mandibula.2d.means,dim(shape.mandibula)[1],dim(shape.mandibula)[2])
+shape.mandibula.2d.means <- shape.mandibula.2d.means [which (rownames(shape.mandibula.2d.means) %in% colnames(presab)),]
+
+#size.means.mandibula<-rowsum(size.mandibula,species.mandibula)/as.vector(table(species.mandibula))
+#size.means.mandibula
+#hist(log(size.means.mandibula))
+#size.means.log.mandibula <-log(size.means.mandibula)
+
+### fechar mandibula com PA
+presab <- presab [,which (colnames(presab) %in% rownames(shape.mandibula.2d.means))]
+
+### somente � necessario calcular a disparidade para a mandibula
+## analises
+require(SYNCSA)
+RAO_OBS_MANDIBULA <- funcao_disparidade (occ = presab,traits= shape.mandibula.2d.means,n_iterations = 100)
+
+#################################################################################
+### MPD e SES.MPD ####
+require(picante)
+require(geiger)
+
+## organizar os dados - repetir para todas as filogenias 
+require(parallel)
+cl <- makeCluster (8)# numero de nucleos do pc para usar
+clusterExport(cl, c("tree.pruned", "comm.pruned"))
+clusterEvalQ(cl,library("picante"))
+
+est.ses.mpd<- parLapply (cl, tree.pruned, function (phy)
+	ses.mpd(t(comm.pruned),cophenetic(phy),null.model="taxa.labels", runs=999))
+
+stopCluster (cl)
+
+#### ses para cada filogenia
+### extrair o Z
+mean.ses.mpd <- apply (do.call(cbind,lapply (est.ses.mpd, function (i) 
+	i$mpd.obs.z)),1,mean)
+sd.ses.mpd <- apply (do.call(cbind,lapply (est.ses.mpd, function (i) 
+	i$mpd.obs.z)),1,sd)
+
+
+########################################
+### representacao grafica dos resultados
+########################################
+
+load ("my_work_space_phylo_uncertainty.RData")
+
+## SES do Rao Nulo para cranio
+SES_RAO_OBS <- RAO_OBS$SES
+## SES do Rao Nulo para cranio
+SES_RAO_OBS_MANDIBULA <- RAO_OBS_MANDIBULA$SES
+
+## SES do Rao BM
+SES_RAO_BM <- apply(do.call(cbind,lapply(RAO_BM, function (i) i$SES)),1,mean)
+## SES do Rao EB
+SES_RAO_EB <- apply(do.call(cbind,lapply(RAO_EB, function (i) i$SES)),1,mean)
+## SES do Rao OU
+SES_RAO_OU <- apply(do.call(cbind,lapply(RAO_OU, function (i) i$SES)),1,mean)
+
+pdf ("plot_comparacao_modelos_cranio.pdf",height=6,width=6)
+plot(SES_RAO_OBS ~mean.ses.mpd,ylim=c(-10,4), xlab="SES of mean phylogenetic distance\nbetween co-occuring species",pch=19,
+	ylab= "SES of Rao diversity")
+points(SES_RAO_BM~mean.ses.mpd,col="blue",pch=19)
+points(SES_RAO_EB~mean.ses.mpd,col="red",pch=19)
+points(SES_RAO_OU~mean.ses.mpd,col="green",pch=19)
+abline (v=0,h=0,lwd=2,lty=2,col="gray50")
+
+legend ('topleft', legend= c("Observed", "Brownian motion", "Early burst", "Ornstein-Uhlenbeck"),
+	pch=19,col=c("black", "blue", "red", "green"), bty='n')
+dev.off()
+
+pdf ("plot_comparacao_modelos_cranio.pdf",height=6,width=6)
+plot(SES_RAO_OBS ~mean.ses.mpd,ylim=c(-10,4), xlab="SES of mean phylogenetic distance\nbetween co-occuring species",pch=19,
+	ylab= "SES of Rao diversity", main="Ventral view of the skull")
+points(SES_RAO_BM~mean.ses.mpd,col="blue",pch=19)
+points(SES_RAO_EB~mean.ses.mpd,col="red",pch=19)
+points(SES_RAO_OU~mean.ses.mpd,col="green",pch=19)
+abline (v=0,h=0,lwd=2,lty=2,col="gray50")
+
+legend ('topleft', legend= c("Observed", "Brownian motion", "Early burst", "Ornstein-Uhlenbeck"),
+	pch=19,col=c("black", "blue", "red", "green"), bty='n')
+dev.off()
+
+#save.image(file = "my_work_space_phylo_uncertainty.RData")
+
+pdf ("plot_comparacao_modelos_mandibula.pdf",height=6,width=6)
+plot(SES_RAO_OBS ~mean.ses.mpd,ylim=c(-10,4), xlab="SES of mean phylogenetic distance\nbetween co-occuring species",pch=19,
+	ylab= "SES of Rao diversity", main="Jaw view")
+points(SES_RAO_BM~mean.ses.mpd,col="blue",pch=19)
+points(SES_RAO_EB~mean.ses.mpd,col="red",pch=19)
+points(SES_RAO_OU~mean.ses.mpd,col="green",pch=19)
+abline (v=0,h=0,lwd=2,lty=2,col="gray50")
+
+legend ('topleft', legend= c("Observed", "Brownian motion", "Early burst", "Ornstein-Uhlenbeck"),
+	pch=19,col=c("black", "blue", "red", "green"), bty='n')
+
+dev.off()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
