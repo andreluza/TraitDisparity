@@ -1,8 +1,0 @@
-Em anexo, tem as árvores do Rojas 2016, que foram estimadas por 7 genes nucleares, 2 mitocondriais e 3 ribossomais. Por alguma razão, o arquivo só apresenta 10 árvores; acho que os ribossomais foram condensados somente em 1. Fiz o download aqui: 
-https://datadryad.org/stash/dataset/doi:10.5061/dryad.s533p
-
-O Shi & Rabosky 2015 utilizaram 24 fossil calibration points. Não sei se é possível trabalhar com esse tipo de incerteza. De qualquer forma, o arquivo é muito grande e não tem como te passar por aqui. Mas o link pra download é esse:
-https://datadryad.org/stash/dataset/doi:10.5061/dryad.2451q
-
-O Bininda 2007 tem 3 filogenias disponíveis. Uma com a melhor estimativa de datação e outras duas com os limites inferiores e superiores na datação:
-https://www.nature.com/articles/nature05634#supplementary-information
