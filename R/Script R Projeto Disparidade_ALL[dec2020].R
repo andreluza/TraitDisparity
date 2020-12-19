@@ -186,11 +186,6 @@ save (RAO_OU, file = here("output","RAO_OU.RData"))
 #      mean phylogenetic distance between species (MPD) 
 #     and associated standardized effect size (SES.MPD)
 
-# standardized effect size values of mean phylogenetic distance between spp.
-# taxa.labels null model
-#ses.mpd<-ses.mpd(t(match.species$data),cophenetic(tree),null.model="taxa.labels",
-#                 runs = 1000)
-
 # function to calculate mpd
 mpd.shuff <- function (tree,my.sample.matrix) {
   
@@ -206,7 +201,7 @@ null.mpdf <- lapply (tree.pruned, function (tree) {
   obs.mpd <- mpd (t(comm.pruned),cophenetic (tree))
   
   # replicate shuffle per phylogeny 
-  rep.shuff.phy <- replicate(2, mpd.shuff(tree,
+  rep.shuff.phy <- replicate(niter, mpd.shuff(tree,
         my.sample.matrix=t(comm.pruned)))
   
   # get statistics  
@@ -225,15 +220,9 @@ null.mpdf <- lapply (tree.pruned, function (tree) {
   }
 )
 
+# save
+save (null.mpdf, file=here ("output","mpd_results.RData"))
 
-# independent swap null model
-ses.mpd2<-ses.mpd(t(match.species$data),
-                  cophenetic(tree),null.model="independentswap",
-                  runs = 1000)
-
-plot(rao$FunRao~ses.mpd$mpd.obs.z)
-plot(mean.rao.BM~ses.mpd$mpd.obs.z)
-plot(SES_BM~ses.mpd$mpd.obs.z)
 
 #################################################################################
 #### Simulações sob outros modelos evolutivos ####
@@ -278,48 +267,7 @@ for(i in 1:dim(simul_OU)[2]){
   raoBM<-rao.diversity(org$community,traits=org$traits)
   RESULTADOS.RAO.OU[,i]<-as.vector(raoBM$FunRao)
 } 
-RESULTADOS.RAO.OU
-mean.rao.OU<-apply(RESULTADOS.RAO.OU,1,mean)
-sd.rao.OU<-apply(RESULTADOS.RAO.OU,1,sd)
 
-cor(rao$FunRao,mean.rao.OU)
-ES_OU<-rao$FunRao - mean.rao.OU
-SES_OU<- ES_BM / sd.rao.OU
-
-plot(rao$FunRao~ses.mpd$mpd.obs.z)
-points(mean.rao.BM~ses.mpd$mpd.obs.z,col="red")
-plot(SES_BM~ses.mpd$mpd.obs.z)
-points(mean.rao.EB~ses.mpd$mpd.obs.z,col="blue")
-plot(SES_EB~ses.mpd$mpd.obs.z)
-points(mean.rao.OU~ses.mpd$mpd.obs.z,col="green")
-plot(SES_OU~ses.mpd$mpd.obs.z)
-
-plot(rao$FunRao~ses.mpd$mpd.obs)
-points(mean.rao.BM~ses.mpd$mpd.obs,col="red")
-plot(SES_BM~ses.mpd$mpd.obs)
-points(mean.rao.EB~ses.mpd$mpd.obs,col="blue")
-plot(SES_EB~ses.mpd$mpd.obs)
-points(mean.rao.OU~ses.mpd$mpd.obs,col="green")
-plot(SES_OU~ses.mpd$mpd.obs)
-
-
-
-################################################################################
-#### SES Simulados ####
-SES_NULO # SES NULO com o Atributo Observado
-SES_NULO_BM<-(mean.rao.BM - mean.rao.NULO) / sd.rao.NULO # SES NULO com o Atributo BM
-SES_NULO_EB<-(mean.rao.EB - mean.rao.NULO) / sd.rao.NULO # SES NULO com o Atributo BM
-SES_NULO_OU<-(mean.rao.OU - mean.rao.NULO) / sd.rao.NULO # SES NULO com o Atributo BM
-
-plot(SES_NULO~ses.mpd$mpd.obs.z,ylim=c(-10,4))
-points(SES_NULO_BM~ses.mpd$mpd.obs.z,col="blue")
-points(SES_NULO_EB~ses.mpd$mpd.obs.z,col="red")
-points(SES_NULO_OU~ses.mpd$mpd.obs.z,col="green")
-
-plot(SES_NULO~ses.mpd$mpd.obs,ylim=c(-10,4))
-points(SES_NULO_BM~ses.mpd$mpd.obs,col="blue")
-points(SES_NULO_EB~ses.mpd$mpd.obs,col="red")
-points(SES_NULO_OU~ses.mpd$mpd.obs,col="green")
 
 
 #### Save & Write ####
