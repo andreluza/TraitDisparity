@@ -5,27 +5,27 @@ source ("./R/packages.R")
 source ("./R/functions.R")
 
 #----------------------------------------#
-#       Carregar Forma do Crânio 
+#       Load data of skull shape 
 #             Shape ventral
 
-## Carregar arquivo .tps com vista ventral
+# load '.tps' file with ventral view
 tps.ventral<-readland.tps(here ("data","Sigmodontinae.ventral.dig.tps"),specID = "ID", readcurves = FALSE)
 ##dim(tps.ventral)
 
-## Carregar lista (classificadores) vista ventral
+# load specimen information
 ventral.listed<-read.table(here ("data","Sigmodontinae.ventral.listed.txt"),h=T)
-##fix(ventral.listed)
+# unique species 
 species.v<-ventral.listed[,4]
-# unique (species.v)
 
-## Eliminar Nephelomys pirrensis & Sigmodon zanjonensis (sem shapefile) & Brucepattersonius_sp 
-## Eliminar 9 (fora do recorte espacial): Rheomys underwoodi, Rheomys mexicanus, Oryzomys palustris, Nectomys p. palmipes, Nesoryzomys swarthi, Nesoryzomys indefessus, Nesoryzomys fernandinae, Nesoryzomys darwini, Aegialomys galapagoensis
-## Ending with 228 species
+# Removing species from islands
+# Remove Nephelomys pirrensis & Sigmodon zanjonensis & Brucepattersonius_sp (no shapefile)
+# Remove other species that are out of analyzed spatial extent: Rheomys underwoodi, Rheomys mexicanus, Oryzomys palustris, Nectomys p. palmipes, Nesoryzomys swarthi, Nesoryzomys indefessus, Nesoryzomys fernandinae, Nesoryzomys darwini, Aegialomys galapagoensis
+# Ending up with 228 species
 rm_spp <- c("Nephelomys_pirrensis","Sigmodon_zanjonensis","Aegialomys_galapagoensis","Brucepattersonius_sp","Rheomys_underwoodi","Nesoryzomys_darwini","Rheomys_mexicanus","Oryzomys_palustris","Nesoryzomys_fernandinae","Nectomys_palmipes","Nesoryzomys_swarthi","Nesoryzomys_indefessus")
 tps.ventral<-tps.ventral[,,which(ventral.listed$Species_Patton2015 %in% rm_spp == F)] 
-#dim(tps.ventral)
-#
-## GPA Ventral
+
+# GPA Ventral
+## Procrustes analysis to get independent shape and size data
 gpa.ventral<-gpagen(tps.ventral)
 names(gpa.ventral)
 size.v<-gpa.ventral$Csize
@@ -49,7 +49,6 @@ shape.means.v<-arrayspecs(shape.v.2d.means,dim(shape.v)[1],dim(shape.v)[2])
 
 # transform size data into a vector in log scale
 size.means.v<-rowsum(size.v,species.v)/as.vector(table(species.v))
-size.means.v
 hist(log(size.means.v))
 size.means.log.v<-log(size.means.v)
 
@@ -58,31 +57,10 @@ size.means.log.v<-log(size.means.v)
 #       Incidence of 228 species in 1770 cells
 
 presab_original <-read.table(here ("data","PresAbs_228sp_Neotropical_MainDataBase_Ordenado.txt"),h=T)
-# Incluir corte de sítios com <3 sp
+# remove sites with 2 or less sp
 presab <- presab_original [rowSums (presab_original) > 3,]
-## excluir entao especies que nao ocorrem nas celulas remanescentes
+## exclude species absent in the remaining cells
 presab <- presab [,which(colSums(presab)>0)]
-
-### resolver   inconsistencias no nome das spp - already solved
-
-#colnames(presab) [which (colnames(presab) == "Abrothrix_jelskii")] <-"Abrothrix_jeslkii"
-#colnames(presab) [which (colnames(presab) == "Abrothrix_longipilis")] <-"Abrothrix_longilipis"
-#colnames(presab) [which (colnames(presab) == "Galenomys_garleppii")] <-"Galenomys_garleppi"
-#colnames(presab) [which (colnames(presab) == "Neacomys_guianae")] <-"Neacomys_guiane"
-#colnames(presab) [which (colnames(presab) == "Rhipidomys_macconnelli")] <-"Rhipidomys_maconnelli"
-#colnames(presab) [which (colnames(presab) == "Thomasomys_ischyrus")] <-"Thomasomys_ischyurus"
-#colnames(presab) [which (colnames(presab) == "Thomasomys_monochromos")] <-"Thomasomys_monochromus"
-#colnames(presab) [which (colnames(presab) == "Thomasomys_paramorum")] <-"Thomasomys_paramarum"
-#colnames(presab) [which (colnames(presab) == "Wiedomys_pyrrhorhinos")] <-"Wiedomys_pyrrhorhinus"
-#colnames(presab) [which (colnames(presab) == "Zygodontomys_brevicauda")] <-"Zygodontomys_brevicaudata"
-#colnames(presab) [which (colnames(presab) == "Abrothrix_andina")] <-"Abrothrix_andinus"
-#colnames(presab) [which (colnames(presab) == "Abrothrix_lanosa")] <-"Abrothrix_lanosus"
-##colnames(presab) [which (colnames(presab) == "Abrothrix_longilipis")] <- "Abrothrix_longipilis"
-#colnames(presab) [which (colnames(presab) == "Abrothrix_olivacea")] <- "Abrothrix_olivaceus"
-#colnames(presab) [which (colnames(presab) == "Galenomys_garleppii")] <- "Galenomys_garleppi"
-#colnames(presab) [which (colnames(presab) == "Neomicroxus_bogotensis")] <- "Akodon_bogotensis"
-#colnames(presab) [which (colnames(presab) == "Paynomys_macronyx")] <- "Chelemys_macronyx"
-#colnames(presab) [which (colnames(presab) == "Phyllotis_gerbillus")] <- "Paralomys_gerbillus"
 
 # ----------------------------- # 
 ##  Geographic coordinates data
@@ -90,85 +68,85 @@ presab <- presab [,which(colSums(presab)>0)]
 longlat<-read.table(here ("data","Lon-lat-Disparity.txt"),h=T)
 longlat  <- longlat [rowSums (presab_original) > 3,]
 
-# --------------------------------------------------------- #
-# Calculando a disparidade Observada (Empírica) por célula 
+# --------------------------------------- #
+#     Empirical disparity per cell
 
-# numero de iteracoes (tb serve para as simulacoes)
-niter <- 999
+# set the number of interations (equal to the number of simulations in evol models)
+niter <- 1000
 
-# rodar a funcao de disparidade observada
+# Run the 'disparity function' that we create (implement Rao's entropy and a randomization of sp. IDs across the rows of trait datasets)
 RAO_OBS <- funcao_disparidade (occ = as.matrix (presab),
                                traits= shape.v.2d.means,
                                n_iterations = niter)
 
 save (RAO_OBS, file = here("output","RAO_OBS.RData"))
-gc()
-# --------------------------------------------------- #
-#          Simular disparidade por celula, 
-#     de acordo com diferentes modelos evolutivos
 
-# Carregar filogenia
-# 1 - Importar as Arvores (100 filogenias resolvidas)
+# --------------------------------------------------- #
+#         Simulated disparity per cell, 
+#     as simulated by three evolution models
+#                  BM, EB, OU
+
+# Load the fully resolved phylogenties
+
 tree_list <- tree <- read.nexus(file=here("data","Sigmodontinae_413species100Trees.trees"))
-## corrigir os nomes
+
+# Adjusting the names
+
 tree_list <- lapply (tree_list, function (i)
 	{i$tip.label <- gsub ("__CRICETIDAE__RODENTIA", "",i$tip.label);i})
 
-# estas especies nao estao no conjunto de  filogenias
-# remover<-c("_Rattus_norvegicus","Tylomys_nudicaudus","Tylomys_watsoni",
-#           "Ototylomys_phyllotis","Nyctomys_sumichrasti","Otonyctomys_hatti")
-# tree<-drop.tip(tree,remover)
-#plot(tree_list[[1]],'fan',cex=0.3)
-#str(tree)
-
-# matching entre observacoes, traits, e filogenia
+# matching between distribution, trait, and phylogenetic datasets
 tree.pruned<-lapply (tree_list, function (phy) 
 	treedata(phy,t(presab))$phy)
 comm.pruned<-lapply (tree_list, function (phy) 
 	treedata(phy,t(presab))$data)[[1]]
 
-#tree2<-tree.pruned$phy
-#presab2<-tree.pruned$data
+# --------------------------------------------------#
+#      ANALYSES
 
-# Simulações do modelo browniano
-# 100 simulações aplicadas em cada uma das 100 filogenias
+# Set the number of computer cores to run analyses in 
+# parallel along computer cores
+ncores <- 7
+
+# simulating traits using a Brownian motion model
+# 100 simulations per phylogeny
 simul_BM<-lapply (tree.pruned, function (phy) 
 	mvSIM(phy,nsim=niter,model="BM1",param = list(sigma = 1)))
 
-## obter statistics
+# Get average values
 
 simul_BM_mean <- lapply(simul_BM, function (phy)
   apply(phy,1,mean))
 
-## organizar os dados  de traits do mesmo modo que as analises empiricas,
-# mas desta vez com dados de atributos simulados
+# Run the disparity function that organizes data and calculate observed and null Rao's entropy
 
-# definir ncores para analises paralelas
-ncores <- 6
-
-# criar um cluster e carregar funcoes e dados
-cl <- makeCluster (ncores)# numero de nucleos do pc para usar
+# create a cluster of 'ncores', 
+cl <- makeCluster (ncores)
+# load data and functions in each core 
 clusterExport(cl, c("simul_BM_mean", "comm.pruned","niter","funcao_disparidade"))
+# load packages in each core
 clusterEvalQ(cl,library("SYNCSA"))
-
+# run
 RAO_BM <- parLapply (cl,simul_BM_mean, function (phy)	
   funcao_disparidade (occ = t(comm.pruned),
                       traits= as.data.frame(phy),
                       n_iterations = niter))
 
 stopCluster (cl)
-
+# save
 save(RAO_BM, file=here("output","RAO_BM.Rdata"))
 
-# 100 simulações DE EB aplicadas em cada uma das 100 filogenias
+# simulating traits using a early burst model
+# 100 simulations per phylogeny
 simul_EB<-lapply (tree.pruned, function (phy) 
   mvSIM(phy,nsim=niter,model="EB",param = list(sigma = 1, beta = -0.5)))
 
+# Get average values
 simul_EB_mean <- lapply(simul_EB, function (phy)
   apply(phy,1,mean))
 
-# run disparity function
-cl <- makeCluster (ncores)# numero de nucleos do pc para usar
+# Run the disparity function that organizes data and calculate observed and null Rao's entropy
+cl <- makeCluster (ncores)
 clusterExport(cl, c("simul_EB_mean", "comm.pruned","niter","funcao_disparidade"))
 clusterEvalQ(cl,library("SYNCSA"))
 
@@ -178,8 +156,12 @@ RAO_EB <- parLapply (cl, simul_EB_mean, function (phy)
                       n_iterations = niter))
 
 stopCluster (cl)
+# save
+save (RAO_EB, file = here("output","RAO_EB.RData"))
 
-# 100 simulações DE OU aplicadas em cada uma das 100 filogenias
+# simulating traits using a Ornstein-Uhlenbeck model
+# 100 simulations per phylogeny
+
 simul_OU <-lapply (tree.pruned, function (phy) 
   mvSIM(phy,nsim=niter,model="OU1",param = list(sigma = 1,alpha=1)))
 
@@ -187,7 +169,7 @@ simul_OU_mean <- lapply(simul_OU, function (phy)
   apply(phy,1,mean))
 
 # run disparity function
-cl <- makeCluster (ncores)# numero de nucleos do pc para usar
+cl <- makeCluster (ncores)
 clusterExport(cl, c("simul_OU_mean", "comm.pruned","niter","funcao_disparidade"))
 clusterEvalQ(cl,library("SYNCSA"))
 
@@ -198,23 +180,60 @@ RAO_OU <- parLapply (cl,simul_OU_mean, function (phy)
 
 stopCluster (cl)
 
+save (RAO_OU, file = here("output","RAO_OU.RData"))
 
-#################################################################################
-### MPD e SES.MPD ####
+# ------------------------------------------------------- #
+#      mean phylogenetic distance between species (MPD) 
+#     and associated standardized effect size (SES.MPD)
 
-match.species<-treedata(tree,t(presab)) 
-names(match.species)
-#tree1<-match.species$phy
-#mpd<-mpd(t(match.species$data),cophenetic(tree1))
-#mpd
-ses.mpd<-ses.mpd(t(match.species$data),cophenetic(tree),null.model="taxa.labels")
-ses.mpd$mpd.obs.z
-ses.mpd2<-ses.mpd(t(match.species$data),cophenetic(tree),null.model="independentswap")
+# standardized effect size values of mean phylogenetic distance between spp.
+# taxa.labels null model
+#ses.mpd<-ses.mpd(t(match.species$data),cophenetic(tree),null.model="taxa.labels",
+#                 runs = 1000)
+
+# function to calculate mpd
+mpd.shuff <- function (tree,my.sample.matrix) {
+  
+  shuff.tree <- tipShuffle (tree)
+  mpd(my.sample.matrix, cophenetic (shuff.tree))
+  
+}
+
+# replicating the function niter times per phylogeny
+null.mpdf <- lapply (tree.pruned, function (tree) {
+  
+  # observed MPD
+  obs.mpd <- mpd (t(comm.pruned),cophenetic (tree))
+  
+  # replicate shuffle per phylogeny 
+  rep.shuff.phy <- replicate(2, mpd.shuff(tree,
+        my.sample.matrix=t(comm.pruned)))
+  
+  # get statistics  
+  statistics.phy <- data.frame (
+    averageMPD = apply (rep.shuff.phy,1,mean),
+    sdMPD = apply (rep.shuff.phy,1,sd),
+    obsMPD = obs.mpd)
+  
+  # calculate SES
+  statistics.phy$SES.MPD <- (statistics.phy$obsMPD - statistics.phy$averageMPD)/statistics.phy$sdMPD
+  
+  ; # return
+  
+  statistics.phy
+  
+  }
+)
+
+
+# independent swap null model
+ses.mpd2<-ses.mpd(t(match.species$data),
+                  cophenetic(tree),null.model="independentswap",
+                  runs = 1000)
 
 plot(rao$FunRao~ses.mpd$mpd.obs.z)
 plot(mean.rao.BM~ses.mpd$mpd.obs.z)
 plot(SES_BM~ses.mpd$mpd.obs.z)
-
 
 #################################################################################
 #### Simulações sob outros modelos evolutivos ####
