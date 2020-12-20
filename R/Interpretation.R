@@ -3,86 +3,185 @@
 # load packages
 source ("./R/packages.R")
 
+# -----------------------#
+# load data
+load (here("output", "mpd_results.RData"))
+load (here("output", "RAO_BM.RData"))
+load (here("output", "RAO_EB.RData"))
+load (here("output", "RAO_OU.RData"))
+load (here("output", "RAO_OBS.RData"))
+
 # relationship between empirical and simulated data sets
 
+lapply(seq(1,100), function (i) {
+plot(NA, ylim=c(-7,7),xlim=c(-7,4),
+     xlab=expression (paste("Mean Pairwise Phylogenetic Distance", " (MPD"['SES'],")")),
+     ylab=expression (paste("Morphological Disparity", "  (Disparity"['SES'],")")))
+points(null.mpdf[[i]]$SES.MPD, RAO_OBS$SES, 
+     col=rgb(red=0.3,green=0.3,blue=0.3, alpha=0.1),
+     pch=19)
+abline(lm(RAO_OBS$SES ~null.mpdf[[i]]$SES.MPD),
+       col=rgb(red=0.3,green=0.3,blue=0.3, alpha=0.9),
+       lwd=2)
+points(null.mpdf[[i]]$SES.MPD, RAO_BM[[i]]$SES,
+       col=rgb(red=0,green=0.3,blue=0.9, alpha=0.1),
+       pch=19)
+abline(lm(RAO_BM[[i]]$SES ~null.mpdf[[i]]$SES.MPD),
+       col=rgb(red=0,green=0.3,blue=0.9, alpha=0.9),
+       lwd=2)
+points(null.mpdf[[i]]$SES.MPD, RAO_EB[[i]]$SES,
+       col=rgb(red=1,green=0,blue=0, alpha=0.1),
+       pch=19)
+abline(lm(RAO_EB[[i]]$SES ~null.mpdf[[i]]$SES.MPD),
+       col=rgb(red=1,green=0,blue=0, alpha=0.9),
+       lwd=2)
+points(null.mpdf[[i]]$SES.MPD, RAO_OU[[i]]$SES,
+       col=rgb(red=0.1,green=0.9,blue=0.1, alpha=0.1),
+       pch=19)
+abline(lm(RAO_OU[[i]]$SES ~null.mpdf[[i]]$SES.MPD),
+       col=rgb(red=0.1,green=0.9,blue=0.1, alpha=0.9),
+       lwd=2)
+
+legend ("bottomright", 
+        legend = c("Empirical", "BM","EB","OU"),
+        bty="n",
+        pch=19,
+        col = c(rgb(red=0.3,green=0.3,blue=0.3, alpha=0.7),
+                rgb(red=0,green=0.3,blue=0.9, alpha=0.9),
+                rgb(red=1,green=0,blue=0, alpha=0.9),
+                rgb(red=0.1,green=0.9,blue=0.1, alpha=0.9)
+                
+        ))
 
 
-plot(rao$FunRao~ses.mpd$mpd.obs.z)
-plot(mean.rao.BM~ses.mpd$mpd.obs.z)
-plot(SES_BM~ses.mpd$mpd.obs.z)
+})
 
+# working with the average
 
-mean.rao.EB<-apply(RESULTADOS.RAO.EB,1,mean)
-sd.rao.EB<-apply(RESULTADOS.RAO.EB,1,sd)
+avBM<-do.call(cbind,sapply(RAO_BM, "[","SES",simplify=T))
+avEB<-do.call(cbind,sapply(RAO_EB, "[","SES",simplify=T))
+avOU<-do.call(cbind,sapply(RAO_OU, "[","SES",simplify=T))
+avMPD<-do.call(cbind,sapply(null.mpdf, "[","SES.MPD",simplify=T))
 
-cor(rao$FunRao,mean.rao.EB)
-ES_EB<-rao$FunRao - mean.rao.EB
-SES_EB<- ES_BM / sd.rao.EB
+plot(NA, ylim=c(-6,2),xlim=c(-6.5,2.5),
+     xlab=expression (paste("Mean Pairwise Phylogenetic Distance", " (MPD"['SES'],")")),
+     ylab=expression (paste("Morphological Disparity", "  (Disparity"['SES'],")")))
+points(rowMeans (avMPD), RAO_OBS$SES, 
+       col=rgb(red=0.3,green=0.3,blue=0.3, alpha=0.1),
+       pch=19)
+points(rowMeans (avMPD), rowMeans(avBM),
+       col=rgb(red=0,green=0.3,blue=0.9, alpha=0.1),
+       pch=19)
+points(rowMeans (avMPD), rowMeans(avEB),
+       col=rgb(red=1,green=0,blue=0, alpha=0.1),
+       pch=19)
+points(rowMeans (avMPD), rowMeans(avOU),
+       col=rgb(red=0.1,green=0.9,blue=0.1, alpha=0.1),
+       pch=19)
 
-plot(rao$FunRao,ses.mpd$mpd.obs.z)
-plot(mean.rao.BM,ses.mpd$mpd.obs.z)
-plot(SES_BM,ses.mpd$mpd.obs.z)
-plot(mean.rao.EB,ses.mpd$mpd.obs.z)
-plot(SES_EB,ses.mpd$mpd.obs.z)
-
-
-# 
-RESULTADOS.RAO.OU
-mean.rao.OU<-apply(RESULTADOS.RAO.OU,1,mean)
-sd.rao.OU<-apply(RESULTADOS.RAO.OU,1,sd)
-
-cor(rao$FunRao,mean.rao.OU)
-ES_OU<-rao$FunRao - mean.rao.OU
-SES_OU<- ES_BM / sd.rao.OU
-
-plot(rao$FunRao~ses.mpd$mpd.obs.z)
-points(mean.rao.BM~ses.mpd$mpd.obs.z,col="red")
-plot(SES_BM~ses.mpd$mpd.obs.z)
-points(mean.rao.EB~ses.mpd$mpd.obs.z,col="blue")
-plot(SES_EB~ses.mpd$mpd.obs.z)
-points(mean.rao.OU~ses.mpd$mpd.obs.z,col="green")
-plot(SES_OU~ses.mpd$mpd.obs.z)
-
-plot(rao$FunRao~ses.mpd$mpd.obs)
-points(mean.rao.BM~ses.mpd$mpd.obs,col="red")
-plot(SES_BM~ses.mpd$mpd.obs)
-points(mean.rao.EB~ses.mpd$mpd.obs,col="blue")
-plot(SES_EB~ses.mpd$mpd.obs)
-points(mean.rao.OU~ses.mpd$mpd.obs,col="green")
-plot(SES_OU~ses.mpd$mpd.obs)
-
-
-
-################################################################################
-#### SES Simulados ####
-SES_NULO # SES NULO com o Atributo Observado
-SES_NULO_BM<-(mean.rao.BM - mean.rao.NULO) / sd.rao.NULO # SES NULO com o Atributo BM
-SES_NULO_EB<-(mean.rao.EB - mean.rao.NULO) / sd.rao.NULO # SES NULO com o Atributo BM
-SES_NULO_OU<-(mean.rao.OU - mean.rao.NULO) / sd.rao.NULO # SES NULO com o Atributo BM
-
-plot(SES_NULO~ses.mpd$mpd.obs.z,ylim=c(-10,4))
-points(SES_NULO_BM~ses.mpd$mpd.obs.z,col="blue")
-points(SES_NULO_EB~ses.mpd$mpd.obs.z,col="red")
-points(SES_NULO_OU~ses.mpd$mpd.obs.z,col="green")
-
-plot(SES_NULO~ses.mpd$mpd.obs,ylim=c(-10,4))
-points(SES_NULO_BM~ses.mpd$mpd.obs,col="blue")
-points(SES_NULO_EB~ses.mpd$mpd.obs,col="red")
-points(SES_NULO_OU~ses.mpd$mpd.obs,col="green")
-
+legend ("bottomright", 
+        legend = c("Empirical", "BM","EB","OU"),
+        bty="n",
+        pch=19,
+        col = c(rgb(red=0.3,green=0.3,blue=0.3, alpha=0.7),
+                rgb(red=0,green=0.3,blue=0.9, alpha=0.9),
+                rgb(red=1,green=0,blue=0, alpha=0.9),
+                rgb(red=0.1,green=0.9,blue=0.1, alpha=0.9)
+                
+        ))
 
 
 # test of whether slope of the regression between ses disparity and ses MPD
 # varies across evolutionary models
 
+# bind data to analysis
+
+bind_data_disparity <- lapply (seq (1,length(null.mpdf)), function (i)
+  
+  rbind (
+    data.frame (
+      dataset="AOBS",
+      disp=RAO_OBS$SES,
+      MPD=null.mpdf[[i]]$SES.MPD),
+  
+    data.frame (
+      dataset="BM",
+      disp=RAO_BM[[i]]$SES,
+      MPD=null.mpdf[[i]]$SES.MPD),
+  
+    data.frame (
+      dataset="EB",
+      disp=RAO_EB[[i]]$SES,
+      MPD=null.mpdf[[i]]$SES.MPD),
+  
+    data.frame (
+      dataset="OU",
+      disp=RAO_OU[[i]]$SES,
+      MPD=null.mpdf[[i]]$SES.MPD)
+  )
+)
 
 
+# One model per phylogeny
+model_slope <- lapply (bind_data_disparity, function (i) {
+  
+  # using GLM
+  m1<-lm (disp ~ MPD*dataset,
+           data=i)
+  
+  # extracting estimates
+  # intercept (average disparity in the empirical dataset (level "AOBS"))
+  res <- data.frame(EMPIRICAL=m1$coefficients[1], # EMpirical
+             BM=m1$coefficients[6], # BM
+             EB=m1$coefficients[7], # EB
+            OU=m1$coefficients[8]#,
+            #R2 = RsquareAdj(m1)$adj.r.squared
+            ) # OU
+  ; # return
+  res
+  
+})
 
+# transforming res list into df
+model_slope_df <- do.call (rbind, model_slope)
 
+# finally melt
+require(reshape)
+require(ggplot2)
+model_slope_df <- melt(model_slope_df)
 
+# plotting
 
+a <- ggplot(model_slope_df, aes(x=value, color=variable, fill=variable)) +
+  geom_density(size=1,alpha=0.1) +
+  scale_fill_manual(values=c("EMPIRICAL"="gray", 
+                             "BM"="blue",
+                             "EB"="red",
+                             "OU"="green")) + 
+  scale_colour_manual(values=c("EMPIRICAL"="gray", 
+                                        "BM"="blue",
+                                        "EB"="red",
+                                        "OU"="green"))+
+  theme_classic()  
+
+b <- a+ theme (
+               axis.text.x = element_text(angle = 90),
+               legend.title = element_blank(),
+               #legend.position = "none",
+               legend.position = c(.95, .95),
+               legend.justification = c("right", "top"),
+               legend.box.just = "right",
+               legend.margin = margin(6, 6, 6, 6),
+               plot.margin=unit(c(.2,1,.1,1),"cm")) +
+  xlab ("Slope SES Disparity ~ SES MPD") + 
+  ylab("Density") + 
+  scale_x_continuous(breaks = seq(-2,2,0.15),
+                     limits = c(-1.5,1.5)) 
 
 # exploring phylogenetic uncertainty
+
+b
+
 
 
 
