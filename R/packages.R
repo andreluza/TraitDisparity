@@ -15,3 +15,7 @@ require(picante)
 
 # parallel processing
 require(parallel)
+
+# plot
+require(ggplot2)
+require(reshape)
