@@ -19,3 +19,17 @@ require(parallel)
 # plot
 require(ggplot2)
 require(reshape)
+require(gridExtra)
+require (ggpubr)
+require(ggthemes)
+
+# spatial analysis
+
+library(sp)
+library(raster)
+library (rgdal)
+require(maps)
+
+# maps
+library(rasterVis)
+library(viridis)

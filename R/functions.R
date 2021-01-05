@@ -28,3 +28,29 @@ funcao_disparidade <- function (occ, traits,n_iterations) {
   return (DF_RESULTADOS)
   
 }
+
+
+## 
+
+
+# function to calculate mpd
+mpd.function <- function (x,dist.tree) {
+  
+  # get the names of species present in the comms
+  com.names <- names (x[which(x>0)])
+  
+  # calcuate mpd
+  mean (as.dist (dist.tree[which(rownames (dist.tree) %in% com.names),
+                           which(colnames (dist.tree) %in% com.names)]))
+  
+}
+
+
+# function to calculate mpd after shuffling the phylogeny
+mpd.shuff <- function (tree,my.sample.matrix) {
+  
+  shuff.tree <- tipShuffle (tree)
+  apply(my.sample.matrix,1, mpd.function,
+        dist.tree=cophenetic (shuff.tree))
+  
+}
