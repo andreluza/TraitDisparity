@@ -1,0 +1,13 @@
+aa<-read.table(file.choose(),h=T)
+head(aa)
+attach(aa)
+
+library(maps)
+
+# Usando lat/long
+colfunc<-colorRampPalette(c("#00007F", "blue", "#007FFF", "cyan","#7FFF7F",
+                            "yellow", "#FF7F00", "red", "#7F0000"))
+colors<-c("white",colfunc(max(rich)))
+
+plot(LONG,LAT,col=colors[rich],cex=1.2,pch=15)
+map("world",add=T)
