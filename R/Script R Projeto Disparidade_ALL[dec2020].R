@@ -94,6 +94,13 @@ trait.pruned <- trait.pruned[which(rownames(trait.pruned) %in% tree_list[[1]]$ti
 # occ
 comm.pruned <- presab [,which(colnames(presab) %in% rownames (trait.pruned))]
 
+# phy pruned
+# prune
+# matching between distribution, trait, and phylogenetic datasets
+tree.pruned<-lapply (tree_list, function (phy) 
+  treedata(phy,t(presab))$phy)
+
+# empirical rao
 RAO_OBS <- funcao_disparidade (occ = comm.pruned,
                                traits= trait.pruned,
                                n_iterations = niter)
@@ -118,12 +125,6 @@ simul_BM<-lapply (tree_list, function (phy)
 
 simul_BM_mean <- lapply(simul_BM, function (phy)
   apply(phy,1,mean))
-
-# prune
-# matching between distribution, trait, and phylogenetic datasets
-tree.pruned<-lapply (tree_list, function (phy) 
-  treedata(phy,t(presab))$phy)
-#comm.pruned <- presab[,which(colnames(presab) %in% tree.pruned[[1]]$tip.label)]
 
 # trait
 simul_BM_mean_pruned <- lapply(simul_BM_mean, function (i)
@@ -205,23 +206,25 @@ save (RAO_OU, file = here("output","RAO_OU_ALL.RData"))
 #      mean phylogenetic distance between species (MPD) 
 #     and associated standardized effect size (SES.MPD)
 
-# function to calculate mpd
-mpd.shuff <- function (tree,my.sample.matrix) {
-  
-  shuff.tree <- tipShuffle (tree)
-  mpd(my.sample.matrix, cophenetic (shuff.tree))
-  
-}
+niter<-1000
+
+# run disparity function
+cl <- makeCluster (ncores)
+clusterExport(cl, c("tree.pruned", "comm.pruned","niter",
+                    "mpd.function","mpd.shuff"))
+clusterEvalQ(cl,library("SYNCSA"))
+clusterEvalQ(cl,library("picante"))
 
 # replicating the function niter times per phylogeny
-null.mpdf <- lapply (tree.pruned, function (tree) {
+null.mpdf <- parLapply (cl, tree.pruned, function (tree) {
   
   # observed MPD
-  obs.mpd <- mpd (t(comm.pruned),cophenetic (tree))
+  obs.mpd <- apply (comm.pruned,1,mpd.function,
+                    dist.tree=cophenetic(tree))
   
   # replicate shuffle per phylogeny 
   rep.shuff.phy <- replicate(niter, mpd.shuff(tree,
-        my.sample.matrix=t(comm.pruned)))
+                                              my.sample.matrix=(comm.pruned)))
   
   # get statistics  
   statistics.phy <- data.frame (
@@ -236,8 +239,11 @@ null.mpdf <- lapply (tree.pruned, function (tree) {
   
   statistics.phy
   
-  }
+}
 )
+
+stopCluster (cl)
+
 
 # save
 save (null.mpdf, file=here ("output","mpd_results_ALL.RData"))
