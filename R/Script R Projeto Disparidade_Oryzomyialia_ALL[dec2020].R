@@ -199,23 +199,25 @@ save (RAO_OU, file = here("output","RAO_OU_ORYZ.RData"))
 #      mean phylogenetic distance between species (MPD) 
 #     and associated standardized effect size (SES.MPD)
 
-# function to calculate mpd
-mpd.shuff <- function (tree,my.sample.matrix) {
-  
-  shuff.tree <- tipShuffle (tree)
-  mpd(my.sample.matrix, cophenetic (shuff.tree))
-  
-}
+niter<-1000
+
+# run disparity function
+cl <- makeCluster (ncores)
+clusterExport(cl, c("tree.pruned", "comm.pruned","niter",
+                    "mpd.function","mpd.shuff"))
+clusterEvalQ(cl,library("SYNCSA"))
+clusterEvalQ(cl,library("picante"))
 
 # replicating the function niter times per phylogeny
-null.mpdf <- lapply (tree.pruned, function (tree) {
+null.mpdf <- parLapply (cl, tree.pruned, function (tree) {
   
   # observed MPD
-  obs.mpd <- mpd ((comm.pruned),cophenetic (tree))
+  obs.mpd <- apply (comm.pruned,1,mpd.function,
+                    dist.tree=cophenetic(tree))
   
   # replicate shuffle per phylogeny 
   rep.shuff.phy <- replicate(niter, mpd.shuff(tree,
-        my.sample.matrix=(comm.pruned)))
+                                              my.sample.matrix=(comm.pruned)))
   
   # get statistics  
   statistics.phy <- data.frame (
@@ -230,147 +232,11 @@ null.mpdf <- lapply (tree.pruned, function (tree) {
   
   statistics.phy
   
-  }
+}
 )
+
+stopCluster (cl)
 
 # save
 save (null.mpdf, file=here ("output","mpd_results_ORYZ.RData"))
-
-
-#################################################################################
-#### Simulações sob outros modelos evolutivos ####
-#### EB
-require(mvMORPH)
-simul_EB<-mvSIM(tree,nsim=10000,model="EB",param = list(sigma = 1, beta = -0.5))
-mean_EB<-apply(simul_EB,1,mean)
-sd_EB<-apply(simul_EB,1,sd)
-
-# EB média e desvio
-RESULTADOS.RAO.EB<-matrix(NA,length(presab[,1]),dim(simul_EB)[2])
-for(i in 1:dim(simul_EB)[2]){
-  org<-organize.syncsa(comm=presab2,traits=as.data.frame(simul_EB[,i]))
-  raoBM<-rao.diversity(org$community,traits=org$traits)
-  RESULTADOS.RAO.EB[,i]<-as.vector(raoBM$FunRao)
-} 
-RESULTADOS.RAO.EB
-mean.rao.EB<-apply(RESULTADOS.RAO.EB,1,mean)
-sd.rao.EB<-apply(RESULTADOS.RAO.EB,1,sd)
-
-cor(rao$FunRao,mean.rao.EB)
-ES_EB<-rao$FunRao - mean.rao.EB
-SES_EB<- ES_BM / sd.rao.EB
-
-plot(rao$FunRao,ses.mpd$mpd.obs.z)
-plot(mean.rao.BM,ses.mpd$mpd.obs.z)
-plot(SES_BM,ses.mpd$mpd.obs.z)
-plot(mean.rao.EB,ses.mpd$mpd.obs.z)
-plot(SES_EB,ses.mpd$mpd.obs.z)
-
-
-#### OU
-require(mvMORPH)
-simul_OU<-mvSIM(tree,nsim=10000,model="OU1",param = list(sigma = 1,alpha=1))
-mean_OU<-apply(simul_OU,1,mean)
-sd_OU<-apply(simul_OU,1,sd)
-
-# OU média e desvio
-RESULTADOS.RAO.OU<-matrix(NA,length(presab[,1]),dim(simul_OU)[2])
-for(i in 1:dim(simul_OU)[2]){
-  org<-organize.syncsa(comm=presab2,traits=as.data.frame(simul_OU[,i]))
-  raoBM<-rao.diversity(org$community,traits=org$traits)
-  RESULTADOS.RAO.OU[,i]<-as.vector(raoBM$FunRao)
-} 
-
-
-
-#### Save & Write ####
-save.image(file = "my_work_space.RData")
-load("my_work_space.RData")
-write.csv(cbind(rao$FunRao,mean.rao.NULO,sd.rao.NULO,
-            mean.rao.BM,sd.rao.BM,SES_BM,
-            mean.rao.EB,sd.rao.EB,SES_EB,
-            mean.rao.OU,sd.rao.OU,SES_OU,
-            SES_NULO,SES_NULO_BM,SES_NULO_EB,SES_NULO_OU,
-            ses.mpd$mpd.obs.z,ses.mpd$mpd.obs),"RESULTADOS.RAO.csv")
-
-
-################################################################################
-#### Gráficos dispersão ####
-tabela<-read.table("SAMGrid_Neotropical_MainDataBase - Disparity - 2.txt",h=T)
-names(tabela)
-
-plot(tabela$media~tabela$Species_Richness_.228.)
-
-# Disparidade observada e riqueza
-plot(tabela$rao.obs~tabela$Species_Richness_.228.,
-     xlab="Species Richness",ylab="Observed Disparity",pch=21,bg="grey",cex=1.4)
-# Disparidade média NULA e riqueza
-plot(tabela$mean.rao.NULO~tabela$Species_Richness_.228.,
-     xlab="Species Richness",ylab="Random Disparity",pch=21,bg="grey",cex=1.4)
-# SES.NULO e SES.MPD
-plot(tabela$SES_NULO~tabela$SES_MPD,
-     xlab="SES MPD",ylab="SES Disparity",pch=21,bg="grey",cex=1.4)
-abline(lm(tabela$SES_NULO~tabela$SES_MPD),lty="dashed")
-summary(lm(tabela$SES_NULO~tabela$SES_MPD))
-text(-4.8,1,"R²=0.42")
-# SES Composto e SES.MPD
-plot(tabela$SES_NULO~tabela$SES_MPD,
-     xlab="SES MPD",ylab="SES Disparity",pch=21,bg="grey",cex=1.4,ylim=c(-9,2))
-points(tabela$SES_NULO_BM~tabela$SES_MPD,
-     xlab="SES MPD",ylab="SES Disparity Brownian",pch=21,bg="blue",cex=1.4)
-points(tabela$SES_NULO_EB~tabela$SES_MPD,
-     xlab="SES MPD",ylab="SES Disparity Early-Burst",pch=21,bg="red",cex=1.4)
-points(tabela$SES_NULO_OU~tabela$SES_MPD,
-     xlab="SES MPD",ylab="SES Disparity Ornstein-Uhlenback",pch=21,bg="green",cex=1.4)
-
-# SES Composto e SES.MPD usando Linhas de tendência
-plot(tabela$SES_NULO~tabela$SES_MPD,
-     xlab="SES MPD",ylab="SES Disparity",pch=21,type="n",ylim=c(-9,2))
-abline(lm(tabela$SES_NULO~tabela$SES_MPD),col="grey")
-abline(lm(tabela$SES_NULO_BM~tabela$SES_MPD),col="blue")
-abline(lm(tabela$SES_NULO_EB~tabela$SES_MPD),col="red")
-abline(lm(tabela$SES_NULO_OU~tabela$SES_MPD),col="green")
-
-# CI
-mod <- lm(tabela$SES_NULO~tabela$SES_MPD)
-preds <- predict(mod, interval = 'confidence')
-# intervals
-lines(tabela$SES_MPD, preds[ ,3], lty = 'dotted', col = 'gray')
-lines(tabela$SES_MPD, preds[ ,2], lty = 'dotted', col = 'gray')
-
-
-
-
-
-### ACABOU ####
-#####################################################
-# Coeficientes
-summary(lm(tabela$rao.obs~tabela$mean.rao.EB))
-summary(lm(tabela$mean.rao.NULO~tabela$mean.rao.EB))
-
-# Teste CI
-x<-rnorm(100)
-y<-rnorm(100)
-plot(x,y)
-preds1<-predict(lm(y~x),interval='confidence',level=0.8)
-abline(lm(y~x))
-lines(x,preds1[,3])
-lines(x,preds1[,2])
-
-
-# Testes
-CI_NULO_EB<-matrix(NA,length(RESULTADOS.RAO.EB[,1]),length(RESULTADOS.RAO.EB[1,])) 
-for(i in 1:length(RESULTADOS.RAO.EB[1,])){
-  SES_NULO_EB_Random<-(RESULTADOS.RAO.EB[,i] - mean.rao.NULO) / sd.rao.NULO
-  CI_NULO_EB[,i]<-SES_NULO_EB_Random
-} 
-CI_NULO_EB[,1:5]
-
-plot(CI_NULO_EB[,1]~ses.mpd$mpd.obs.z,type="n")
-for(i in 1:length(CI_NULO_EB[1,])){
-  abline(lm(CI_NULO_EB[,i]~ses.mpd$mpd.obs.z))
-}
-
-abline(lm(CI_NULO_EB[,3]~ses.mpd$mpd.obs.z),col="red")
-plot(CI_NULO_EB[,3]~ses.mpd$mpd.obs.z)
 
