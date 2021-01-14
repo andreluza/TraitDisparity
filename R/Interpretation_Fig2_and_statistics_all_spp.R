@@ -5,11 +5,11 @@ source ("./R/packages.R")
 
 # -----------------------#
 # load data
-load (here("output", "mpd_results.RData"))
-load (here("output", "RAO_BM.RData"))
-load (here("output", "RAO_EB.RData"))
-load (here("output", "RAO_OU.RData"))
-load (here("output", "RAO_OBS.RData"))
+load (here("output", "mpd_results_ALL.RData"))
+load (here("output", "RAO_BM_ALL.RData"))
+load (here("output", "RAO_EB_ALL.RData"))
+load (here("output", "RAO_OU_ALL.RData"))
+load (here("output", "RAO_OBS_ALL.RData"))
 
 # relationship between empirical and simulated data sets
 
@@ -151,16 +151,15 @@ boxplotOver1 <- boxplotOver + theme(axis.line=element_blank(),
                 axis.title.x=element_blank(),
                 axis.title.y=element_blank(),
                 legend.position="none",
-                panel.background=element_blank(),
+                plot.background=element_rect(fill="white",colour="white"),
+                panel.background=element_rect(fill="white",colour="white"),
                 panel.border=element_blank(),
                 panel.grid.major=element_blank(),
                 panel.grid.minor=element_blank(),
-                plot.background=element_blank(),
                 plot.margin=unit(c(.2,1,.1,2),"cm")) +
   scale_y_continuous(limits=c(-1.2, 1.2)) + coord_flip() 
 
-
-#pdf (paste ("compTR",variaveis[i],".pdf",sep=""), width=5,height=4,family="serif")
+# arrange
 panel <- grid.arrange(figure1,
               boxplotOver1,fig2a,
              ncol=4,nrow = 9,
@@ -173,8 +172,6 @@ panel <- grid.arrange(figure1,
                                     c(3,3,3,3),
                                     c(3,3,3,3),
                                     c(3,3,3,3)))
-
-#dev.off()
 
 
 ## Fstatistics
@@ -199,69 +196,4 @@ list.squared.mean <- Reduce("+", lapply(coef_table, "^", 2)) / length(coef_table
 list.variance <- list.squared.mean - list.mean^2
 ## standard deviation
 list.sd <- sqrt(list.variance)
-
-# -------------------------------------------------------------------- #
-# Mapping deviations of empirical disparity vs. simulated disparity 
-# across models#
-#
-## -----------------------------------------------#
-##           Load spatial data
-##       Incidence of 228 species in 1770 cells
-
-presab_original <-read.table(here ("data","PresAbs_228sp_Neotropical_MainDataBase_Ordenado.txt"),h=T)
-presab_original <- presab_original [order(as.numeric(rownames(presab_original))),]
-# remove sites with 2 or less sp
-presab <- presab_original [rowSums (presab_original) > 3,]
-## exclude species absent in the remaining cells
-presab <- presab [,which(colSums(presab)>0)]
-presab <- presab[order(as.numeric(rownames(presab)),decreasing=F),]
-
-# ----------------------------- # 
-##  Geographic coordinates data
-
-longlat<-read.table(here ("data","Lon-lat-Disparity.txt"),h=T)
-# rm sites with efw spp
-longlat  <- longlat [,1:2]
-longlat <- longlat[order(as.numeric((longlat$LONG)),decreasing=F),]
-longlat <- longlat[order(as.numeric((longlat$LAT)),decreasing=F),]
-longlat <- longlat [rowSums (presab_original) > 3,]
-
-table(rownames(presab) == rownames(longlat))
-
-# data to MAP
-
-data_to_map <- data.frame(longlat,
-                          #Richness=rowSums(presab),
-                          'EMPIRICAL'= RAO_OBS$SES,
-                          'BROWNIAN MOTION'=rowMeans (avBM),
-                          'EARLY BURST' =rowMeans (avEB),
-                          'ORNSTEIN-UHLENBECK'=rowMeans (avOU)
-                          #'NEUTRAL' = RAO_OBS$SES-rowMeans (avEB)
-                          #MPD=rowMeans (avMPD)
-)
-
-#write.csv(data_to_map,here("output","data_to_SAM.csv"))
-
-melt_data_to_map <- melt(data_to_map,id=c("LONG","LAT"))
-colnames(melt_data_to_map)[which(colnames(melt_data_to_map) == "value")] <- 'SES'
-
-## empirical vs simulated
-#plot using ggplot
-map1 <- ggplot(melt_data_to_map, 
-               aes(x = LONG, y = LAT)) +
-  geom_tile(aes(fill = SES)) +
-  facet_wrap(~variable,scales = "fixed",ncol=2)+
-  scale_fill_gradient2(midpoint = 0, mid="#eee8d5", high="#dc322f", low="#268bd2") + 
-  theme_classic() + 
-  theme_map() +
-  xlab("Longitude") + ylab("Latitude")+
-  theme(legend.position="right",
-        legend.justification = "center",
-        legend.direction = "vertical",
-        panel.spacing = unit(1, "lines"),
-        strip.text = element_text(size=10))
-map1
-
-ggsave (here("output","maps.pdf"),height = 6,width=5)
-
 
