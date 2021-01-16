@@ -141,3 +141,54 @@ panel2 <- grid.arrange(map2,
                                              c(1,1,1,1,1,2,2,2,2,2,2),
                                              c(1,1,1,1,1,2,2,2,2,2,2)))
 
+## ------------------------- ##
+## alternative panel
+## show simulated values
+
+obsBM<-do.call(cbind,sapply(RAO_BM, "[","Observado",simplify=T))
+obsBM <- apply (obsBM, 1, mean)
+obsEB<-do.call(cbind,sapply(RAO_EB, "[","Observado",simplify=T))
+obsEB <- apply (obsEB, 1, mean)
+obsOU<-do.call(cbind,sapply(RAO_OU, "[","Observado",simplify=T))
+obsOU <- apply (obsOU, 1, mean)
+
+##
+data_to_map_emp_sim <- data.frame(longlat,
+                              'Observed' = RAO_OBS$Observado,
+                              'Null Disparity' = RAO_OBS$med_nulo,
+                              'Simulated BM' = obsBM,
+                              'Simulated EB' = obsEB,
+                              'Simulated OU' = obsOU)
+
+# melt
+melt_data_to_map_emp_sim <- melt(data_to_map_emp_sim,id=c("LONG","LAT"))
+colnames(melt_data_to_map_emp_sim)[which(colnames(melt_data_to_map_emp_sim) == "value")] <- 'Disparity'
+
+# and map
+#plot using ggplot
+
+alternative_map1 <- ggplot(melt_data_to_map_emp_sim, 
+               aes(x = LONG, y = LAT)) +
+  geom_tile(aes(fill = Disparity)) +
+  facet_wrap(~variable,scales = "fixed",ncol=3)+
+  scale_fill_gradient2(midpoint = 0.3,
+                       limits=c(0,0.5),
+                       breaks=seq(0,0.5,0.1),
+                       mid="#eee8d5", high="#dc322f", low="#268bd2") + 
+  theme_classic() + 
+  theme_map() +
+  xlab("Longitude") + ylab("Latitude")+
+  theme(legend.position="right",
+        legend.justification = "center",
+        legend.direction = "vertical",
+        legend.text = element_text(size=13),
+        legend.title = element_text(size=15),
+        plot.background = element_rect(fill="white",colour="white"),
+        panel.spacing = unit(1, "lines"),
+        strip.text = element_text(size=15))
+
+alternative_map1
+
+## correlation between average null and simulated by OU
+
+cor (data.frame (RAO_OBS$med_nulo, obsBM,obsEB,obsOU))

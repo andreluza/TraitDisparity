@@ -33,3 +33,8 @@ require(maps)
 # maps
 library(rasterVis)
 library(viridis)
+
+# table
+library("sjPlot")
+library("sjmisc")
+library("sjlabelled")

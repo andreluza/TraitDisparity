@@ -30,6 +30,19 @@ av_disp <- rbind(
 # bind MPD
 av_disp <- cbind(av_disp, MPD = rowMeans (avMPD))
 
+
+# empirical as the first level
+av_disp$Data <- factor (av_disp$Data,
+                        levels = c("Empirical",
+                                   "BM",
+                                   "EB",
+                                   "OU"))
+
+# coefficients for av estimates
+
+av_coeff <- summary(lm (value ~ MPD*Data,
+            data=av_disp))
+
 #
 figure1 <- ggplot (data = av_disp, aes (x=MPD, y=value,colour=Data)) + 
   geom_point(aes (col=Data),alpha=0.4,size=1.5) + 
@@ -39,7 +52,7 @@ figure1 <- ggplot (data = av_disp, aes (x=MPD, y=value,colour=Data)) +
                                "BM"="#21209c",
                                "EB"="#fdb827",
                                "OU"="#23120b")) + 
-  xlab("SES of Mean pairwise distance") + 
+  xlab("SES of Mean Pairwise Distance") + 
   ylab ("SES of Morphological Disparity") + 
   theme (
     legend.position = "none",
@@ -85,12 +98,12 @@ model_slope <- lapply (bind_data_disparity, function (i) {
   
   # extracting estimates
   # intercept (average disparity in the empirical dataset (level "AOBS"))
-  res <- data.frame(EMPIRICAL=m1$coefficients[1], # EMpirical
-             BM=m1$coefficients[6], # BM
-             EB=m1$coefficients[7], # EB
-            OU=m1$coefficients[8]#,
-            #R2 = RsquareAdj(m1)$adj.r.squared
-            ) # OU
+  res <- data.frame(EMPIRICAL=m1$coefficients[2], # EMpirical
+                    BM=m1$coefficients[2]+m1$coefficients[6], # BM
+                    EB=m1$coefficients[2]+m1$coefficients[7], # EB
+                    OU=m1$coefficients[2]+m1$coefficients[8]#,
+                    #R2 = RsquareAdj(m1)$adj.r.squared
+  ) # OU
   
   # load also the model results
   res <- list (coef = res,
@@ -132,8 +145,8 @@ fig2a <- fig2+ theme (
                plot.margin=unit(c(.2,1,.1,1),"cm")) +
   xlab ("Slope SES Disparity ~ SES MPD") + 
   ylab("Density") + 
-  scale_x_continuous(breaks = seq(-2,2,0.15),
-                     limits = c(-1.5,1.5))
+  scale_x_continuous(breaks = seq(-.55,1,0.15),
+                     limits = c(-.55,1))
 
 # exploring phylogenetic uncertainty
 
@@ -157,7 +170,7 @@ boxplotOver1 <- boxplotOver + theme(axis.line=element_blank(),
                 panel.grid.major=element_blank(),
                 panel.grid.minor=element_blank(),
                 plot.margin=unit(c(.2,1,.1,2),"cm")) +
-  scale_y_continuous(limits=c(-1.2, 1.2)) + coord_flip() 
+  scale_y_continuous(limits=c(-.55,1)) + coord_flip() 
 
 # arrange
 panel <- grid.arrange(figure1,
