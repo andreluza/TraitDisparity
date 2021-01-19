@@ -11,6 +11,27 @@ load (here("output", "RAO_EB_ALL.RData"))
 load (here("output", "RAO_OU_ALL.RData"))
 load (here("output", "RAO_OBS_ALL.RData"))
 
+# average observed disparity for each  model
+avObsBM<-rowMeans (do.call(cbind,sapply(RAO_BM, "[","Observado",simplify=T)))
+avObsEB<-rowMeans (do.call(cbind,sapply(RAO_EB, "[","Observado",simplify=T)))
+avObsOU<-rowMeans (do.call(cbind,sapply(RAO_OU, "[","Observado",simplify=T)))
+
+# counting the cells with significant neutral SES
+# lower than
+count_cells <- list (
+  lower = cbind (
+    lowerOU=table((RAO_OBS$Observado - mean(avObsOU))/sd((avObsOU) )<=-1.96)[2],
+    lowerBM=table((RAO_OBS$Observado - mean(avObsBM))/sd((avObsBM) )<=-1.96)[2],
+    lowerEB=table((RAO_OBS$Observado - mean(avObsEB))/sd((avObsEB) )<=-1.96)[2]
+  ), 
+# higher than
+  higher = cbind (
+    higherOU=table((RAO_OBS$Observado - mean(avObsOU))/sd((avObsOU) )>=1.96)[2],
+    higherBM=table((RAO_OBS$Observado - mean(avObsBM))/sd((avObsBM) )>=1.96)[2],
+    higherEB=table((RAO_OBS$Observado - mean(avObsEB))/sd((avObsEB) )>=1.96)[2]
+  )
+)
+
 # relationship between empirical and simulated data sets
 
 # working with the average

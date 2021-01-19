@@ -8,6 +8,11 @@
 
 source ("./R/Interpretation_Fig2_and_statistics_all_spp.R")
 
+# to obtain the number of cells with SES empirical vs BM disparity higher than 1.96, 
+# and lower than -1.96 (significance)
+
+count_cells
+
 # get the panel with the relationship between MPD and DISPARITY
 
 # to save run
@@ -66,6 +71,12 @@ cor (data.frame (RAO_OBS$med_nulo, obsBM,obsEB,obsOU))
 # these  results consider the 216 species in trait, comm, and phy datasets
 
 source ("./R/Interpretation_Fig2_and_statistics_216_spp.R")
+
+
+# to obtain the number of cells with SES empirical vs BM disparity higher than 1.96, 
+# and lower than -1.96 (significance)
+
+count_cells
 
 # get the panel with the relationship between MPD and DISPARITY
 
@@ -129,6 +140,12 @@ cor (data.frame (RAO_OBS$med_nulo, obsBM,obsEB,obsOU))
 ## these results consider only Oryzomyialia (~200 spp)
 
 source ("./R/Interpretation_Fig2_and_statistics_oryzomyialia.R")
+
+
+# to obtain the number of cells with SES empirical vs BM disparity higher than 1.96, 
+# and lower than -1.96 (significance)
+
+count_cells
 
 # get the panel with the relationship between MPD and DISPARITY
 
