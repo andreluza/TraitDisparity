@@ -5,66 +5,72 @@ source ("./R/packages.R")
 
 # -----------------------#
 # load data
-load (here("output", "mpd_results_ALL.RData"))
-load (here("output", "RAO_BM_ALL.RData"))
-load (here("output", "RAO_EB_ALL.RData"))
-load (here("output", "RAO_OU_ALL.RData"))
-load (here("output", "RAO_OBS_ALL.RData"))
+load (here("output", "mpd_results.RData"))
+load (here("output", "RAO_BM.RData"))
+load (here("output", "RAO_EB.RData"))
+load (here("output", "RAO_OU.RData"))
+load (here("output", "RAO_OBS.RData"))
+
 
 # average observed disparity for each  model
 avObsBM<-rowMeans (do.call(cbind,sapply(RAO_BM, "[","Observado",simplify=T)))
 avObsEB<-rowMeans (do.call(cbind,sapply(RAO_EB, "[","Observado",simplify=T)))
 avObsOU<-rowMeans (do.call(cbind,sapply(RAO_OU, "[","Observado",simplify=T)))
 
-# counting the cells with significant neutral SES
+# counting cells with significant neutral SES, observed relative to the models
 # lower than
-count_cells <- list (
+count_cells_relative_to_models <- list (
   lower = cbind (
-    lowerOU=table((RAO_OBS$Observado - mean(avObsOU))/sd((avObsOU) )<=-1.96)[2],
-    lowerBM=table((RAO_OBS$Observado - mean(avObsBM))/sd((avObsBM) )<=-1.96)[2],
-    lowerEB=table((RAO_OBS$Observado - mean(avObsEB))/sd((avObsEB) )<=-1.96)[2]
+    lowerNULL=table(RAO_OBS$SES<=-1.96)[2],
+    lowerOU=table(((RAO_OBS$Observado - mean(avObsOU))/sd(avObsOU)) <=-1.96)[2],
+    lowerBM=table(((RAO_OBS$Observado - mean(avObsBM))/sd(avObsBM)) <=-1.96)[2],
+    lowerEB=table(((RAO_OBS$Observado - mean(avObsEB))/sd(avObsEB)) <=-1.96)[2]
   ), 
-# higher than
+  # higher than
   higher = cbind (
-    higherOU=table((RAO_OBS$Observado - mean(avObsOU))/sd((avObsOU) )>=1.96)[2],
-    higherBM=table((RAO_OBS$Observado - mean(avObsBM))/sd((avObsBM) )>=1.96)[2],
-    higherEB=table((RAO_OBS$Observado - mean(avObsEB))/sd((avObsEB) )>=1.96)[2]
+    highNULL=table(RAO_OBS$SES>=1.96)[2],
+    highOU=table(((RAO_OBS$Observado - mean(avObsOU))/sd(avObsOU)) >=1.96)[2],
+    highBM=table(((RAO_OBS$Observado - mean(avObsBM))/sd(avObsBM)) >=1.96)[2],
+    highEB=table(((RAO_OBS$Observado - mean(avObsEB))/sd(avObsEB)) >=1.96)[2]
   )
 )
+count_cells_relative_to_models
 
 # relationship between empirical and simulated data sets
 
-# working with the average
+# working with uncertainty
 
 avBM<-do.call(cbind,sapply(RAO_BM, "[","SES",simplify=T))
 avEB<-do.call(cbind,sapply(RAO_EB, "[","SES",simplify=T))
 avOU<-do.call(cbind,sapply(RAO_OU, "[","SES",simplify=T))
 avMPD<-do.call(cbind,sapply(null.mpdf, "[","SES.MPD",simplify=T))
 
+# working with the average
 # df average disparity
 av_disp <- rbind(
   data.frame (value=RAO_OBS$SES,Data="Empirical"),
   data.frame (value=rowMeans (avBM),Data="BM"),
   data.frame (value=rowMeans (avEB),Data="EB"),
   data.frame (value=rowMeans (avOU),Data="OU"))
+
   
 # bind MPD
 av_disp <- cbind(av_disp, MPD = rowMeans (avMPD))
 
-
 # empirical as the first level
 av_disp$Data <- factor (av_disp$Data,
-                        levels = c("Empirical",
-                                   "BM",
-                                   "EB",
-                                   "OU"))
+        levels = c("Empirical",
+                   "BM",
+                   "EB",
+                   "OU"))
 
 # coefficients for av estimates
 
 av_coeff <- summary(lm (value ~ MPD*Data,
-            data=av_disp))
+    data=av_disp))
 
-#
+
+# figure of the average
 figure1 <- ggplot (data = av_disp, aes (x=MPD, y=value,colour=Data)) + 
   geom_point(aes (col=Data),alpha=0.4,size=1.5) + 
   stat_smooth(method = "lm", formula = y ~ x, se = FALSE) + 
@@ -91,17 +97,17 @@ bind_data_disparity <- lapply (seq (1,length(null.mpdf)), function (i)
       dataset="AOBS",
       disp=RAO_OBS$SES,
       MPD=null.mpdf[[i]]$SES.MPD),
-  
+    
     data.frame (
       dataset="BM",
       disp=RAO_BM[[i]]$SES,
       MPD=null.mpdf[[i]]$SES.MPD),
-  
+    
     data.frame (
       dataset="EB",
       disp=RAO_EB[[i]]$SES,
       MPD=null.mpdf[[i]]$SES.MPD),
-  
+    
     data.frame (
       dataset="OU",
       disp=RAO_OU[[i]]$SES,
@@ -115,16 +121,17 @@ model_slope <- lapply (bind_data_disparity, function (i) {
   
   # using GLM
   m1<-lm (disp ~ MPD*dataset,
-           data=i)
+          data=i)
   
   # extracting estimates
-  # intercept (average disparity in the empirical dataset (level "AOBS"))
-  res <- data.frame(EMPIRICAL=m1$coefficients[2], # EMpirical
-                    BM=m1$coefficients[2]+m1$coefficients[6], # BM
-                    EB=m1$coefficients[2]+m1$coefficients[7], # EB
-                    OU=m1$coefficients[2]+m1$coefficients[8]#,
+  # intercept (average SES disparity in the empirical dataset (level "AOBS"))
+  # coeff - difference between slope of SES ~MPD of empirical and each evo model
+  res <- data.frame(EMPIRICAL=abs(m1$coefficients[2]), # EMpirical
+                    BM=abs(m1$coefficients[2]+m1$coefficients[6]), # BM
+                    EB=abs(m1$coefficients[2]+m1$coefficients[7]), # EB
+                    OU=abs(m1$coefficients[2]+m1$coefficients[8])#,OU
                     #R2 = RsquareAdj(m1)$adj.r.squared
-  ) # OU
+  )
   
   # load also the model results
   res <- list (coef = res,
@@ -150,20 +157,20 @@ fig2 <- ggplot(model_slope_df, aes(x=value, color=variable, fill=variable)) +
                              "EB"="red",
                              "OU"="#23120b")) + 
   scale_colour_manual(values=c("EMPIRICAL"="#9dab86", 
-                                        "BM"="#21209c",
-                                        "EB"="#fdb827",
-                                        "OU"="#23120b"))+
+                               "BM"="#21209c",
+                               "EB"="#fdb827",
+                               "OU"="#23120b"))+
   theme_classic()  
 
 fig2a <- fig2+ theme (
-               axis.text.x = element_text(angle = 90),
-               legend.title = element_blank(),
-               #legend.position = "none",
-               legend.position = c(.95, .95),
-               legend.justification = c("right", "top"),
-               legend.box.just = "right",
-               legend.margin = margin(6, 6, 6, 6),
-               plot.margin=unit(c(.2,1,.1,1),"cm")) +
+  axis.text.x = element_text(angle = 90),
+  legend.title = element_blank(),
+  #legend.position = "none",
+  legend.position = c(.95, .95),
+  legend.justification = c("right", "top"),
+  legend.box.just = "right",
+  legend.margin = margin(6, 6, 6, 6),
+  plot.margin=unit(c(.2,1,.1,1),"cm")) +
   xlab ("Slope SES Disparity ~ SES MPD") + 
   ylab("Density") + 
   scale_x_continuous(breaks = seq(-0.7,1.6,0.15),
@@ -172,41 +179,49 @@ fig2a <- fig2+ theme (
 # exploring phylogenetic uncertainty
 
 boxplotOver <- ggboxplot(model_slope_df, x = "variable", y = "value",
-               color = "variable", palette =c("#9dab86", 
-                                              "#21209c",
-                                              "#fdb827",
-                                              "#23120b"),
-               fun = "mean_ci", add.params = list(alpha=0.2),size=0.5)
+                         color = "variable", palette =c("#9dab86", 
+                                                        "#21209c",
+                                                        "#fdb827",
+                                                        "#23120b"),
+                         fun = "mean_ci", add.params = list(alpha=0.2),size=0.5)
 
 boxplotOver1 <- boxplotOver + theme(axis.line=element_blank(),
-                axis.text.x=element_blank(),
-                axis.text.y=element_blank(),
-                axis.ticks=element_blank(),
-                axis.title.x=element_blank(),
-                axis.title.y=element_blank(),
-                legend.position="none",
-                plot.background=element_rect(fill="white",colour="white"),
-                panel.background=element_rect(fill="white",colour="white"),
-                panel.border=element_blank(),
-                panel.grid.major=element_blank(),
-                panel.grid.minor=element_blank(),
-                plot.margin=unit(c(.2,1,.1,2),"cm")) +
+                                    axis.text.x=element_blank(),
+                                    axis.text.y=element_blank(),
+                                    axis.ticks=element_blank(),
+                                    axis.title.x=element_blank(),
+                                    axis.title.y=element_blank(),
+                                    legend.position="none",
+                                    plot.background=element_rect(fill="white",colour="white"),
+                                    panel.background=element_rect(fill="white",colour="white"),
+                                    panel.border=element_blank(),
+                                    panel.grid.major=element_blank(),
+                                    panel.grid.minor=element_blank(),
+                                    plot.margin=unit(c(.2,1,.1,2),"cm")) +
   scale_y_continuous(limits=c(-0.7,1.6)) + coord_flip() 
 
 # arrange
 panel <- grid.arrange(figure1,
-              boxplotOver1,fig2a,
-             ncol=4,nrow = 9,
-             layout_matrix = rbind (c(1,1,1,1),
-                                    c(1,1,1,1),
-                                    c(1,1,1,1),
-                                    c(1,1,1,1),
-                                    c(2,2,2,2),
-                                    c(3,3,3,3),
-                                    c(3,3,3,3),
-                                    c(3,3,3,3),
-                                    c(3,3,3,3)))
+                      boxplotOver1,fig2a,
+                      ncol=4,nrow = 9,
+                      layout_matrix = rbind (c(1,1,1,1),
+                                             c(1,1,1,1),
+                                             c(1,1,1,1),
+                                             c(1,1,1,1),
+                                             c(2,2,2,2),
+                                             c(3,3,3,3),
+                                             c(3,3,3,3),
+                                             c(3,3,3,3),
+                                             c(3,3,3,3)))
+# average coefficients across simulations
+av_across_sim <- lapply(sapply(model_slope,'[',"model"), function (i) summary (i)$coefficients)
+estimates_across_sim <- do.call(rbind,
+                                lapply(av_across_sim, function (i) # extract estimates and melt
+                                  i[,1] # the column of estimates
+                                ))
 
+apply (estimates_across_sim,2,mean)
+apply (estimates_across_sim,2,sd)
 
 ## Fstatistics
 

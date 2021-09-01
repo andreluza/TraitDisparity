@@ -40,6 +40,13 @@ ventral.listed.pruned<-read.table(here ("data","Sigmodontinae.ventral.listed.pru
 species.v<-ventral.listed.pruned[,4]
 #str(species.v)
 
+# av number of ind per spp
+mean(table(species.v))
+sd(table(species.v))
+
+ind_per_spp <- table (species.v)
+write.csv (ind_per_spp,file=here("output","excel_glm","ind_per_spp.CSV"))
+
 # transform shape data into array
 shape.v.2d<-two.d.array(shape.v)
 shape.v.2d.means<-rowsum(shape.v.2d,species.v)/as.vector(table(species.v))
@@ -86,7 +93,7 @@ tree_list <- lapply (tree_list, function (i)
 #     Empirical disparity per cell
 
 # set the number of interations (equal to the number of simulations in evol models)
-niter <- 1000
+niter <- 2
 
 # Run the 'disparity function' that we create (implement Rao's entropy and a randomization of sp. IDs across the rows of trait datasets)
 trait.pruned <- shape.v.2d.means[which(rownames(shape.v.2d.means) %in% colnames(presab)),]
