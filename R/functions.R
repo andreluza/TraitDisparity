@@ -25,7 +25,9 @@ funcao_disparidade <- function (occ, traits,n_iterations) {
   # standard deviation of disparity
   sd.rao.NULO <- apply(do.call(cbind,RESULTADOS.RAO),1,sd)
   # data frame with results (and SES already calculated)
-  DF_RESULTADOS <- data.frame (Observado = rao_observado, med_nulo=mean.rao.NULO,sd_nulo=sd.rao.NULO,
+  DF_RESULTADOS <- data.frame (Observado = rao_observado, 
+                               med_nulo=mean.rao.NULO,
+                               sd_nulo=sd.rao.NULO,
                                SES = ((rao_observado - mean.rao.NULO)/sd.rao.NULO))
   
   return (DF_RESULTADOS)
@@ -53,4 +55,17 @@ mpd.shuff <- function (tree,my.sample.matrix) {
   apply(my.sample.matrix,1, mpd.function,
         dist.tree=cophenetic (shuff.tree))
   
+}
+
+
+
+## ---------------
+# functon to extract the legend
+
+# get legend
+get_legend<-function(myggplot){
+  tmp <- ggplot_gtable(ggplot_build(myggplot))
+  leg <- which(sapply(tmp$grobs, function(x) x$name) == "guide-box")
+  legend <- tmp$grobs[[leg]]
+  return(legend)
 }

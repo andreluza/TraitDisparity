@@ -54,6 +54,7 @@ av_disp <- rbind(
   data.frame (value=rowMeans (avEB),Data="EB"),
   data.frame (value=rowMeans (avOU),Data="OU"))
   
+
 # bind MPD
 av_disp <- cbind(av_disp, MPD = rowMeans (avMPD))
 
@@ -71,21 +72,6 @@ av_coeff <- summary(lm (value ~ MPD*Data,
 
 # reported in the main text (Table 1)
 av_coeff
-
-# figure
-figure1 <- ggplot (data = av_disp, aes (x=MPD, y=value,colour=Data)) + 
-  geom_point(aes (col=Data),alpha=0.4,size=1.5) + 
-  stat_smooth(method = "lm", formula = y ~ x, se = FALSE) + 
-  theme_classic() + 
-  scale_colour_manual(values=c("Empirical"="#9dab86", 
-                               "BM"="#21209c",
-                               "EB"="#fdb827",
-                               "OU"="#23120b")) + 
-  xlab("SES of Mean Pairwise Distance") + 
-  ylab ("SES of Morphological Disparity") + 
-  theme (
-    legend.position = "none",
-    plot.margin=unit(c(.2,1,.1,1),"cm"))
 
 # test of whether slope of the regression between ses disparity and ses MPD
 # varies across evolutionary models
@@ -143,6 +129,42 @@ model_slope <- lapply (bind_data_disparity, function (i) {
   
 })
 
+# average coefficients across simulations
+#av_across_sim <- lapply(sapply(model_slope,'[',"model"), function (i) summary (i)$coefficients)
+#estimates_across_sim <- do.call(rbind,
+ #                               lapply(av_across_sim, function (i) # extract estimates and melt
+  #                                i[,1] # the column of estimates
+   #                             ))
+
+#data.frame (mean.coefficient = apply (estimates_across_sim,2,mean),
+#            sd.coefficient = apply (estimates_across_sim,2,sd))
+
+
+####-------------------------# 
+## Fstatistics
+
+F_stat <- lapply(sapply(model_slope,'[',"model"), function (i) summary (i)$fstatistic)
+#apply(do.call(rbind, F_stat),2,mean)
+#apply(do.call(rbind, F_stat),2,sd)
+
+# R2 adj
+R2_stat <- lapply(sapply(model_slope,'[',"model"), function (i) summary (i)$adj.r.squared)
+#mean(unlist(R2_stat))
+#sd(unlist(R2_stat))
+
+## average results of the models
+
+coef_table <- lapply(sapply(model_slope,'[',"model"), function (i) summary (i)$coefficients)
+## mean
+list.mean <- Reduce("+", coef_table) / length(coef_table)
+## squared mean
+list.squared.mean <- Reduce("+", lapply(coef_table, "^", 2)) / length(coef_table)
+## variance
+list.variance <- list.squared.mean - list.mean^2
+## standard deviation
+list.sd <- sqrt(list.variance)
+
+
 # transforming res list into df
 model_slope_df <- do.call (rbind, sapply (model_slope,"[","coef"))
 
@@ -152,6 +174,22 @@ model_slope_df <- melt(model_slope_df)
 
 # plotting
 
+# figure
+figure1 <- ggplot (data = av_disp, aes (x=MPD, y=value,colour=Data)) + 
+  geom_point(aes (col=Data),alpha=0.4,size=1.5) + 
+  stat_smooth(method = "lm", formula = y ~ x, se = FALSE) + 
+  theme_classic() + 
+  scale_colour_manual(values=c("Empirical"="#9dab86", 
+                               "BM"="#21209c",
+                               "EB"="#fdb827",
+                               "OU"="#23120b")) + 
+  xlab("SES of Mean Pairwise Distance") + 
+  ylab ("SES of Morphological Disparity") + 
+  theme (
+    legend.position = "none",
+    plot.margin=unit(c(.2,1,.1,1),"cm"))
+
+# density plot
 fig2 <- ggplot(model_slope_df, aes(x=value, color=variable, fill=variable)) +
   geom_density(size=1,alpha=0.1) +
   scale_fill_manual(values=c("EMPIRICAL"="#9dab86", 
@@ -217,36 +255,7 @@ panel <- grid.arrange(figure1,
                                     c(3,3,3,3)))
 
 
-# average coefficients across simulations
-av_across_sim <- lapply(sapply(model_slope,'[',"model"), function (i) summary (i)$coefficients)
-estimates_across_sim <- do.call(rbind,
-                                lapply(av_across_sim, function (i) # extract estimates and melt
-            i[,1] # the column of estimates
-    ))
 
-apply (estimates_across_sim,2,mean)
-apply (estimates_across_sim,2,sd)
-
-## Fstatistics
-
-F_stat <- lapply(sapply(model_slope,'[',"model"), function (i) summary (i)$fstatistic)
-apply(do.call(rbind, F_stat),2,mean)
-apply(do.call(rbind, F_stat),2,sd)
-
-# R2 adj
-R2_stat <- lapply(sapply(model_slope,'[',"model"), function (i) summary (i)$adj.r.squared)
-mean(unlist(R2_stat))
-sd(unlist(R2_stat))
-
-## average results of the models
-
-coef_table <- lapply(sapply(model_slope,'[',"model"), function (i) summary (i)$coefficients)
-## mean
-list.mean <- Reduce("+", coef_table) / length(coef_table)
-## squared mean
-list.squared.mean <- Reduce("+", lapply(coef_table, "^", 2)) / length(coef_table)
-## variance
-list.variance <- list.squared.mean - list.mean^2
-## standard deviation
-list.sd <- sqrt(list.variance)
-
+# show
+list.mean
+list.sd

@@ -254,4 +254,3 @@ stopCluster (cl)
 
 # save
 save (null.mpdf, file=here ("output","mpd_results_ALL.RData"))
-
