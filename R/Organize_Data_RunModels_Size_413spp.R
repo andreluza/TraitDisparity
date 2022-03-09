@@ -107,7 +107,7 @@ tree.pruned<-lapply (tree_list, function (phy)
   treedata(phy,t(presab))$phy)
 
 # empirical rao
-RAO_OBS <- funcao_disparidade (occ = comm.pruned,
+RAO_OBS <- disparity_function(occ = comm.pruned,
                                traits= scale(trait.pruned),
                                n_iterations = niter)
 
@@ -161,12 +161,12 @@ cl <- makeCluster (ncores)
 clusterExport(cl, c("simul_BM_mean_pruned", 
                     "comm.pruned",
                     "niter",
-                    "funcao_disparidade"))
+                    "disparity_function"))
 # load packages in each core
 clusterEvalQ(cl,library("SYNCSA"))
 # run
 RAO_BM <- parLapply (cl,simul_BM_mean_pruned, function (phy)	
-  funcao_disparidade (occ = (comm.pruned),
+  disparity_function (occ = (comm.pruned),
                       traits= as.data.frame(phy),
                       n_iterations = niter))
 
@@ -208,11 +208,11 @@ simul_EB_mean_pruned <- lapply(simul_EB_mean, function (i)
 
 # Run the disparity function that organizes data and calculate observed and null Rao's entropy
 cl <- makeCluster (ncores)
-clusterExport(cl, c("simul_EB_mean_pruned", "comm.pruned","niter","funcao_disparidade"))
+clusterExport(cl, c("simul_EB_mean_pruned", "comm.pruned","niter","disparity_function"))
 clusterEvalQ(cl,library("SYNCSA"))
 
 RAO_EB <- parLapply (cl, simul_EB_mean_pruned, function (phy)	
-  funcao_disparidade (occ = (comm.pruned),
+  disparity_function (occ = (comm.pruned),
                       traits= as.data.frame(phy),
                       n_iterations = niter))
 
@@ -253,11 +253,11 @@ simul_OU_mean_pruned <- lapply(simul_OU_mean, function (i)
 
 # run disparity function
 cl <- makeCluster (ncores)
-clusterExport(cl, c("simul_OU_mean_pruned", "comm.pruned","niter","funcao_disparidade"))
+clusterExport(cl, c("simul_OU_mean_pruned", "comm.pruned","niter","disparity_function"))
 clusterEvalQ(cl,library("SYNCSA"))
 
 RAO_OU <- parLapply (cl,simul_OU_mean_pruned, function (phy)	
-  funcao_disparidade (occ = (comm.pruned),
+  disparity_function (occ = (comm.pruned),
                       traits= as.data.frame(phy),
                       n_iterations = niter))
 

@@ -2,7 +2,7 @@
 # function designed to use observed and simulated data to
 # calculate SES disparitu
 
-funcao_disparidade <- function (occ, traits,n_iterations) {
+disparity_function <- function (occ, traits,n_iterations) {
   data<- as.matrix(traits) # shape.v.2d.means
   colnames(data)<-seq(1,ncol(data))
   

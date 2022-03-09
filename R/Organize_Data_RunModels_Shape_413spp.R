@@ -107,7 +107,7 @@ tree.pruned<-lapply (tree_list, function (phy)
   treedata(phy,t(presab))$phy)
 
 # empirical rao
-RAO_OBS <- funcao_disparidade (occ = comm.pruned,
+RAO_OBS <- disparity_function (occ = comm.pruned,
                                traits= scale(trait.pruned),
                                n_iterations = niter)
 
@@ -164,12 +164,12 @@ cl <- makeCluster (ncores)
 clusterExport(cl, c("simul_BM_mean_pruned", 
                     "comm.pruned",
                     "niter",
-                    "funcao_disparidade"))
+                    "disparity_function"))
 # load packages in each core
 clusterEvalQ(cl,library("SYNCSA"))
 # run
 RAO_BM <- parLapply (cl,simul_BM_mean_pruned, function (phy)	
-  funcao_disparidade (occ = (comm.pruned),
+  disparity_function (occ = (comm.pruned),
                       traits= as.data.frame(phy),
                       n_iterations = niter))
 
