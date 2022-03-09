@@ -5,11 +5,11 @@ source ("./R/packages.R")
 
 # -----------------------#
 # load data
-load (here("output_uncertainty_S2", "mpd_results_ORYZ.RData"))
-load (here("output_uncertainty_S2", "RAO_BM_ORYZ.RData"))
-load (here("output_uncertainty_S2", "RAO_EB_ORYZ.RData"))
-load (here("output_uncertainty_S2", "RAO_OU_ORYZ.RData"))
-load (here("output_uncertainty_S2", "RAO_OBS_ORYZ.RData"))
+load (here("output", "mpd_results_ALL.RData"))
+load (here("output", "RAO_BM_ALL.RData"))
+load (here("output", "RAO_EB_ALL.RData"))
+load (here("output", "RAO_OU_ALL.RData"))
+load (here("output", "RAO_OBS_ALL.RData"))
 
 
 # relationship between empirical and simulated data sets
@@ -51,7 +51,7 @@ table(rownames(presab) == rownames(longlat))
 
 # now we need to generate the neutral SES
 # get the average and sd of disparity under BM simulations
-mean_BM <- do.call(cbind,sapply(RAO_BM, "[","Observado",simplify=T))
+mean_BM <- do.call(cbind,sapply(RAO_OU, "[","Observado",simplify=T))
 mean_BM <- apply (mean_BM, 1, mean)
 mean_BMev <- mean(mean_BM)
 sd_BMev <- sd(mean_BM)
@@ -83,15 +83,15 @@ map1 <- ggplot(melt_data_to_map[which(melt_data_to_map$variable == 'SES.EMPIRICA
   geom_tile(aes(fill = SES)) +
   #facet_wrap(~variable,scales = "fixed",ncol=3)+
   scale_fill_gradient2(midpoint = 0,
-                       limits=c(range(melt_data_to_map$SES,na.rm=T)[1],
-                                range(melt_data_to_map$SES,na.rm=T)[2]),
-                       breaks=seq(range(melt_data_to_map$SES,na.rm=T)[1],
-                                  range(melt_data_to_map$SES,na.rm=T)[2],
+                       limits=c(range(melt_data_to_map$SES)[1],
+                                range(melt_data_to_map$SES)[2]),
+                       breaks=seq(range(melt_data_to_map$SES)[1],
+                                  range(melt_data_to_map$SES)[2],
                                   1.1),
                        mid="#eee8d5", high="#dc322f", low="#268bd2") + 
   theme_classic() + 
   theme_map() +
-  ggtitle ("B) SES - Null Disparity")+
+  ggtitle ("B")+
   xlab("Longitude") + ylab("Latitude")+
   theme(legend.position="bottom",
         legend.justification = "center",
@@ -113,15 +113,15 @@ map1 <- ggplot(melt_data_to_map[which(melt_data_to_map$variable == 'SES.EMPIRICA
   geom_tile(aes(fill = SES)) +
   #facet_wrap(~variable,scales = "fixed",ncol=3)+
   scale_fill_gradient2(midpoint = 0,
-                       limits=c(range(melt_data_to_map$SES,na.rm=T)[1],
-                                range(melt_data_to_map$SES,na.rm=T)[2]),
-                       breaks=seq(range(melt_data_to_map$SES,na.rm=T)[1],
-                                  range(melt_data_to_map$SES,na.rm=T)[2],
+                       limits=c(range(melt_data_to_map$SES)[1],
+                                range(melt_data_to_map$SES)[2]),
+                       breaks=seq(range(melt_data_to_map$SES)[1],
+                                  range(melt_data_to_map$SES)[2],
                                   1.6),
                        mid="#eee8d5", high="#dc322f", low="#268bd2") + 
   theme_classic() + 
   theme_map() +
-  ggtitle ("B) SES - Null Disparity")+
+  ggtitle ("B")+
   xlab("Longitude") + ylab("Latitude")+
   theme(legend.position="none",
         legend.justification = "center",
@@ -135,23 +135,22 @@ map1 <- ggplot(melt_data_to_map[which(melt_data_to_map$variable == 'SES.EMPIRICA
         strip.text = element_text(size=10))
 
 
-
 # empirical vs neutral
 map2 <- ggplot(melt_data_to_map[which(melt_data_to_map$variable == 'SES.NEUTRAL'),], 
                aes(x = LONG, y = LAT)) +
   geom_tile(aes(fill = SES)) +
   #facet_wrap(~variable,scales = "fixed",ncol=3)+
   scale_fill_gradient2(midpoint = 0,
-                       limits=c(range(melt_data_to_map$SES,na.rm=T)[1],
-                                range(melt_data_to_map$SES,na.rm=T)[2]),
-                       breaks=seq(range(melt_data_to_map$SES,na.rm=T)[1],
-                                  range(melt_data_to_map$SES,na.rm=T)[2],
+                       limits=c(range(melt_data_to_map$SES)[1],
+                                range(melt_data_to_map$SES)[2]),
+                       breaks=seq(range(melt_data_to_map$SES)[1],
+                                  range(melt_data_to_map$SES)[2],
                                   1.6),
                        mid="#eee8d5", high="#dc322f", low="#268bd2") + 
   theme_classic() + 
   theme_map() +
   xlab("Longitude") + ylab("Latitude")+
-  ggtitle ("C) SES - Neutral Disparity")+
+  ggtitle ("C")+
   theme(legend.position="none",
         legend.text = element_text(size=8),
         legend.title = element_text(size=8),
@@ -182,7 +181,7 @@ map3 <- ggplot(melt_data_to_map_emp,
   theme_classic() + 
   theme_map() +
   xlab("Longitude") + ylab("Latitude")+
-  ggtitle ("A) Observed Morphological Disparity")+
+  ggtitle ("A")+
   theme(legend.position="bottom",
         legend.justification = "center",
         legend.direction = "horizontal",
@@ -237,45 +236,16 @@ melt_data_cells_higher$variable<-factor(melt_data_cells_higher$variable,
 #plot using ggplot
 
 panel3_NULL <- ggplot(melt_data_cells_higher[which(melt_data_cells_higher$variable=="NULL"),], 
-                      aes(x = LONG, y = LAT)) +
+                 aes(x = LONG, y = LAT)) +
   geom_tile(aes(fill = Disparity)) +
   #facet_wrap(~variable,scales = "fixed",ncol=4)+
   scale_fill_manual(
-    values = c("0"= "#eee8d5","-1" ="#268bd2","1" ="#dc322f"),
+    values = c("-1" ="#268bd2","0"= "#eee8d5","1" ="#dc322f"),
     labels = c("SES<=-1.96","-1.96>SES<1.96", "SES>=1.96")
   ) + 
   theme_classic() + 
   theme_map() +
-  ggtitle ("D) Significance, SES - Null Disparity")+
-  xlab("Longitude") + ylab("Latitude")+
-  theme(legend.position="bottom",
-        legend.justification = "center",
-        legend.direction = "horizontal",
-        legend.text = element_text(size=8),
-        legend.title = element_text(size=8),
-        plot.background = element_rect(fill="white",colour="white"),
-        plot.title=element_text(size=10,hjust = 0.5),
-        plot.margin=unit(c(0,0,0,0),"cm"),
-        panel.spacing = unit(0, "lines"),
-        strip.text = element_text(size=10))
-
-# extract legend
-
-common_legend_significance <- get_legend(panel3_NULL) ## get the legend of a map with legend
-
-# plot without legend
-
-panel3_NULL <- ggplot(melt_data_cells_higher[which(melt_data_cells_higher$variable=="NULL"),], 
-                      aes(x = LONG, y = LAT)) +
-  geom_tile(aes(fill = Disparity)) +
-  #facet_wrap(~variable,scales = "fixed",ncol=4)+
-  scale_fill_manual(
-    values = c("0"= "#eee8d5","-1" ="#268bd2","1" ="#dc322f"),
-    labels = c("SES<=-1.96","-1.96>SES<1.96", "SES>=1.96")
-  ) + 
-  theme_classic() + 
-  theme_map() +
-  ggtitle ("D) Significance, SES - Null Disparity")+
+  ggtitle ("D")+
   xlab("Longitude") + ylab("Latitude")+
   theme(legend.position="none",
         legend.justification = "center",
@@ -287,19 +257,47 @@ panel3_NULL <- ggplot(melt_data_cells_higher[which(melt_data_cells_higher$variab
         plot.margin=unit(c(0,0,0,0),"cm"),
         panel.spacing = unit(0, "lines"),
         strip.text = element_text(size=10))
-
 # BM
+
+panel3_BM <- ggplot(melt_data_cells_higher[which(melt_data_cells_higher$variable=="BM"),], 
+                      aes(x = LONG, y = LAT)) +
+  geom_tile(aes(fill = Disparity)) +
+  #facet_wrap(~variable,scales = "fixed",ncol=4)+
+  scale_fill_manual(
+    values = c("-1" ="#268bd2","0"= "#eee8d5","1" ="#dc322f"),
+    labels = c("SES<=-1.96","-1.96>SES<1.96", "SES>=1.96")
+  ) + 
+  theme_classic() + 
+  theme_map() +
+  ggtitle ("D")+
+  xlab("Longitude") + ylab("Latitude")+
+  theme(legend.position="bottom",
+        legend.justification = "center",
+        legend.direction = "horizontal",
+        legend.text = element_text(size=8),
+        legend.title = element_blank(),
+        plot.background = element_rect(fill="white",colour="white"),
+        plot.title=element_text(size=10,hjust = 0.5),
+        plot.margin=unit(c(0,0,0,0),"cm"),
+        panel.spacing = unit(0, "lines"),
+        strip.text = element_text(size=10))
+
+# extract legend
+
+common_legend_significance <- get_legend(panel3_BM) ## get the legend of a map with legend
+
+# plot without legend
 panel3_BM <- ggplot(melt_data_cells_higher[which(melt_data_cells_higher$variable=="BM"),], 
                     aes(x = LONG, y = LAT)) +
   geom_tile(aes(fill = Disparity)) +
   #facet_wrap(~variable,scales = "fixed",ncol=4)+
   scale_fill_manual(
-    values = c("0"= "#eee8d5","-1" ="#268bd2","1" ="#dc322f"),
+    values = c("-1" ="#268bd2","0"= "#eee8d5","1" ="#dc322f"),
     labels = c("SES<=-1.96","-1.96>SES<1.96", "SES>=1.96")
   ) + 
   theme_classic() + 
   theme_map() +
-  ggtitle ("E) Significance, SES - Neutral Disparity")+
+  ggtitle ("E")+
   xlab("Longitude") + ylab("Latitude")+
   theme(legend.position="none",
         plot.background = element_rect(fill="white",colour="white"),
@@ -336,6 +334,11 @@ panel2 <- grid.arrange(map3,
 # white background
 panel2 <- cowplot::ggdraw(panel2) + 
   theme(plot.background = element_rect(fill="white", color = NA))
+
+# save
+pdf(here ("output", "vectorized","Fig4_maps.pdf"),width=4,height =9)
+panel2
+dev.off()
 
 
 ## ------------------------- ##
@@ -385,8 +388,9 @@ alternative_map1 <- ggplot(melt_data_to_map_emp_sim,
         strip.text = element_text(size=15),
         strip.background = element_blank())
 
+pdf (here ("output", "vectorized", "fig5.pdf"))
 alternative_map1
-
+dev.off()
 ## correlation between average null and simulated by OU
 
 cor (data.frame (RAO_OBS$med_nulo, 

@@ -43,6 +43,7 @@ species.v<-ventral.listed.pruned[,4]
 # transform shape data into array
 shape.v.2d<-two.d.array(shape.v)
 shape.v.2d.means<-rowsum(shape.v.2d,species.v)/as.vector(table(species.v))
+shape.v.2d.means<-as.data.frame(shape.v.2d.means)
 shape.means.v<-arrayspecs(shape.v.2d.means,dim(shape.v)[1],dim(shape.v)[2])
 #shape.means.v
 #str(shape.means.v)
@@ -51,13 +52,6 @@ shape.means.v<-arrayspecs(shape.v.2d.means,dim(shape.v)[1],dim(shape.v)[2])
 size.means.v<-rowsum(size.v,species.v)/as.vector(table(species.v))
 hist(log(size.means.v))
 size.means.log.v<-log(size.means.v)
-
-# ------------------------------- #
-# working just with Oryzomyialia
-non_oryz <- ventral.listed.pruned$Species_Patton2015 [which(ventral.listed.pruned$Tribe 
-                                          %in% c("Ichthyomyini", "Sigmodontini"))]
-
-shape_oryz <- shape.v.2d.means[which(rownames(shape.v.2d.means) %in% non_oryz == F),]
 
 # -----------------------------------------------#
 #           Load spatial data
@@ -91,109 +85,183 @@ tree_list <- lapply (tree_list, function (i)
 # matching between distribution, trait, and phylogenetic datasets
 # phylogeny
 tree.pruned<-lapply (tree_list, function (phy) 
-  treedata(phy,shape_oryz)$phy)
+  treedata(phy,t(presab))$phy)
 # matching trait
-trait.pruned<-lapply (tree_list, function (phy) 
-  treedata(phy,shape_oryz)$data)
-trait.pruned <- as.data.frame(trait.pruned[[1]])
+trait.pruned <- size.means.log.v[which(rownames(size.means.log.v) %in% tree.pruned[[1]]$tip.label),]
 # community
-comm.pruned <- presab [,which(colnames(presab) %in% rownames(trait.pruned))]
+comm.pruned <- presab [,which(colnames(presab) %in% names(trait.pruned))]
 
 # --------------------------------------- #
 #     Empirical disparity per cell
 
 # set the number of interations (equal to the number of simulations in evol models)
-niter <- 1000
+niter <- 100
 
-# Run the 'disparity function' that we create (implement Rao's entropy and a randomization of sp. IDs across the rows of trait datasets)
-RAO_OBS <- funcao_disparidade (occ =  as.matrix(comm.pruned),
-                               traits= (trait.pruned),
+# empirical rao
+RAO_OBS <- funcao_disparidade (occ = comm.pruned,
+                               traits= scale(trait.pruned),
                                n_iterations = niter)
 
-save (RAO_OBS, file = here("output_uncertainty_S2","RAO_OBS_ORYZ.RData"))
-
-# --------------------------------------------------- #
-#         Simulated disparity per cell, 
-#     as simulated by three evolution models
-#                  BM, EB, OU
+save (RAO_OBS, file = here("output_uncertainty_S2",
+                           "RAO_OBS_216.RData"))
+# --------------------------------------------------#
+#      now simulate using the complete phylogeny
+#                   prune after
 
 # Set the number of computer cores to run analyses in 
 # parallel along computer cores
-ncores <- detectCores()-1
+ncores <- 5
+
+# simulate parameters
+simul_param_BM <- lapply (tree.pruned, function (i) 
+  
+  fitContinuous(phy=i,  
+                dat = scale(trait.pruned), 
+                model="BM", 
+                ncores = ncores)
+)
+
+# ancestral states for each traits
+ntraits <- 1
+theta<-rep(0,ntraits)
 
 # simulating traits using a Brownian motion model
 # 100 simulations per phylogeny
-simul_BM<-lapply (tree.pruned, function (phy) 
-	mvSIM(phy,nsim=niter,model="BM1",param = list(sigma = 1)))
+simul_BM<-lapply (seq(1,length(tree_list)), function (phy) 
+  
+  mvSIM(tree_list[[phy]],
+        nsim=niter,
+        model="BM1",
+        param = list(sigma = simul_param_BM[[phy]]$opt$sigsq,
+                     theta=theta)))
 
 # Get average values
 
-simul_BM_mean <- lapply(simul_BM, function (phy)
-  apply(phy,1,mean))
+simul_BM_mean <- lapply (simul_BM, function (i)
+  
+  apply(i,1,mean))
+
+# trait
+simul_BM_mean_pruned <- lapply(simul_BM_mean, function (i)
+  i[which(names(i) %in% colnames((comm.pruned)))])
 
 # Run the disparity function that organizes data and calculate observed and null Rao's entropy
 
 # create a cluster of 'ncores', 
 cl <- makeCluster (ncores)
 # load data and functions in each core 
-clusterExport(cl, c("simul_BM_mean", "comm.pruned","niter","funcao_disparidade"))
+clusterExport(cl, c("simul_BM_mean_pruned", 
+                    "comm.pruned",
+                    "niter",
+                    "funcao_disparidade"))
 # load packages in each core
 clusterEvalQ(cl,library("SYNCSA"))
 # run
-RAO_BM <- parLapply (cl,simul_BM_mean, function (phy)	
-  funcao_disparidade (occ = ((comm.pruned)),
-                      traits= (phy),
+RAO_BM <- parLapply (cl,simul_BM_mean_pruned, function (phy)	
+  funcao_disparidade (occ = (comm.pruned),
+                      traits= as.data.frame(phy),
                       n_iterations = niter))
 
 stopCluster (cl)
-# save
-save(RAO_BM, file=here("output_uncertainty_S2","RAO_BM_ORYZ.Rdata"))
 
-# simulating traits using a early burst model
-# 100 simulations per phylogeny
-simul_EB<-lapply (tree.pruned, function (phy) 
-  mvSIM(phy,nsim=niter,model="EB",param = list(sigma = 1, beta = -0.5)))
+# save
+save(RAO_BM, file=here("output_uncertainty_S2","RAO_BM_216.Rdata"))
+
+# ============================================== #
+# simulating traits using an early burst model
+# simulate parameters
+simul_param_EB <- lapply (tree.pruned, function (i) 
+  
+  fitContinuous(phy=i,  
+                dat = scale(trait.pruned), 
+                model="EB", 
+                ncores = ncores)
+)
+
+# simulate
+simul_EB<-lapply (seq(1,length(tree_list)), function (phy) 
+  
+  mvSIM(tree_list[[phy]],
+        nsim=1,
+        model="EB",
+        param = list(sigma = simul_param_EB[[phy]]$opt$sigsq,
+                     theta=theta,
+                     beta = simul_param_EB[[phy]]$opt$a)))
 
 # Get average values
-simul_EB_mean <- lapply(simul_EB, function (phy)
-  apply(phy,1,mean))
+
+simul_EB_mean <- lapply (simul_EB, function (i)
+  
+  apply(i,1,mean))
+
+# trait
+simul_EB_mean_pruned <- lapply(simul_EB_mean, function (i)
+  i[which(names(i) %in% colnames((comm.pruned)))])
 
 # Run the disparity function that organizes data and calculate observed and null Rao's entropy
 cl <- makeCluster (ncores)
-clusterExport(cl, c("simul_EB_mean", "comm.pruned","niter","funcao_disparidade"))
+clusterExport(cl, c("simul_EB_mean_pruned", "comm.pruned","niter","funcao_disparidade"))
 clusterEvalQ(cl,library("SYNCSA"))
 
-RAO_EB <- parLapply (cl, simul_EB_mean, function (phy)	
-  funcao_disparidade (occ = ((comm.pruned)),
+RAO_EB <- parLapply (cl, simul_EB_mean_pruned, function (phy)	
+  funcao_disparidade (occ = (comm.pruned),
                       traits= as.data.frame(phy),
                       n_iterations = niter))
 
 stopCluster (cl)
 # save
-save (RAO_EB, file = here("output_uncertainty_S2","RAO_EB_ORYZ.RData"))
+save (RAO_EB, file = here("output_uncertainty_S2","RAO_EB_216.RData"))
 
 # simulating traits using a Ornstein-Uhlenbeck model
 # 100 simulations per phylogeny
+simul_param_OU <- lapply (tree.pruned, function (i) 
+  
+  fitContinuous(phy=i,  
+                dat = scale(trait.pruned), 
+                model="OU", 
+                ncores = ncores)
+)
 
-simul_OU <-lapply (tree.pruned, function (phy) 
-  mvSIM(phy,nsim=niter,model="OU1",param = list(sigma = 1,alpha=1)))
+# simulate traits
 
+simul_OU <-lapply (seq(1,length(tree_list)), function (phy) 
+  
+  mvSIM(tree_list[[phy]],
+        nsim=niter,
+        model="OU1",
+        
+        param = list(sigma = simul_param_OU[[phy]]$opt$sigsq,
+                     alpha=simul_param_OU[[phy]]$opt$alpha,
+                     theta = theta))
+)
+
+# get average
 simul_OU_mean <- lapply(simul_OU, function (phy)
   apply(phy,1,mean))
 
+# trait
+simul_OU_mean_pruned <- lapply(simul_OU_mean, function (i)
+  i[which(names(i) %in% colnames((comm.pruned)))])
+
 # run disparity function
 cl <- makeCluster (ncores)
-clusterExport(cl, c("simul_OU_mean", "comm.pruned","niter","funcao_disparidade"))
+clusterExport(cl, c("simul_OU_mean_pruned", "comm.pruned","niter","funcao_disparidade"))
 clusterEvalQ(cl,library("SYNCSA"))
 
-RAO_OU <- parLapply (cl,simul_OU_mean, function (phy)	
-  funcao_disparidade (occ = ((comm.pruned)),
+RAO_OU <- parLapply (cl,simul_OU_mean_pruned, function (phy)	
+  funcao_disparidade (occ = (comm.pruned),
                       traits= as.data.frame(phy),
                       n_iterations = niter))
 
 stopCluster (cl)
 
-save (RAO_OU, file = here("output_uncertainty_S2","RAO_OU_ORYZ.RData"))
+save (RAO_OU, file = here("output_uncertainty_S2","RAO_OU_216.RData"))
+
+# save parameters
+save(simul_param_BM,
+     simul_param_EB,
+     simul_param_OU,
+     file = here("output_uncertainty_S2","params_fitcontinuous_216.RData"))
 
 # ------------------------------------------------------- #
 #      mean phylogenetic distance between species (MPD) 
@@ -238,5 +306,5 @@ null.mpdf <- parLapply (cl, tree.pruned, function (tree) {
 stopCluster (cl)
 
 # save
-save (null.mpdf, file=here ("output_uncertainty_S2","mpd_results_ORYZ.RData"))
-
+save (null.mpdf, file=here ("output_uncertainty_S2",
+                            "mpd_results_216.RData"))

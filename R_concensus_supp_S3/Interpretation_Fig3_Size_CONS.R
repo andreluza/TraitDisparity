@@ -5,21 +5,26 @@ source ("./R/packages.R")
 
 # -----------------------#
 # load data
-load (here("output", "mpd_results_ALL.RData"))
-load (here("output", "RAO_BM_ALL.RData"))
-load (here("output", "RAO_EB_ALL.RData"))
-load (here("output", "RAO_OU_ALL.RData"))
-load (here("output", "RAO_OBS_ALL.RData"))
+load (here("output_concensus_supp_S3", "mpd_results_ALL.RData"))
+load (here("output_concensus_supp_S3", "RAO_BM_ALL.RData"))
+load (here("output_concensus_supp_S3", "RAO_EB_ALL.RData"))
+load (here("output_concensus_supp_S3", "RAO_OU_ALL.RData"))
+load (here("output_concensus_supp_S3", "RAO_OBS_ALL.RData"))
 
 
 # relationship between empirical and simulated data sets
 
 # working with the average
 
-avBM<-do.call(cbind,sapply(RAO_BM, "[","SES",simplify=T))
-avEB<-do.call(cbind,sapply(RAO_EB, "[","SES",simplify=T))
-avOU<-do.call(cbind,sapply(RAO_OU, "[","SES",simplify=T))
-avMPD<-do.call(cbind,sapply(null.mpdf, "[","SES.MPD",simplify=T))
+avBM<-rowMeans (do.call(cbind,sapply(RAO_BM, "[","SES",simplify=T)))
+avEB<-rowMeans (do.call(cbind,sapply(RAO_EB, "[","SES",simplify=T)))
+avOU<- rowMeans (do.call(cbind,sapply(RAO_OU, "[","SES",simplify=T)))
+avMPD<- statistics.phy$SES.MPD
+
+#plot(avMPD,avOU)
+#points(avMPD,avEB,col="red",add=T)
+#points(avMPD,avBM,col="blue",add=T)
+#points(avMPD,RAO_OBS$SES,add=T,col="gray")
 
 # -------------------------------------------------------------------- #
 # Mapping deviations of empirical disparity vs. simulated disparity 
@@ -51,8 +56,8 @@ table(rownames(presab) == rownames(longlat))
 
 # now we need to generate the neutral SES
 # get the average and sd of disparity under BM simulations
-mean_BM <- do.call(cbind,sapply(RAO_BM, "[","Observado",simplify=T))
-mean_BM <- apply (mean_BM, 1, mean)
+mean_BM <- do.call(cbind,sapply(RAO_OU, "[","Observado",simplify=T))# rowMeans (do.call(cbind,sapply(RAO_OU, "[","SES",simplify=T)))
+mean_BM <- apply(mean_BM,1,mean)
 mean_BMev <- mean(mean_BM)
 sd_BMev <- sd(mean_BM)
 
@@ -91,14 +96,14 @@ map1 <- ggplot(melt_data_to_map[which(melt_data_to_map$variable == 'SES.EMPIRICA
                        mid="#eee8d5", high="#dc322f", low="#268bd2") + 
   theme_classic() + 
   theme_map() +
-  ggtitle ("B) SES - Null Disparity")+
+  ggtitle ("B")+
   xlab("Longitude") + ylab("Latitude")+
   theme(legend.position="bottom",
         legend.justification = "center",
         legend.direction = "horizontal",
         legend.text = element_text(size=7,angle=75,hjust = 1),
         legend.title = element_text(size=8),
-        plot.title=element_text(size=10,hjust = 0.5),
+        plot.title=element_text(size=12,hjust = 0.5),
         plot.background = element_rect(fill="white",colour="white"),
         plot.margin=unit(c(0,0,0,0),"cm"),
         panel.spacing = unit(0, "lines"),
@@ -121,19 +126,18 @@ map1 <- ggplot(melt_data_to_map[which(melt_data_to_map$variable == 'SES.EMPIRICA
                        mid="#eee8d5", high="#dc322f", low="#268bd2") + 
   theme_classic() + 
   theme_map() +
-  ggtitle ("B) SES - Null Disparity")+
+  ggtitle ("B")+
   xlab("Longitude") + ylab("Latitude")+
   theme(legend.position="none",
         legend.justification = "center",
         legend.direction = "horizontal",
         legend.text = element_text(size=8),
         legend.title = element_text(size=8),
-        plot.title=element_text(size=10,hjust = 0.5),
+        plot.title=element_text(size=12,hjust = 0.5),
         plot.background = element_rect(fill="white",colour="white"),
         plot.margin=unit(c(0,0,0,0),"cm"),
         panel.spacing = unit(0, "lines"),
         strip.text = element_text(size=10))
-
 
 
 # empirical vs neutral
@@ -151,11 +155,11 @@ map2 <- ggplot(melt_data_to_map[which(melt_data_to_map$variable == 'SES.NEUTRAL'
   theme_classic() + 
   theme_map() +
   xlab("Longitude") + ylab("Latitude")+
-  ggtitle ("C) SES - Neutral Disparity")+
+  ggtitle ("C")+
   theme(legend.position="none",
         legend.text = element_text(size=8),
         legend.title = element_text(size=8),
-        plot.title=element_text(size=10,hjust = 0.5),
+        plot.title=element_text(size=12,hjust = 0.5),
         plot.background = element_rect(fill="white",colour="white"),
         plot.margin=unit(c(0,0,0,0),"cm"),
         panel.spacing = unit(0, "lines"),
@@ -182,13 +186,13 @@ map3 <- ggplot(melt_data_to_map_emp,
   theme_classic() + 
   theme_map() +
   xlab("Longitude") + ylab("Latitude")+
-  ggtitle ("A) Observed Morphological Disparity")+
+  ggtitle ("A")+
   theme(legend.position="bottom",
         legend.justification = "center",
         legend.direction = "horizontal",
         legend.text = element_text(size=8),
         legend.title = element_text(size=8),
-        plot.title=element_text(size=10,hjust = 0.5),
+        plot.title=element_text(size=12,hjust = 0.5),
         plot.background = element_rect(fill="white",colour="white"),
         plot.margin=unit(c(0,0,0,0),"cm"),
         panel.spacing = unit(0, "lines"),
@@ -241,12 +245,12 @@ panel3_NULL <- ggplot(melt_data_cells_higher[which(melt_data_cells_higher$variab
   geom_tile(aes(fill = Disparity)) +
   #facet_wrap(~variable,scales = "fixed",ncol=4)+
   scale_fill_manual(
-    values = c("0"= "#eee8d5","-1" ="#268bd2","1" ="#dc322f"),
+    values = c("-1" ="#268bd2","0"= "#eee8d5","1" ="#dc322f"),
     labels = c("SES<=-1.96","-1.96>SES<1.96", "SES>=1.96")
   ) + 
   theme_classic() + 
   theme_map() +
-  ggtitle ("D) Significance, SES - Null Disparity")+
+  ggtitle ("D")+
   xlab("Longitude") + ylab("Latitude")+
   theme(legend.position="none",
         legend.justification = "center",
@@ -254,7 +258,7 @@ panel3_NULL <- ggplot(melt_data_cells_higher[which(melt_data_cells_higher$variab
         legend.text = element_text(size=8),
         legend.title = element_text(size=8),
         plot.background = element_rect(fill="white",colour="white"),
-        plot.title=element_text(size=10,hjust = 0.5),
+        plot.title=element_text(size=12,hjust = 0.5),
         plot.margin=unit(c(0,0,0,0),"cm"),
         panel.spacing = unit(0, "lines"),
         strip.text = element_text(size=10))
@@ -265,12 +269,12 @@ panel3_BM <- ggplot(melt_data_cells_higher[which(melt_data_cells_higher$variable
   geom_tile(aes(fill = Disparity)) +
   #facet_wrap(~variable,scales = "fixed",ncol=4)+
   scale_fill_manual(
-    values = c("0"= "#eee8d5","-1" ="#268bd2","1" ="#dc322f"),
+    values = c("-1" ="#268bd2","0"= "#eee8d5","1" ="#dc322f"),
     labels = c("SES<=-1.96","-1.96>SES<1.96", "SES>=1.96")
   ) + 
   theme_classic() + 
   theme_map() +
-  ggtitle ("D) Significance, SES - Neutral Disparity")+
+  ggtitle ("D")+
   xlab("Longitude") + ylab("Latitude")+
   theme(legend.position="bottom",
         legend.justification = "center",
@@ -278,7 +282,7 @@ panel3_BM <- ggplot(melt_data_cells_higher[which(melt_data_cells_higher$variable
         legend.text = element_text(size=8),
         legend.title = element_blank(),
         plot.background = element_rect(fill="white",colour="white"),
-        plot.title=element_text(size=10,hjust = 0.5),
+        plot.title=element_text(size=12,hjust = 0.5),
         plot.margin=unit(c(0,0,0,0),"cm"),
         panel.spacing = unit(0, "lines"),
         strip.text = element_text(size=10))
@@ -293,16 +297,16 @@ panel3_BM <- ggplot(melt_data_cells_higher[which(melt_data_cells_higher$variable
   geom_tile(aes(fill = Disparity)) +
   #facet_wrap(~variable,scales = "fixed",ncol=4)+
   scale_fill_manual(
-    values = c("0"= "#eee8d5","-1" ="#268bd2","1" ="#dc322f"),
+    values = c("-1" ="#268bd2","0"= "#eee8d5","1" ="#dc322f"),
     labels = c("SES<=-1.96","-1.96>SES<1.96", "SES>=1.96")
   ) + 
   theme_classic() + 
   theme_map() +
-  ggtitle ("E) Significance, SES - Neutral Disparity")+
+  ggtitle ("E")+
   xlab("Longitude") + ylab("Latitude")+
   theme(legend.position="none",
         plot.background = element_rect(fill="white",colour="white"),
-        plot.title=element_text(size=10,hjust = 0.5),
+        plot.title=element_text(size=12,hjust = 0.5),
         plot.margin=unit(c(0,0,0,0),"cm"),
         panel.spacing = unit(0, "lines"),
         strip.text = element_text(size=10))
@@ -335,6 +339,7 @@ panel2 <- grid.arrange(map3,
 # white background
 panel2 <- cowplot::ggdraw(panel2) + 
   theme(plot.background = element_rect(fill="white", color = NA))
+
 
 
 ## ------------------------- ##
@@ -384,7 +389,6 @@ alternative_map1 <- ggplot(melt_data_to_map_emp_sim,
         strip.text = element_text(size=15),
         strip.background = element_blank())
 
-alternative_map1
 
 ## correlation between average null and simulated by OU
 

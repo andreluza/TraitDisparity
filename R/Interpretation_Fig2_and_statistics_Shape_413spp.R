@@ -5,72 +5,69 @@ source ("./R/packages.R")
 
 # -----------------------#
 # load data
-load (here("output_concensus_supp_S3", "mpd_results.RData"))
-load (here("output_concensus_supp_S3", "RAO_BM.RData"))
-load (here("output_concensus_supp_S3", "RAO_EB.RData"))
-load (here("output_concensus_supp_S3", "RAO_OU.RData"))
-load (here("output_concensus_supp_S3", "RAO_OBS.RData"))
-
+load (here("output_concensus_supp_S3", "mpd_results_ALL.RData"))
+load (here("output_concensus_supp_S3", "RAO_OBS_ALL_multivariate.RData"))
+load (here("output_concensus_supp_S3", "RAO_BM_ALL_multivariate.RData"))
 
 # average observed disparity for each  model
-avObsBM<- RAO_BM$Observado
-avObsEB<- RAO_EB$Observado
-avObsOU<- RAO_OU$Observado
+avObsBM<- rowMeans (do.call(cbind,sapply(RAO_BM, "[","Observado",simplify=T)))
+nullRao <- rowMeans (do.call(cbind,sapply(RAO_BM, "[","med_nulo",simplify=T)))
+avMPD<- statistics.phy$SES.MPD
 
 # counting cells with significant neutral SES, observed relative to the models
 # lower than
 count_cells_relative_to_models <- list (
   lower = cbind (
     lowerNULL=table(RAO_OBS$SES<=-1.96)[2],
-    lowerOU=table(((RAO_OBS$Observado - mean(avObsOU))/sd(avObsOU)) <=-1.96)[2],
-    lowerBM=table(((RAO_OBS$Observado - mean(avObsBM))/sd(avObsBM)) <=-1.96)[2],
-    lowerEB=table(((RAO_OBS$Observado - mean(avObsEB))/sd(avObsEB)) <=-1.96)[2]
+    lowerBM=table(((RAO_OBS$Observado - mean(avObsBM))/sd(avObsBM)) <=-1.96)[2]
   ), 
-  # higher than
+# higher than
   higher = cbind (
     highNULL=table(RAO_OBS$SES>=1.96)[2],
-    highOU=table(((RAO_OBS$Observado - mean(avObsOU))/sd(avObsOU)) >=1.96)[2],
-    highBM=table(((RAO_OBS$Observado - mean(avObsBM))/sd(avObsBM)) >=1.96)[2],
-    highEB=table(((RAO_OBS$Observado - mean(avObsEB))/sd(avObsEB)) >=1.96)[2]
+    highBM=table(((RAO_OBS$Observado - mean(avObsBM))/sd(avObsBM)) >=1.96)[2]
   )
 )
 
 # proportion of cells in each group
 count_cells_relative_to_models
 
-
 #--------------------------------------------------------
 # relationship between empirical and simulated data sets
 
 # working with the average
 
-avBM<-RAO_BM$SES
-avEB<-RAO_EB$SES
-avOU<- RAO_OU$SES
-avMPD<- statistics.phy$SES.MPD
+avBM<-do.call(cbind,sapply(RAO_BM, "[","SES",simplify=T))
 
 # df average disparity
 av_disp <- rbind(
   data.frame (value=RAO_OBS$SES,Data="Empirical"),
-  data.frame (value= (avBM),Data="BM"),
-  data.frame (value= (avEB),Data="EB"),
-  data.frame (value= (avOU),Data="OU"))
-
+  data.frame (value=rowMeans (avBM),Data="BM"))
+  
 # bind MPD
 av_disp <- cbind(av_disp, MPD =  (avMPD))
 
 # empirical as the first level
 av_disp$Data <- factor (av_disp$Data,
                         levels = c("Empirical",
-                                   "BM",
-                                   "EB",
-                                   "OU"))
+                                   "BM"))
 
 # coefficients for av estimates
 
-av_coeff <- summary(lm (value ~ MPD*Data,
+av_coeff <- (lm (value ~ MPD*Data,
                         data=av_disp))
 
+# compare slopes
+m.lst.FEve <- emtrends (av_coeff,  "Data", var="MPD")
+m.lst_tab.FEve <- summary(m.lst.FEve,point.est = mean)
+
+# reported in the main text (Table 1)
+summary(av_coeff)
+
+# difference in slope between simulated and empirical data
+m.lst_tab.FEve
+
+# test of whether slope of the regression between ses disparity and ses MPD
+# varies across evolutionary models
 # reported in the main text (Table 1)
 tab_model(av_coeff)
 
@@ -90,5 +87,6 @@ figure1 <- ggplot (data = av_disp, aes (x=MPD, y=value,colour=Data)) +
     legend.position = "top",
     plot.margin=unit(c(.2,1,.1,1),"cm"))
 
+# 
 
-figure1
+

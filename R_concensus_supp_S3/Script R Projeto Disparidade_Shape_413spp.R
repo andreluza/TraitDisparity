@@ -44,8 +44,8 @@ species.v<-ventral.listed.pruned[,4]
 mean(table(species.v))
 sd(table(species.v))
 
-ind_per_spp <- table (species.v)
-write.csv (ind_per_spp,file=here("output","excel_glm","ind_per_spp.CSV"))
+#ind_per_spp <- table (species.v)
+#write.csv (ind_per_spp,file=here("output","excel_glm","ind_per_spp.CSV"))
 
 # transform shape data into array
 shape.v.2d<-two.d.array(shape.v)
@@ -80,40 +80,37 @@ longlat  <- longlat [rowSums (presab_original) > 3,]
 #     as simulated by three evolution models
 #                  BM, EB, OU
 
-# Load the fully resolved phylogenties
+# Load the concensus
 
-tree_list <- tree <- read.nexus(file=here("data","Sigmodontinae_413species100Trees.trees"))
+tree <- read.nexus(file=here("data","Sigmodontinae_285speciesTree.tre"))
 
 # Adjusting the names
 
-tree_list <- lapply (tree_list, function (i)
-	{i$tip.label <- gsub ("__CRICETIDAE__RODENTIA", "",i$tip.label);i})
+tree$tip.label <- gsub ("__CRICETIDAE__RODENTIA", "",tree $tip.label)
 
 # --------------------------------------- #
 #     Empirical disparity per cell
 
 # set the number of interations (equal to the number of simulations in evol models)
-niter <- 2
+niter <- 100
 
 # Run the 'disparity function' that we create (implement Rao's entropy and a randomization of sp. IDs across the rows of trait datasets)
 trait.pruned <- shape.v.2d.means[which(rownames(shape.v.2d.means) %in% colnames(presab)),]
-trait.pruned <- trait.pruned[which(rownames(trait.pruned) %in% tree_list[[1]]$tip.label),]
+trait.pruned <- trait.pruned[which(rownames(trait.pruned) %in% tree$tip.label)]
 # occ
 comm.pruned <- presab [,which(colnames(presab) %in% rownames (trait.pruned))]
 
 # phy pruned
-# prune
 # matching between distribution, trait, and phylogenetic datasets
-tree.pruned<-lapply (tree_list, function (phy) 
-  treedata(phy,t(presab))$phy)
+tree.pruned<-  treedata(tree,t(presab))$phy
 
 # empirical rao
 RAO_OBS <- funcao_disparidade (occ = comm.pruned,
                                traits= trait.pruned,
                                n_iterations = niter)
 
-save (RAO_OBS, file = here("output","RAO_OBS_ALL.RData"))
 
+save (RAO_OBS, file = here("output_concensus_supp_S3","RAO_OBS_ALL_multivariate.RData"))
 
 # --------------------------------------------------#
 #      now simulate using the complete phylogeny
@@ -121,28 +118,42 @@ save (RAO_OBS, file = here("output","RAO_OBS_ALL.RData"))
 
 # Set the number of computer cores to run analyses in 
 # parallel along computer cores
-ncores <- 7
+ncores <- 6
+
+# simulate parameters
+simul_param_BM <- mvgls(scale(trait.pruned)~1, 
+        tree=tree.pruned,  
+        model="BM", 
+        penalty="RidgeArch",
+        REML=T,
+        method = "Mahalanobis")
+
+
+# ancestral states for each traits
+ntraits <- ncol(trait.pruned)
+theta<-rep(0,ntraits)
 
 # simulating traits using a Brownian motion model
 # 100 simulations per phylogeny
-simul_BM<-lapply (tree_list, function (phy) 
-	mvSIM(phy,nsim=niter,model="BM1",param = list(sigma = 1)))
-
-# Get average values
-
-simul_BM_mean <- lapply(simul_BM, function (phy)
-  apply(phy,1,mean))
+simul_BM<- mvSIM(tree,
+        nsim=niter,
+        model="BM1",
+        param = list(sigma = simul_param_BM$sigma$Pinv,
+                     theta=theta))
 
 # trait
-simul_BM_mean_pruned <- lapply(simul_BM_mean, function (i)
-  i[which(names(i) %in% colnames((comm.pruned)))])
+simul_BM_mean_pruned <- lapply(simul_BM, function (i)
+  i[which(rownames(i) %in% colnames((comm.pruned))),])
 
 # Run the disparity function that organizes data and calculate observed and null Rao's entropy
 
 # create a cluster of 'ncores', 
 cl <- makeCluster (ncores)
 # load data and functions in each core 
-clusterExport(cl, c("simul_BM_mean_pruned", "comm.pruned","niter","funcao_disparidade"))
+clusterExport(cl, c("simul_BM_mean_pruned", 
+                    "comm.pruned",
+                    "niter",
+                    "funcao_disparidade"))
 # load packages in each core
 clusterEvalQ(cl,library("SYNCSA"))
 # run
@@ -152,105 +163,8 @@ RAO_BM <- parLapply (cl,simul_BM_mean_pruned, function (phy)
                       n_iterations = niter))
 
 stopCluster (cl)
-# save
-save(RAO_BM, file=here("output","RAO_BM_ALL.Rdata"))
-
-# simulating traits using a early burst model
-# 100 simulations per phylogeny
-simul_EB<-lapply (tree_list, function (phy) 
-  mvSIM(phy,nsim=niter,model="EB",param = list(sigma = 1, beta = -0.5)))
-
-# Get average values
-simul_EB_mean <- lapply(simul_EB, function (phy)
-  apply(phy,1,mean))
-
-# trait
-simul_EB_mean_pruned <- lapply(simul_EB_mean, function (i)
-  i[which(names(i) %in% colnames((comm.pruned)))])
-
-# Run the disparity function that organizes data and calculate observed and null Rao's entropy
-cl <- makeCluster (ncores)
-clusterExport(cl, c("simul_EB_mean_pruned", "comm.pruned","niter","funcao_disparidade"))
-clusterEvalQ(cl,library("SYNCSA"))
-
-RAO_EB <- parLapply (cl, simul_EB_mean_pruned, function (phy)	
-  funcao_disparidade (occ = (comm.pruned),
-                      traits= as.data.frame(phy),
-                      n_iterations = niter))
-
-stopCluster (cl)
-# save
-save (RAO_EB, file = here("output","RAO_EB_ALL.RData"))
-
-# simulating traits using a Ornstein-Uhlenbeck model
-# 100 simulations per phylogeny
-
-simul_OU <-lapply (tree_list, function (phy) 
-  mvSIM(phy,nsim=niter,model="OU1",param = list(sigma = 1,alpha=1)))
-# get average
-simul_OU_mean <- lapply(simul_OU, function (phy)
-  apply(phy,1,mean))
-
-# trait
-simul_OU_mean_pruned <- lapply(simul_OU_mean, function (i)
-  i[which(names(i) %in% colnames((comm.pruned)))])
-
-# run disparity function
-cl <- makeCluster (ncores)
-clusterExport(cl, c("simul_OU_mean_pruned", "comm.pruned","niter","funcao_disparidade"))
-clusterEvalQ(cl,library("SYNCSA"))
-
-RAO_OU <- parLapply (cl,simul_OU_mean_pruned, function (phy)	
-  funcao_disparidade (occ = (comm.pruned),
-                      traits= as.data.frame(phy),
-                      n_iterations = niter))
-
-stopCluster (cl)
-
-save (RAO_OU, file = here("output","RAO_OU_ALL.RData"))
-
-# ------------------------------------------------------- #
-#      mean phylogenetic distance between species (MPD) 
-#     and associated standardized effect size (SES.MPD)
-
-niter<-1000
-
-# run disparity function
-cl <- makeCluster (ncores)
-clusterExport(cl, c("tree.pruned", "comm.pruned","niter",
-                    "mpd.function","mpd.shuff"))
-clusterEvalQ(cl,library("SYNCSA"))
-clusterEvalQ(cl,library("picante"))
-
-# replicating the function niter times per phylogeny
-null.mpdf <- parLapply (cl, tree.pruned, function (tree) {
-  
-  # observed MPD
-  obs.mpd <- apply (comm.pruned,1,mpd.function,
-                    dist.tree=cophenetic(tree))
-  
-  # replicate shuffle per phylogeny 
-  rep.shuff.phy <- replicate(niter, mpd.shuff(tree,
-                                              my.sample.matrix=(comm.pruned)))
-  
-  # get statistics  
-  statistics.phy <- data.frame (
-    averageMPD = apply (rep.shuff.phy,1,mean),
-    sdMPD = apply (rep.shuff.phy,1,sd),
-    obsMPD = obs.mpd)
-  
-  # calculate SES
-  statistics.phy$SES.MPD <- (statistics.phy$obsMPD - statistics.phy$averageMPD)/statistics.phy$sdMPD
-  
-  ; # return
-  
-  statistics.phy
-  
-}
-)
-
-stopCluster (cl)
-
 
 # save
-save (null.mpdf, file=here ("output","mpd_results_ALL.RData"))
+save(RAO_BM, file=here("output_concensus_supp_S3","RAO_BM_ALL_multivariate.Rdata"))
+save(simul_param_BM, file=here("output_concensus_supp_S3","params_BM_multivariate.Rdata"))
+

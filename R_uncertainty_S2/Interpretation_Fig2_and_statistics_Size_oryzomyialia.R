@@ -5,11 +5,11 @@ source ("./R/packages.R")
 
 # -----------------------#
 # load data
-load (here("output", "mpd_results_ALL.RData"))
-load (here("output", "RAO_BM_ALL.RData"))
-load (here("output", "RAO_EB_ALL.RData"))
-load (here("output", "RAO_OU_ALL.RData"))
-load (here("output", "RAO_OBS_ALL.RData"))
+load (here("output_uncertainty_S2", "mpd_results_ORYZ.RData"))
+load (here("output_uncertainty_S2", "RAO_BM_ORYZ.RData"))
+load (here("output_uncertainty_S2", "RAO_EB_ORYZ.RData"))
+load (here("output_uncertainty_S2", "RAO_OU_ORYZ.RData"))
+load (here("output_uncertainty_S2", "RAO_OBS_ORYZ.RData"))
 
 # average observed disparity for each  model
 avObsBM<-rowMeans (do.call(cbind,sapply(RAO_BM, "[","Observado",simplify=T)))
@@ -66,12 +66,19 @@ av_disp$Data <- factor (av_disp$Data,
                                    "OU"))
 
 # coefficients for av estimates
+av_coeff <- (lm (value ~ MPD*Data,
+                        data=av_disp))
 
-av_coeff <- summary(lm (value ~ MPD*Data,
-            data=av_disp))
+
+# compare slopes
+m.lst.FEve <- emtrends (av_coeff,  "Data", var="MPD")
+m.lst_tab.FEve <- summary(m.lst.FEve,point.est = mean)
 
 # reported in the main text (Table 1)
-av_coeff
+summary(av_coeff)
+
+# difference in slope between simulated and empirical data
+m.lst_tab.FEve
 
 # test of whether slope of the regression between ses disparity and ses MPD
 # varies across evolutionary models
@@ -109,7 +116,7 @@ model_slope <- lapply (bind_data_disparity, function (i) {
   
   # using GLM
   m1<-lm (disp ~ MPD*dataset,
-           data=i)
+          data=i)
   
   # extracting estimates
   # intercept (average SES disparity in the empirical dataset (level "AOBS"))
@@ -129,26 +136,13 @@ model_slope <- lapply (bind_data_disparity, function (i) {
   
 })
 
-# average coefficients across simulations
-#av_across_sim <- lapply(sapply(model_slope,'[',"model"), function (i) summary (i)$coefficients)
-#estimates_across_sim <- do.call(rbind,
- #                               lapply(av_across_sim, function (i) # extract estimates and melt
-  #                                i[,1] # the column of estimates
-   #                             ))
-
-#data.frame (mean.coefficient = apply (estimates_across_sim,2,mean),
-#            sd.coefficient = apply (estimates_across_sim,2,sd))
-
-
 ####-------------------------# 
 ## Fstatistics
-
-F_stat <- lapply(sapply(model_slope,'[',"model"), function (i) summary (i)$fstatistic)
+#F_stat <- lapply(sapply(model_slope,'[',"model"), function (i) summary (i)$fstatistic)
 #apply(do.call(rbind, F_stat),2,mean)
 #apply(do.call(rbind, F_stat),2,sd)
-
 # R2 adj
-R2_stat <- lapply(sapply(model_slope,'[',"model"), function (i) summary (i)$adj.r.squared)
+#R2_stat <- lapply(sapply(model_slope,'[',"model"), function (i) summary (i)$adj.r.squared)
 #mean(unlist(R2_stat))
 #sd(unlist(R2_stat))
 
@@ -164,12 +158,10 @@ list.variance <- list.squared.mean - list.mean^2
 ## standard deviation
 list.sd <- sqrt(list.variance)
 
-
 # transforming res list into df
 model_slope_df <- do.call (rbind, sapply (model_slope,"[","coef"))
 
 # finally melt
-
 model_slope_df <- melt(model_slope_df)
 
 # plotting
@@ -241,6 +233,7 @@ boxplotOver1 <- boxplotOver + theme(axis.line=element_blank(),
   scale_y_continuous(limits=c(-0.7,1.6)) + coord_flip() 
 
 # arrange
+
 panel <- grid.arrange(figure1,
               boxplotOver1,fig2a,
              ncol=4,nrow = 9,
@@ -255,7 +248,148 @@ panel <- grid.arrange(figure1,
                                     c(3,3,3,3)))
 
 
-
 # show
 list.mean
 list.sd
+
+# parameter values (fitContinuous)
+
+load(here ("output_uncertainty_S2", "params_fitcontinuous_ORYZ.RData"))
+
+# params
+# BM
+df_sigma_BM <- data.frame (Estimates = unlist(lapply (simul_param_BM, function (i) i$opt$sigsq)),
+                           Parameter = "sigma",
+                           model = "BM")
+df_sigma_EB <- data.frame (Estimates = unlist(lapply (simul_param_EB, function (i) i$opt$sigsq)),
+                           Parameter = "sigma",
+                           model = "EB")
+df_beta_EB <- data.frame (Estimates = unlist(lapply (simul_param_EB, function (i) i$opt$a)),
+                          Parameter = "beta", 
+                          model = "EB")
+df_sigma_OU <- data.frame (Estimates = unlist(lapply (simul_param_OU, function (i) i$opt$sigsq)),
+                           Parameter = "sigma",
+                           model = "OU")
+df_alpha_OU <- data.frame (Estimates = unlist(lapply (simul_param_OU, function (i) i$opt$alpha)),
+                           Parameter = "alpha",
+                           model = "OU")
+
+# rbind
+df_density <- rbind (df_sigma_BM,
+                     df_sigma_EB,
+                     df_beta_EB,
+                     df_sigma_OU,
+                     df_alpha_OU)
+# plot
+# density plot
+fig_params_BM <- ggplot(df_density[which(df_density$model == "BM"),], 
+                     aes(x=Estimates,
+                         group=Parameter,
+                         color=Parameter,
+                         fill=Parameter)) +
+  geom_density(size=1,alpha=0.1)+
+  scale_fill_manual(values=c("sigma" = "red"))+
+  scale_colour_manual(values=c("sigma" = "red"))+
+  theme_classic()  
+
+# density plot
+fig_params_EB <- ggplot(df_density[which(df_density$model == "EB" & 
+                                           df_density$Parameter == "sigma"),], 
+                        aes(x=Estimates,
+                            group=Parameter,
+                            color=Parameter,
+                            fill=Parameter)) +
+  geom_density(size=1,alpha=0.1)+
+  scale_fill_manual(values=c("sigma" = "red"))+
+  scale_colour_manual(values=c("sigma" = "red"))+
+  theme_classic()  
+
+# beta
+fig_params_EB_beta <- ggplot(df_density[which(df_density$model == "EB" & 
+                                           df_density$Parameter == "beta"),], 
+                        aes(x=Estimates,
+                            group=Parameter,
+                            color=Parameter,
+                            fill=Parameter)) +
+  geom_density(size=1,alpha=0.1)+
+  scale_fill_manual(values=c("beta" = "green"))+
+  scale_colour_manual(values=c("beta" = "green"))+
+  theme_classic()  + 
+  #theme (legend.position = c(-1.0010e-06,3e+09))+
+  
+  xlim (c(min(df_density[which(df_density$model == "EB" & 
+                                 df_density$Parameter == "beta"),"Estimates"]),
+          max(df_density[which(df_density$model == "EB" & 
+                                 df_density$Parameter == "beta"),"Estimates"])))
+
+
+# density plot
+fig_params_OU <- ggplot(df_density[which(df_density$model == "OU" & 
+                                           df_density$Parameter == "sigma"),], 
+                        aes(x=Estimates,
+                            group=Parameter,
+                            color=Parameter,
+                            fill=Parameter)) +
+  geom_density(size=1,alpha=0.1)+
+  scale_fill_manual(values=c("sigma" = "red"))+
+  scale_colour_manual(values=c("sigma" = "red"))+
+  theme_classic()  
+
+# density plot
+fig_params_OU_alpha <- ggplot(df_density[which(df_density$model == "OU" & 
+                                           df_density$Parameter == "alpha"),], 
+                        aes(x=Estimates,
+                            group=Parameter,
+                            color=Parameter,
+                            fill=Parameter)) +
+  geom_density(size=1,alpha=0.1)+
+  scale_fill_manual(values=c("alpha" = "brown"))+
+  scale_colour_manual(values=c("alpha" = "brown"))+
+  theme_classic()   + theme(legend.position = "none")
+
+# open parameters of the multivariate model
+
+load(here ("output_uncertainty_S2", "params_BM_216_multivariate.RData"))
+
+df_multivariate <- unlist(lapply(simul_param_BM, function (i) i$sigma$Pinv))
+df_multivariate<-data.frame (Estimates=df_multivariate,
+                             Parameter = "sigma")
+fig_params_multiv <- ggplot(df_multivariate, 
+                              aes(x=Estimates,
+                                  group=Parameter,
+                                  color=Parameter,
+                                  fill=Parameter)) +
+  geom_density(size=1,alpha=0.1)+
+  scale_fill_manual(values=c("sigma" = "red"))+
+  scale_colour_manual(values=c("sigma" = "red"))+
+  theme_classic()   + 
+  theme(legend.position = "none")
+
+# arrange
+panel_params <- grid.arrange(fig_params_BM+ theme(legend.position = c(0.8,0.8),
+                                  legend.title = element_blank(),
+                                  axis.title.x = element_blank()),
+             fig_params_EB+ theme(legend.position = c(0.8,0.8),
+                                  legend.title = element_blank(),
+                                  axis.title = element_blank()),
+             fig_params_EB_beta+ theme(legend.position = c(0.4,0.8),
+                                       legend.title = element_blank(),
+                                       axis.text.x = element_text(size=7),
+                                       axis.text.y = element_text(size=7),
+                                       axis.title = element_blank()),
+             fig_params_OU+ theme(legend.position = c(0.8,0.8),
+                                  legend.title = element_blank(),
+                                  axis.title = element_blank()),
+             fig_params_OU_alpha+ theme(legend.position = c(0.8,0.8),
+                                        legend.title = element_blank(),
+                                        axis.title = element_blank()),
+             fig_params_multiv + theme (legend.position = c(0.6,0.8),
+                                        legend.title = element_blank()
+             ),
+  
+  ncol=3,nrow = 3,
+  layout_matrix = rbind (c(1,2,4),
+                         c(NA,3,5),
+                         c(6,6,6)))
+
+
