@@ -25,9 +25,55 @@ The values of parameters, estimated through macroevolutionary models (using 'fit
 
 \newpage
 
+#### The relationship between species richness and disparity
+
+
+```{r, echo = F, fig.height=6.5,fig.width=6.5,fig.align= "center",fig.margin=F, message=F, warning=F,out.width="50%",fig.keep =c(3,5)}
+
+source ("./R/Interpretation_Fig3_Size_413spp.R")
+
+
+# -------------------------------------------
+# observed
+# disparity in function of richness
+plot(rowSums(presab),
+     RAO_OBS$Observado,
+     pch = 19,cex.axis=1,cex.lab=1,
+     col = rgb(1,0,0,alpha=0.1),
+     ylab = "Observed disparity",
+     xlab= "Species richness")
+# model
+mod<-lm(RAO_OBS$Observado ~ poly(rowSums(presab),2))
+# predict
+lines (rowSums(presab)[order(rowSums(presab))],
+       predict(mod)[order(rowSums(presab))],
+       lwd=2)
+
+# the SES
+plot(rowSums(presab),
+      RAO_OBS$SES,
+     pch = 19,cex.axis=1,cex.lab=1,
+     col = rgb(0,0,1,alpha=0.1),
+     ylab = "SES RAO\n(obsRAO - mean(rdmRAO)/sd(rdmRAO))",
+     xlab = "Species richness")
+# model
+mod2<-lm(RAO_OBS$SES ~ poly(rowSums(presab),2))
+# predict
+lines (rowSums(presab)[order(rowSums(presab))],
+       predict(mod2)[order(rowSums(presab))],
+       lwd=2)
+
+
+
+
+```
+
+Fig. S2.1. Relationship between assemblage-level species richness (SR) and observed/empirical values of phenotypic disparity (Rao's entropy index) (top), and the relationship between SR and disparity after running the randomization-based null model (bottom). 
+
+
+\newpage
+
 #### Results, considering the complete set of species, and using the complete sample of 100 fully resolved phylogenies from Upham et al. (2019) (i.e., considering phylogenetic uncertainty). The following figures are supplementary to Figs. 2 to 5, and tables 1 and 2 presented in the main text.
-
-
 
 
 ```{r, echo = F, fig.height=6.5,fig.width=6.5,fig.align= "center",fig.margin=F, message=F, warning=F,fig.keep ='last'}
@@ -38,7 +84,7 @@ plot(params_estim)
 
 ```
 
-Fig. S2.1. Density plot showing the estimates of each model parameters for univariate and multivariate models. In the top we show the estimates of the parameter 'sigma' for the BM, EB, and OU models of evolution (evolutionary models for univariate trait data (fitContinuous)). In the middle, we show the parameters 'beta' and 'alpha', which are specific from EB and OU, respectively (evolutionary models for univariate trait data (fitContinuous)). In the bottom, we show estimates of sigma for the BM model (evolutionary models for multivariate trait data (mvGLS)). In univariate models, the density represents variation in estimates across the 100 fully resolved phylogenies. In the multivariate model, the density represents variation of sigma across traits and phylogenies (112 simulated ‘landmarks’ and 100 fully resolved phylogenies).Results produced by using the dataset of 413 species.
+Fig. S2.2. Density plot showing the estimates of each model parameters for univariate and multivariate models. In the top we show the estimates of the parameter 'sigma' for the BM, EB, and OU models of evolution (evolutionary models for univariate trait data (fitContinuous)). In the middle, we show the parameters 'beta' and 'alpha', which are specific from EB and OU, respectively (evolutionary models for univariate trait data (fitContinuous)). In the bottom, we show estimates of sigma for the BM model (evolutionary models for multivariate trait data (mvGLS)). In univariate models, the density represents variation in estimates across the 100 fully resolved phylogenies. In the multivariate model, the density represents variation of sigma across traits and phylogenies (112 simulated ‘landmarks’ and 100 fully resolved phylogenies).Results produced by using the dataset of 413 species.
 
 
 
@@ -76,7 +122,7 @@ plot(panel_params)
 # and other results
 
 ```
-Fig. S2.2.Density plot showing the estimates of each model parameters for univariate and multivariate models. In the top we show the estimates of the parameter 'sigma' for the BM, EB, and OU models of evolution (evolutionary models for univariate trait data (fitContinuous)). In the middle, we show the parameters 'beta' and 'alpha', which are specific from EB and OU, respectively (evolutionary models for univariate trait data (fitContinuous)). In the bottom, we show estimates of sigma for the BM model (evolutionary models for multivariate trait data (mvGLS)). In univariate models, the density represents variation in estimates across the 100 fully resolved phylogenies. In the multivariate model, the density represents variation of sigma across traits and phylogenies (112 simulated ‘landmarks’ and 100 fully resolved phylogenies).Results produced by using the dataset of 216  species.
+Fig. S2.3.Density plot showing the estimates of each model parameters for univariate and multivariate models. In the top we show the estimates of the parameter 'sigma' for the BM, EB, and OU models of evolution (evolutionary models for univariate trait data (fitContinuous)). In the middle, we show the parameters 'beta' and 'alpha', which are specific from EB and OU, respectively (evolutionary models for univariate trait data (fitContinuous)). In the bottom, we show estimates of sigma for the BM model (evolutionary models for multivariate trait data (mvGLS)). In univariate models, the density represents variation in estimates across the 100 fully resolved phylogenies. In the multivariate model, the density represents variation of sigma across traits and phylogenies (112 simulated ‘landmarks’ and 100 fully resolved phylogenies).Results produced by using the dataset of 216  species.
 
 
 ```{r, echo = F, fig.height=6.5,fig.width=6.5,fig.align= "center",fig.margin=F, message=F, warning=F,fig.keep = 2}
@@ -88,7 +134,7 @@ plot(panel)
 # and other results
 
 ```
-Fig. S2.3. Bivariate plot showing the relationship between SES MPD and SES disparity, for empirical and simulated disparity. Results produced using the data set of 216 species.
+Fig. S2.4. Bivariate plot showing the relationship between SES MPD and SES disparity, for empirical and simulated disparity. Results produced using the data set of 216 species.
 
 
 As presented in the results (mapping section), we counted the number of cells with values of disparity higher, equal, or lower than the null model (randomization-based null model, NULL) and the evolutionary models. We found that 364 communities had a disparity lower than expected by the EB and OU models, and 344 communities had a disparity lower than the BM model. Nonetheless, only three communities had disparity lower than the null disparity. On the other hand, 182 communities had disparity higher than the expected by the OU model, 138, 129, and 90 communities had disparity higher than the expected by the BM, EB and NULL models.  
@@ -117,7 +163,7 @@ source ("./R_uncertainty_S2/Interpretation_Fig3_Size_216spp.R")
 
 
 ```
-Fig. S2.4. Map of empirical (A), null (random shuffling of species in trait matrix) (B) and simulated disparity (using the OU model) (C). In D we show the significance of SES values presented in B, and in E we show the significance of SES values presented in C. Results produced by using the dataset of 216 species.  
+Fig. S2.5. Map of empirical (A), null (random shuffling of species in trait matrix) (B) and simulated disparity (using the OU model) (C). In D we show the significance of SES values presented in B, and in E we show the significance of SES values presented in C. Results produced by using the dataset of 216 species.  
   
 
 Finally, we show the maps of null and simulated disparity (Fig. S2.5). We found that using a null model is quite similar to simulating a trait using the OU model. This can be seen in the following map (and the correlations presented after the Fig. S2.5), where the null disparity and the disparity produced by the OU model produced quite similar, highly correlated maps (0.96, Table below the map). The correlation was also high  between  Null and BM disparity.
@@ -130,7 +176,7 @@ alternative_map1
 
 
 ```
-Fig. S2.5. Map of null (random shuffling of species in trait matrix) and simulated disparity values (using the BM, OU and EB models of evolution). The legend is common to all maps. Results produced by using the dataset of 216 species.  
+Fig. S2.6. Map of null (random shuffling of species in trait matrix) and simulated disparity values (using the BM, OU and EB models of evolution). The legend is common to all maps. Results produced by using the dataset of 216 species.  
 
 
 Table of correlation between these estimates
@@ -166,7 +212,7 @@ source ("./R_uncertainty_S2/Interpretation_Fig2_and_statistics_Size_oryzomyialia
 
 ```
 
-Fig. S2.6. Density plot showing the estimates of each model parameters for univariate and multivariate models. In the top we show the estimates of the parameter 'sigma' for the BM, EB, and OU models of evolution (evolutionary models for univariate trait data (fitContinuous)). In the middle, we show the parameters 'beta' and 'alpha', which are specific from EB and OU, respectively (evolutionary models for univariate trait data (fitContinuous)). In the bottom, we show estimates of sigma for the BM model (evolutionary models for multivariate trait data (mvGLS)). In univariate models, the density represents variation in estimates across the 100 fully resolved phylogenies. In the multivariate model, the density represents variation of sigma across traits and phylogenies (112 simulated ‘landmarks’ and 100 fully resolved phylogenies). Results produced by using the dataset of Oryzomyalia species.
+Fig. S2.7. Density plot showing the estimates of each model parameters for univariate and multivariate models. In the top we show the estimates of the parameter 'sigma' for the BM, EB, and OU models of evolution (evolutionary models for univariate trait data (fitContinuous)). In the middle, we show the parameters 'beta' and 'alpha', which are specific from EB and OU, respectively (evolutionary models for univariate trait data (fitContinuous)). In the bottom, we show estimates of sigma for the BM model (evolutionary models for multivariate trait data (mvGLS)). In univariate models, the density represents variation in estimates across the 100 fully resolved phylogenies. In the multivariate model, the density represents variation of sigma across traits and phylogenies (112 simulated ‘landmarks’ and 100 fully resolved phylogenies). Results produced by using the dataset of Oryzomyalia species.
 
 
 ```{r, echo = F, fig.height=6.5,fig.width=6.5,fig.align= "center",fig.margin=F, message=F, warning=F,fig.keep =2}
@@ -178,7 +224,7 @@ plot (panel)
 
 ```
 
-Fig. S2.7. Bivariate plot showing the relationship between SES MPD and SES disparity, for empirical and simulated disparity. Results produced by using the dataset of Oryzomyalia species.
+Fig. S2.8. Bivariate plot showing the relationship between SES MPD and SES disparity, for empirical and simulated disparity. Results produced by using the dataset of Oryzomyalia species.
 
 
 Counting the number of cells. We found that 269 communities had a disparity lower than expected by the OU model, 262 had a disparity lower than expected by the EB model, and 247 communities had a disparity lower than the BM model. Nonetheless, no community had disparity lower than the null disparity. On the other hand, 109 communities had disparity higher than the expected by the NULL model, and only 19, 18 and 16 communities had disparity higher than the expected by the the OU, BM and EB models of evolution.  
@@ -193,7 +239,7 @@ count_cells_relative_to_models
 
 
 
-The maps of observed and simulated disparity still resemble the ones shown in Fig. 3 (main text), and the ones just reported considering 216 species (Fig. S2.4). However, less communities had significantly lower and higher disparity than the disparity expected by the OU model (Fig. S2.8).
+The maps of observed and simulated disparity still resemble the ones shown in Fig. 3 (main text), and the ones just reported considering 216 species (Fig. S2.4). However, less communities had significantly lower and higher disparity than the disparity expected by the OU model (Fig. S2.9).
 
 
 
@@ -207,7 +253,7 @@ source ("./R_uncertainty_S2/Interpretation_Fig3_Size_oryzomyialia.R")
 # and other results
 
 ```
-Fig. S2.8. Map of empirical (A), null (random shuffling of species in trait matrix) (B) and simulated disparity (using the OU model) (C). In D we show the significance of SES values presented in B, and in E we show the significance of SES values presented in C. Results produced by using the dataset of Oryzomyalia species.  
+Fig. S2.9. Map of empirical (A), null (random shuffling of species in trait matrix) (B) and simulated disparity (using the OU model) (C). In D we show the significance of SES values presented in B, and in E we show the significance of SES values presented in C. Results produced by using the dataset of Oryzomyalia species.  
 
 
 Finally, we report high correlation between null and simulated disparity (map similar to Fig. 4, and Fig. S2.3 presented above).
@@ -221,7 +267,7 @@ alternative_map1
 
 
 ```
-Fig. S2.9. Map of null (random shuffling of species in trait matrix) and simulated disparity values (using the BM, OU and EB models of evolution). The legend is common to all maps. Results produced by using the dataset of Oryzomyalia species.  
+Fig. S2.10. Map of null (random shuffling of species in trait matrix) and simulated disparity values (using the BM, OU and EB models of evolution). The legend is common to all maps. Results produced by using the dataset of Oryzomyalia species.  
 
 
 
