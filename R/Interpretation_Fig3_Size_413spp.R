@@ -37,6 +37,16 @@ presab <- presab_original [rowSums (presab_original) > 3,]
 presab <- presab [,which(colSums(presab)>0)]
 presab <- presab[order(as.numeric(rownames(presab)),decreasing=F),]
 
+# now we need to generate the neutral SES
+# get the average and sd of disparity under BM simulations
+mean_BM <- do.call(cbind,sapply(RAO_OU, "[","Observado",simplify=T))
+mean_BM <- apply (mean_BM, 1, mean)
+mean_BMev <- mean(mean_BM)
+sd_BMev <- sd(mean_BM)
+
+# calculate neutral SES
+SES_NEUTRAL <- (RAO_OBS$Observado - mean_BMev)/sd_BMev
+
 # ----------------------------- # 
 ##  Geographic coordinates data
 
@@ -48,17 +58,6 @@ longlat <- longlat[order(as.numeric((longlat$LAT)),decreasing=F),]
 longlat <- longlat [rowSums (presab_original) > 3,]
 
 table(rownames(presab) == rownames(longlat))
-
-# now we need to generate the neutral SES
-# get the average and sd of disparity under BM simulations
-mean_BM <- do.call(cbind,sapply(RAO_OU, "[","Observado",simplify=T))
-mean_BM <- apply (mean_BM, 1, mean)
-mean_BMev <- mean(mean_BM)
-sd_BMev <- sd(mean_BM)
-
-# calculate neutral SES
-SES_NEUTRAL <- (RAO_OBS$Observado - mean_BMev)/sd_BMev
-
 # data to MAP
 
 data_to_map <- data.frame(longlat,
