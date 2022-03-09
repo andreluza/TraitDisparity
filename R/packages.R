@@ -39,4 +39,6 @@ library("sjPlot")
 library("sjmisc")
 library("sjlabelled")
 
+# analysis
+library(emmeans)
 
