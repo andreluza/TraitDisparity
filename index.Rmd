@@ -2,8 +2,13 @@
 title: "Supplementary material, Bridging macroecology and macroevolution in the radiation of sigmodontine rodents"
 author: "-"
 date: "February 2022"
-output: pdf_document
+output: github_document
 ---
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+<!-- badges: start -->
+<!-- badges: end -->
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
