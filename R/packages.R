@@ -1,3 +1,5 @@
+
+
 rm(list=ls())
 
 # go through folders and files
@@ -38,4 +40,7 @@ library(viridis)
 library("sjPlot")
 library("sjmisc")
 library("sjlabelled")
+
+# analysis
+library(emmeans)
 
