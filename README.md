@@ -634,3 +634,7 @@ and simulated disparity values (using the BM model of evolution to
 simulate multivariate trait datasets). The legend is common to all maps.
 Results produced by the dataset of 413 species and the set of 100
 phylogenies.
+
+    ##                  RAO_OBS.med_nulo     obsBM
+    ## RAO_OBS.med_nulo        1.0000000 0.9113367
+    ## obsBM                   0.9113367 1.0000000

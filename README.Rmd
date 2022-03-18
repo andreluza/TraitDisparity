@@ -698,3 +698,16 @@ alternative_map1
 
 ```
 Fig. S4.10. Map of null (random shuffling of species in trait matrix) and simulated disparity values (using the BM model of evolution to simulate multivariate trait datasets). The legend is common to all maps. Results produced by the dataset of 413 species and the set of 100 phylogenies. 
+
+
+
+```{r, echo = F, fig.height=10,fig.width=5,fig.align= "center",fig.margin=T,fig.align="center",  message=F, warning=F}
+
+
+cor (data.frame (RAO_OBS$med_nulo, 
+                 obsBM))
+
+# run this to get the panel with the relationship between MPD and DISPARITY
+# and other results
+
+```
