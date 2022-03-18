@@ -386,10 +386,7 @@ alternative_map1 <- ggplot(melt_data_to_map_emp_sim,
         panel.spacing = unit(1, "lines"),
         strip.text = element_text(size=15),
         strip.background = element_blank())
-
-pdf (here ("output", "vectorized", "fig5.pdf"))
 alternative_map1
-dev.off()
 ## correlation between average null and simulated by OU
 
 cor (data.frame (RAO_OBS$med_nulo, 

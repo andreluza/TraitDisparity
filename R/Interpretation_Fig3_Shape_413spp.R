@@ -374,9 +374,9 @@ alternative_map1 <- ggplot(melt_data_to_map_emp_sim,
         strip.text = element_text(size=15),
         strip.background = element_blank())
 
-pdf(here ("output", "vectorized","Fig8_maps.pdf"),width=5,height =2.5)
+# pdf(here ("output", "vectorized","Fig8_maps.pdf"),width=5,height =2.5)
 alternative_map1
-dev.off()
+# dev.off()
 
 ## correlation between average null and simulated by OU
 

@@ -2,7 +2,7 @@
 title: "Supplementary material, Bridging macroecology and macroevolution in the radiation of sigmodontine rodents"
 author: "-"
 date: "February 2022"
-output: pdf_document
+output: github_document
 ---
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
@@ -675,7 +675,7 @@ Fig. S4.9. Map of null (random shuffling of species in trait matrix) and simulat
 
 
 
-```{r, echo = F, fig.height=5,fig.width=5,fig.align= "center",fig.margin=T,fig.align="center",  message=F, warning=F}
+```{r, echo = F, fig.height=10,fig.width=5,fig.align= "center",fig.margin=T,fig.align="center",  message=F, warning=F}
 
 
 cor (data.frame (RAO_OBS$med_nulo, 
@@ -686,3 +686,15 @@ cor (data.frame (RAO_OBS$med_nulo,
 
 ```
 
+
+
+```{r, echo = F, fig.height=3,fig.width=5,fig.align= "center",fig.margin=T,fig.align="center",  message=F, warning=F, fig.keep ="last"}
+
+source ("./R/Interpretation_Fig3_Shape_413spp.R")
+
+alternative_map1
+# run this to get the panel with the relationship between MPD and DISPARITY
+# and other results
+
+```
+Fig. S4.10. Map of null (random shuffling of species in trait matrix) and simulated disparity values (using the BM model of evolution to simulate multivariate trait datasets). The legend is common to all maps. Results produced by the dataset of 413 species and the set of 100 phylogenies. 
