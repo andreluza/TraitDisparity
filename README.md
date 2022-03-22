@@ -2,9 +2,8 @@ Supplementary material, Bridging macroecology and macroevolution in the
 radiation of sigmodontine rodents
 ================
 -
-February 2022
+March 2022
 
-<!-- README.md is generated from README.Rmd. Please edit that file -->
 <!-- badges: start -->
 <!-- badges: end -->
 
@@ -41,12 +40,15 @@ information.
 
 #### The relationship between species richness and disparity
 
-<img src="README_files/figure-gfm/unnamed-chunk-1-1.png" width="50%" style="display: block; margin: auto;" /><img src="README_files/figure-gfm/unnamed-chunk-1-2.png" width="50%" style="display: block; margin: auto;" />
+<img src="README_files/figure-gfm/unnamed-chunk-1-1.png" width="50%" style="display: block; margin: auto;" />
 
 Fig. S2.1. Relationship between assemblage-level species richness (SR)
 and observed/empirical values of phenotypic disparity (Rao’s entropy
-index) (top), and the relationship between SR and disparity after
-running the randomization-based null model (bottom).
+index) (top left) and OU disparity (bottom left). In the right portion
+of this panel (plot with blue points), we show the relationship between
+SR and disparity after comparing observed disparity to a
+randomization-based null model (top right) and an OU model of evolution
+(bottom right).
 
 #### Results, considering the complete set of species, and using the complete sample of 100 fully resolved phylogenies from Upham et al. (2019) (i.e., considering phylogenetic uncertainty). The following figures are supplementary to Figs. 2 to 5, and tables 1 and 2 presented in the main text.
 

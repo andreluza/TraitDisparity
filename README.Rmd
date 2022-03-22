@@ -1,7 +1,7 @@
 ---
 title: "Supplementary material, Bridging macroecology and macroevolution in the radiation of sigmodontine rodents"
 author: "-"
-date: "February 2022"
+date: "March 2022"
 output: github_document
 ---
 
@@ -33,14 +33,14 @@ The values of parameters, estimated through macroevolutionary models (using 'fit
 #### The relationship between species richness and disparity
 
 
-```{r, echo = F, fig.height=6.5,fig.width=6.5,fig.align= "center",fig.margin=F, message=F, warning=F,out.width="50%",fig.keep =c(3,5)}
+```{r, echo = F, fig.height=8,fig.width=8,fig.align= "center",fig.margin=F, message=F, warning=F,out.width="50%",fig.keep =c(3,5,7,9)}
 
 source ("./R/Interpretation_Fig3_Size_413spp.R")
-
 
 # -------------------------------------------
 # observed
 # disparity in function of richness
+par(mfrow=c(2,2), mar = c(4, 4, .1, .1))
 plot(rowSums(presab),
      RAO_OBS$Observado,
      pch = 19,cex.axis=1,cex.lab=1,
@@ -68,12 +68,40 @@ lines (rowSums(presab)[order(rowSums(presab))],
        predict(mod2)[order(rowSums(presab))],
        lwd=2)
 
+# SES OU
+plot(rowSums(presab),
+     rowMeans(do.call(cbind,sapply(RAO_OU, "[","Observado",simplify=T))),
+     pch = 19,cex.axis=1,cex.lab=1,
+     col = rgb(1,0,0,alpha=0.1),
+     ylab = "OU disparity",
+     xlab= "Species richness")
+# model
+mod<-lm(rowMeans(do.call(cbind,sapply(RAO_OU, "[","Observado",simplify=T))) ~ poly(rowSums(presab),2))
+# predict
+lines (rowSums(presab)[order(rowSums(presab))],
+       predict(mod)[order(rowSums(presab))],
+       lwd=2)
+
+# the SES
+plot(rowSums(presab),
+      SES_NEUTRAL,
+     pch = 19,cex.axis=1,cex.lab=1,
+     col = rgb(0,0,1,alpha=0.1),
+     ylab = "SES RAO OU\n(obsRAO - mean(RAO OU)/sd(RAO OU))",
+     xlab = "Species richness")
+# model
+mod2<-lm(SES_NEUTRAL ~ poly(rowSums(presab),2))
+# predict
+lines (rowSums(presab)[order(rowSums(presab))],
+       predict(mod2)[order(rowSums(presab))],
+       lwd=2)
+
 
 
 
 ```
 
-Fig. S2.1. Relationship between assemblage-level species richness (SR) and observed/empirical values of phenotypic disparity (Rao's entropy index) (top), and the relationship between SR and disparity after running the randomization-based null model (bottom). 
+Fig. S2.1. Relationship between assemblage-level species richness (SR) and observed/empirical values of phenotypic disparity (Rao's entropy index) (top left) and OU disparity (bottom left). In the right portion of this panel (plot with blue points), we show the relationship between SR and disparity after comparing observed disparity to a randomization-based null model (top right) and an OU model of evolution (bottom right). 
 
 
 \newpage
