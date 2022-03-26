@@ -4,6 +4,7 @@ radiation of sigmodontine rodents
 -
 March 2022
 
+<!-- README.md is generated from README.Rmd. Please edit that file -->
 <!-- badges: start -->
 <!-- badges: end -->
 
@@ -40,21 +41,26 @@ information.
 
 #### The relationship between species richness and disparity
 
-<img src="README_files/figure-gfm/unnamed-chunk-1-1.png" width="50%" style="display: block; margin: auto;" />
+<img src="README_files/figure-gfm/unnamed-chunk-1-1.png" width="100%" height="100%" style="display: block; margin: auto;" />
 
 Fig. S2.1. Relationship between assemblage-level species richness (SR)
-and observed/empirical values of phenotypic disparity (Rao’s entropy
-index) (top left) and OU disparity (bottom left). In the right portion
-of this panel (plot with blue points), we show the relationship between
-SR and disparity after comparing observed disparity to a
-randomization-based null model (top right) and an OU model of evolution
-(bottom right).
+and observed/empirical values of phenotypic disparity of skull size
+(Rao’s entropy index) (left), disparity compared to a
+randomization-based null model (middle), and disparity compared to an
+evolution-oriented model (Ornstein-Uhlenbeck) (right).
+
+<img src="README_files/figure-gfm/unnamed-chunk-2-1.png" width="100%" height="100%" style="display: block; margin: auto;" />
+Fig. S2.2. Relationship between assemblage-level species richness (SR)
+and observed/empirical values of phenotypic disparity of skull shape
+(Rao’s entropy index) (left), disparity compared to a
+randomization-based null model (middle), and disparity compared to an
+evolution-oriented model (Browniam motion) (right).
 
 #### Results, considering the complete set of species, and using the complete sample of 100 fully resolved phylogenies from Upham et al. (2019) (i.e., considering phylogenetic uncertainty). The following figures are supplementary to Figs. 2 to 5, and tables 1 and 2 presented in the main text.
 
-<img src="README_files/figure-gfm/unnamed-chunk-2-1.png" style="display: block; margin: auto;" />
+<img src="README_files/figure-gfm/unnamed-chunk-3-1.png" style="display: block; margin: auto;" />
 
-Fig. S2.2. Density plot showing the estimates of each model parameters
+Fig. S2.3. Density plot showing the estimates of each model parameters
 for univariate and multivariate models. In the top we show the estimates
 of the parameter ‘sigma’ for the BM, EB, and OU models of evolution
 (evolutionary models for univariate trait data (fitContinuous)). In the
@@ -121,8 +127,8 @@ Overall, the disparity produced by the OU model had a closer
 relationship with the empirical disparity than had the other models of
 evolution (BM and EB) (Fig. S2.3).
 
-<img src="README_files/figure-gfm/unnamed-chunk-5-1.png" style="display: block; margin: auto;" />
-Fig. S2.3.Density plot showing the estimates of each model parameters
+<img src="README_files/figure-gfm/unnamed-chunk-6-1.png" style="display: block; margin: auto;" />
+Fig. S2.4.Density plot showing the estimates of each model parameters
 for univariate and multivariate models. In the top we show the estimates
 of the parameter ‘sigma’ for the BM, EB, and OU models of evolution
 (evolutionary models for univariate trait data (fitContinuous)). In the
@@ -139,8 +145,8 @@ produced by using the dataset of 216 species.
 <!-- badges: start -->
 <!-- badges: end -->
 
-<img src="README_files/figure-gfm/unnamed-chunk-6-1.png" style="display: block; margin: auto;" />
-Fig. S2.4. Bivariate plot showing the relationship between SES MPD and
+<img src="README_files/figure-gfm/unnamed-chunk-7-1.png" style="display: block; margin: auto;" />
+Fig. S2.5. Bivariate plot showing the relationship between SES MPD and
 SES disparity, for empirical and simulated disparity. Results produced
 using the data set of 216 species.
 
@@ -160,11 +166,11 @@ BM, EB and NULL models.
 
     ## $lower
     ##      lowerNULL lowerOU lowerBM lowerEB
-    ## TRUE         3     364     344     364
+    ## TRUE         3      10      11      11
     ## 
     ## $higher
     ##      highNULL highOU highBM highEB
-    ## TRUE       90    182    138    129
+    ## TRUE       90     NA     NA     NA
 
 <!-- badges: start -->
 <!-- badges: end -->
@@ -176,8 +182,8 @@ disparity than expected by an OU model in two portions of the Atlantic
 Rainforest, and lower disparity than expected by an OU model in Amazon,
 Northeastern Brazil, and south Andes.
 
-<img src="README_files/figure-gfm/unnamed-chunk-8-1.png" style="display: block; margin: auto;" />
-Fig. S2.5. Map of empirical (A), null (random shuffling of species in
+<img src="README_files/figure-gfm/unnamed-chunk-9-1.png" style="display: block; margin: auto;" />
+Fig. S2.6. Map of empirical (A), null (random shuffling of species in
 trait matrix) (B) and simulated disparity (using the OU model) (C). In D
 we show the significance of SES values presented in B, and in E we show
 the significance of SES values presented in C. Results produced by using
@@ -194,8 +200,8 @@ and the disparity produced by the OU model produced quite similar,
 highly correlated maps (0.96, Table below the map). The correlation was
 also high between Null and BM disparity.
 
-<img src="README_files/figure-gfm/unnamed-chunk-9-1.png" style="display: block; margin: auto;" />
-Fig. S2.6. Map of null (random shuffling of species in trait matrix) and
+<img src="README_files/figure-gfm/unnamed-chunk-10-1.png" style="display: block; margin: auto;" />
+Fig. S2.7. Map of null (random shuffling of species in trait matrix) and
 simulated disparity values (using the BM, OU and EB models of
 evolution). The legend is common to all maps. Results produced by using
 the dataset of 216 species.
@@ -216,9 +222,9 @@ reported in the main text and sensitivity analysis with 216 species
 SES MPD higher than zero, as now we lost phylogenetic distances by using
 only data from the subclade Oryzomyalia.
 
-<img src="README_files/figure-gfm/unnamed-chunk-11-1.png" style="display: block; margin: auto;" />
+<img src="README_files/figure-gfm/unnamed-chunk-12-1.png" style="display: block; margin: auto;" />
 
-Fig. S2.7. Density plot showing the estimates of each model parameters
+Fig. S2.8. Density plot showing the estimates of each model parameters
 for univariate and multivariate models. In the top we show the estimates
 of the parameter ‘sigma’ for the BM, EB, and OU models of evolution
 (evolutionary models for univariate trait data (fitContinuous)). In the
@@ -235,9 +241,9 @@ produced by using the dataset of Oryzomyalia species.
 <!-- badges: start -->
 <!-- badges: end -->
 
-<img src="README_files/figure-gfm/unnamed-chunk-12-1.png" style="display: block; margin: auto;" />
+<img src="README_files/figure-gfm/unnamed-chunk-13-1.png" style="display: block; margin: auto;" />
 
-Fig. S2.8. Bivariate plot showing the relationship between SES MPD and
+Fig. S2.9. Bivariate plot showing the relationship between SES MPD and
 SES disparity, for empirical and simulated disparity. Results produced
 by using the dataset of Oryzomyalia species.
 
@@ -255,11 +261,11 @@ EB models of evolution.
 
     ## $lower
     ##      lowerNULL lowerOU lowerBM lowerEB
-    ## <NA>        NA     269     247     262
+    ## <NA>        NA       8       5       6
     ## 
     ## $higher
     ##      highNULL highOU highBM highEB
-    ## TRUE      109     19     18     16
+    ## TRUE      109     NA     NA     NA
 
 <!-- badges: start -->
 <!-- badges: end -->
@@ -270,8 +276,8 @@ species (Fig. S2.4). However, less communities had significantly lower
 and higher disparity than the disparity expected by the OU model (Fig.
 S2.9).
 
-<img src="README_files/figure-gfm/unnamed-chunk-14-1.png" style="display: block; margin: auto;" />
-Fig. S2.9. Map of empirical (A), null (random shuffling of species in
+<img src="README_files/figure-gfm/unnamed-chunk-15-1.png" style="display: block; margin: auto;" />
+Fig. S2.10. Map of empirical (A), null (random shuffling of species in
 trait matrix) (B) and simulated disparity (using the OU model) (C). In D
 we show the significance of SES values presented in B, and in E we show
 the significance of SES values presented in C. Results produced by using
@@ -283,8 +289,8 @@ the dataset of Oryzomyalia species.
 Finally, we report high correlation between null and simulated disparity
 (map similar to Fig. 4, and Fig. S2.3 presented above).
 
-<img src="README_files/figure-gfm/unnamed-chunk-15-1.png" style="display: block; margin: auto;" />
-Fig. S2.10. Map of null (random shuffling of species in trait matrix)
+<img src="README_files/figure-gfm/unnamed-chunk-16-1.png" style="display: block; margin: auto;" />
+Fig. S2.11. Map of null (random shuffling of species in trait matrix)
 and simulated disparity values (using the BM, OU and EB models of
 evolution). The legend is common to all maps. Results produced by using
 the dataset of Oryzomyalia species.
@@ -316,7 +322,7 @@ simulations (Fig. S3.1).
     ## 4     0.124     sigma    OU
     ## 5     0.000     alpha    OU
 
-<img src="README_files/figure-gfm/unnamed-chunk-18-1.png" style="display: block; margin: auto;" />
+<img src="README_files/figure-gfm/unnamed-chunk-19-1.png" style="display: block; margin: auto;" />
 Fig. S3.1: Density plot of the sigma parameter, as estimated by the BM
 macroevolutionary model fitted to skull shape data. Results produced by
 using the data set of 285 species in the consensus tree.
@@ -328,7 +334,7 @@ Bivariate plot similar to Fig. 2. The OU-resulting disparity is still
 closer to the empirical disparity than other models (see the table of
 coefficients and difference).
 
-<img src="README_files/figure-gfm/unnamed-chunk-19-1.png" style="display: block; margin: auto;" />
+<img src="README_files/figure-gfm/unnamed-chunk-20-1.png" style="display: block; margin: auto;" />
 
 Fig. S3.2. Bivariate plot showing the relationship between SES MPD and
 SES disparity, for empirical and simulated disparity. Results produced
@@ -370,11 +376,11 @@ communities with disparity higher than BM, EB and NULL models.
 
     ## $lower
     ##      lowerNULL lowerOU lowerBM lowerEB
-    ## TRUE        29       3     546     553
+    ## TRUE        29       1      46      12
     ## 
     ## $higher
     ##      highNULL highOU highBM highEB
-    ## TRUE       81   1271    124    128
+    ## TRUE       81   1021     NA     NA
 
 <!-- badges: start -->
 <!-- badges: end -->
@@ -384,7 +390,7 @@ subsets of the data (Fig. S2.2 and S2.5). The maps still resemble, but
 now we did not find cells with disparity higher or lower than expected
 by BM model.
 
-<img src="README_files/figure-gfm/unnamed-chunk-22-1.png" style="display: block; margin: auto;" />
+<img src="README_files/figure-gfm/unnamed-chunk-23-1.png" style="display: block; margin: auto;" />
 Fig. S3.3. Map of empirical (A), null (random shuffling of species in
 trait matrix) (B) and simulated disparity (using the BM model) (C). In D
 we show the significance of SES values presented in B, and in E we show
@@ -395,7 +401,7 @@ Using the consensus phylogeny, we found variation relative to results
 presented above and in the main text. The maps of BM- and OU-simulated
 disparity showed higher spatial variation than reported previously.
 
-<img src="README_files/figure-gfm/unnamed-chunk-23-1.png" style="display: block; margin: auto;" />
+<img src="README_files/figure-gfm/unnamed-chunk-24-1.png" style="display: block; margin: auto;" />
 Fig. S3.4. Map of null (random shuffling of species in trait matrix) and
 simulated disparity values (using the BM, OU and EB models of
 evolution). The legend is common to all maps. Results produced by using
@@ -424,18 +430,18 @@ Nonetheless, most communities had disparity lower than the null model.
 
     ## $lower
     ##      lowerNULL lowerBM
-    ## TRUE       480     449
+    ## TRUE       480     806
     ## 
     ## $higher
     ##      highNULL highBM
-    ## <NA>       NA     NA
+    ## <NA>       NA      4
 
 <!-- badges: start -->
 <!-- badges: end -->
 
 The BM model had a good fit to skull shape (Fig. S3.1, Table S3.1).
 
-<img src="README_files/figure-gfm/unnamed-chunk-26-1.png" style="display: block; margin: auto;" />
+<img src="README_files/figure-gfm/unnamed-chunk-27-1.png" style="display: block; margin: auto;" />
 Fig. S4.1. Bivariate plot showing the relationship between SES MPD and
 SES disparity, for empirical and simulated disparity (multivariate trait
 simulations using Brownian motion model evolution). Results produced by
@@ -473,7 +479,7 @@ Assemblages presenting lower disparity than predicted by a BM model of
 evolution were located at the Chaco, Amazon Basin, north Brazil, South
 Andes and Patagonia (Fig. S3.2).
 
-<img src="README_files/figure-gfm/unnamed-chunk-29-1.png" style="display: block; margin: auto;" />
+<img src="README_files/figure-gfm/unnamed-chunk-30-1.png" style="display: block; margin: auto;" />
 Fig. S4.2. Map of empirical (A), null (random shuffling of species in
 trait matrix) (B) and simulated disparity (using the BM model) (C). In D
 we show the significance of SES values presented in B, and in E we show
@@ -483,7 +489,7 @@ the dataset of 216 species.
 <!-- badges: start -->
 <!-- badges: end -->
 
-<img src="README_files/figure-gfm/unnamed-chunk-30-1.png" style="display: block; margin: auto;" />
+<img src="README_files/figure-gfm/unnamed-chunk-31-1.png" style="display: block; margin: auto;" />
 Fig. S4.3. Map of null (random shuffling of species in trait matrix) and
 simulated disparity values (using the BM model of evolution to simulate
 multivariate trait datasets). The legend is common to all maps. Results
@@ -495,20 +501,18 @@ produced by using the dataset of 216 species.
 
 ### Results for subclade Oryzomyalia, considering phylogenetic uncertainty
 
-![](README_files/figure-gfm/unnamed-chunk-32-1.png)<!-- -->
-
     ## $lower
     ##      lowerNULL lowerBM
-    ## TRUE       458     259
+    ## TRUE       458    1008
     ## 
     ## $higher
     ##      highNULL highBM
-    ## TRUE        1     NA
+    ## TRUE        1      3
 
 Again, the BM model had a good fit to skull shape (Fig. S3.1, Table
 S3.1).
 
-<img src="README_files/figure-gfm/unnamed-chunk-33-1.png" style="display: block; margin: auto;" />
+<img src="README_files/figure-gfm/unnamed-chunk-34-1.png" style="display: block; margin: auto;" />
 Fig. S4.4. Bivariate plot showing the relationship between SES MPD and
 SES disparity, for empirical and simulated disparity (multivariate trait
 simulations using Brownian motion model evolution). Results produced by
@@ -539,14 +543,14 @@ Results produced by using the dataset of Oryzomyalia species.
     ## datasetBM     0.41784150 0.004843309  8.272738 0.2104372
     ## MPD:datasetBM 0.19834231 0.001915732 11.886844 0.1370307
 
-<img src="README_files/figure-gfm/unnamed-chunk-36-1.png" style="display: block; margin: auto;" />
+<img src="README_files/figure-gfm/unnamed-chunk-37-1.png" style="display: block; margin: auto;" />
 Fig. S4.5. Map of empirical (A), null (random shuffling of species in
 trait matrix) (B) and simulated disparity (using the BM model) (C). In D
 we show the significance of SES values presented in B, and in E we show
 the significance of SES values presented in C. Results produced by using
 the dataset of Oryzomyalia species.
 
-<img src="README_files/figure-gfm/unnamed-chunk-37-1.png" style="display: block; margin: auto;" />
+<img src="README_files/figure-gfm/unnamed-chunk-38-1.png" style="display: block; margin: auto;" />
 Fig. S4.6. Map of null (random shuffling of species in trait matrix) and
 simulated disparity values (using the BM model of evolution to simulate
 multivariate trait datasets). The legend is common to all maps. Results
@@ -563,11 +567,11 @@ produced by using the dataset of Oryzomyalia species.
 
     ## $lower
     ##      lowerNULL lowerBM
-    ## TRUE       473     466
+    ## TRUE       473     957
     ## 
     ## $higher
     ##      highNULL highBM
-    ## <NA>       NA     NA
+    ## <NA>       NA     41
 
 <!-- badges: start -->
 <!-- badges: end -->
@@ -575,7 +579,7 @@ produced by using the dataset of Oryzomyalia species.
 Again, the BM model had a good fit to skull shape (Fig. S3.1, Table
 S3.1).
 
-<img src="README_files/figure-gfm/unnamed-chunk-39-1.png" style="display: block; margin: auto;" />
+<img src="README_files/figure-gfm/unnamed-chunk-40-1.png" style="display: block; margin: auto;" />
 Fig. S4.7. Bivariate plot showing the relationship between SES MPD and
 SES disparity, for empirical and simulated disparity (multivariate trait
 simulations using Brownian motion model evolution). Results produced by
@@ -610,7 +614,7 @@ species in the consensus tree.
     ## Multiple R-squared:  0.5274, Adjusted R-squared:  0.5269 
     ## F-statistic:  1168 on 3 and 3140 DF,  p-value: < 2.2e-16
 
-<img src="README_files/figure-gfm/unnamed-chunk-41-1.png" style="display: block; margin: auto;" />
+<img src="README_files/figure-gfm/unnamed-chunk-42-1.png" style="display: block; margin: auto;" />
 Fig. S4.8. Map of empirical (A), null (random shuffling of species in
 trait matrix) (B) and simulated disparity (using the BM model) (C). In D
 we show the significance of SES values presented in B, and in E we show
@@ -620,7 +624,7 @@ the dataset of species in the consensus tree.
 <!-- badges: start -->
 <!-- badges: end -->
 
-<img src="README_files/figure-gfm/unnamed-chunk-42-1.png" style="display: block; margin: auto;" />
+<img src="README_files/figure-gfm/unnamed-chunk-43-1.png" style="display: block; margin: auto;" />
 Fig. S4.9. Map of null (random shuffling of species in trait matrix) and
 simulated disparity values (using the BM model of evolution to simulate
 multivariate trait datasets). The legend is common to all maps. Results
@@ -630,7 +634,7 @@ produced by using the dataset of species in the consensus tree.
     ## RAO_OBS.med_nulo        1.0000000 0.8845862
     ## obsBM                   0.8845862 1.0000000
 
-<img src="README_files/figure-gfm/unnamed-chunk-44-1.png" style="display: block; margin: auto;" />
+<img src="README_files/figure-gfm/unnamed-chunk-45-1.png" style="display: block; margin: auto;" />
 Fig. S4.10. Map of null (random shuffling of species in trait matrix)
 and simulated disparity values (using the BM model of evolution to
 simulate multivariate trait datasets). The legend is common to all maps.
