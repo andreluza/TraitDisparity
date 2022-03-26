@@ -33,14 +33,14 @@ The values of parameters, estimated through macroevolutionary models (using 'fit
 #### The relationship between species richness and disparity
 
 
-```{r, echo = F, fig.height=8,fig.width=8,fig.align= "center",fig.margin=F, message=F, warning=F,out.width="50%",fig.keep =c(3,5,7,9)}
+```{r, echo = F, fig.height=7,fig.width=12,fig.align= "center",fig.margin=T, message=F, warning=F,out.width="100%",out.height="100%",fig.keep =c(3,5,7)}
 
 source ("./R/Interpretation_Fig3_Size_413spp.R")
 
 # -------------------------------------------
 # observed
 # disparity in function of richness
-par(mfrow=c(2,2), mar = c(4, 4, .1, .1))
+par(mfrow=c(1,3),cex=1.4)
 plot(rowSums(presab),
      RAO_OBS$Observado,
      pch = 19,cex.axis=1,cex.lab=1,
@@ -69,19 +69,6 @@ lines (rowSums(presab)[order(rowSums(presab))],
        lwd=2)
 
 # SES OU
-plot(rowSums(presab),
-     rowMeans(do.call(cbind,sapply(RAO_OU, "[","Observado",simplify=T))),
-     pch = 19,cex.axis=1,cex.lab=1,
-     col = rgb(1,0,0,alpha=0.1),
-     ylab = "OU disparity",
-     xlab= "Species richness")
-# model
-mod<-lm(rowMeans(do.call(cbind,sapply(RAO_OU, "[","Observado",simplify=T))) ~ poly(rowSums(presab),2))
-# predict
-lines (rowSums(presab)[order(rowSums(presab))],
-       predict(mod)[order(rowSums(presab))],
-       lwd=2)
-
 # the SES
 plot(rowSums(presab),
       SES_NEUTRAL,
@@ -98,11 +85,66 @@ lines (rowSums(presab)[order(rowSums(presab))],
 
 
 
-
 ```
 
-Fig. S2.1. Relationship between assemblage-level species richness (SR) and observed/empirical values of phenotypic disparity (Rao's entropy index) (top left) and OU disparity (bottom left). In the right portion of this panel (plot with blue points), we show the relationship between SR and disparity after comparing observed disparity to a randomization-based null model (top right) and an OU model of evolution (bottom right). 
+Fig. S2.1. Relationship between assemblage-level species richness (SR) and observed/empirical values of phenotypic disparity of skull size (Rao's entropy index) (left), disparity  compared to a randomization-based null model (middle), and disparity compared to an evolution-oriented model (Ornstein-Uhlenbeck) (right). 
 
+
+\newpage
+
+
+```{r, echo = F, fig.height=7,fig.width=12,fig.align= "center",fig.margin=T, message=F, warning=F,out.width="100%",out.height="100%",fig.keep =c(3,5,7)}
+
+# shape
+source ("./R/Interpretation_Fig3_Shape_413spp.R")
+# 
+par(mfrow=c(1,3),cex=1.4)
+plot(rowSums(presab),
+     RAO_OBS$Observado,
+     pch = 19,cex.axis=1,cex.lab=1,
+     col = rgb(1,0,0,alpha=0.1),
+     ylab = "Observed disparity in skull shape",
+     xlab= "Species richness")
+# model
+mod<-lm(RAO_OBS$Observado ~ poly(rowSums(presab),2))
+# predict
+lines (rowSums(presab)[order(rowSums(presab))],
+       predict(mod)[order(rowSums(presab))],
+       lwd=2)
+
+# the SES
+plot(rowSums(presab),
+      RAO_OBS$SES,
+     pch = 19,cex.axis=1,cex.lab=1,
+     col = rgb(0,0,1,alpha=0.1),
+     ylab = "SES RAO\n(obsRAO - mean(rdmRAO)/sd(rdmRAO))",
+     xlab = "Species richness")
+# model
+mod2<-lm(RAO_OBS$SES ~ poly(rowSums(presab),2))
+# predict
+lines (rowSums(presab)[order(rowSums(presab))],
+       predict(mod2)[order(rowSums(presab))],
+       lwd=2)
+
+# SES OU
+# the SES
+plot(rowSums(presab),
+      SES_NEUTRAL,
+     pch = 19,cex.axis=1,cex.lab=1,
+     col = rgb(0,0,1,alpha=0.1),
+     ylab = "SES RAO BM\n(obsRAO - mean(RAO BM)/sd(RAO BM))",
+     xlab = "Species richness")
+# model
+mod2<-lm(SES_NEUTRAL ~ poly(rowSums(presab),2))
+# predict
+lines (rowSums(presab)[order(rowSums(presab))],
+       predict(mod2)[order(rowSums(presab))],
+       lwd=2)
+
+
+
+```
+Fig. S2.2. Relationship between assemblage-level species richness (SR) and observed/empirical values of phenotypic disparity of skull shape (Rao's entropy index) (left), disparity  compared to a randomization-based null model (middle), and disparity compared to an evolution-oriented model (Browniam motion) (right). 
 
 \newpage
 
@@ -117,7 +159,7 @@ plot(params_estim)
 
 ```
 
-Fig. S2.2. Density plot showing the estimates of each model parameters for univariate and multivariate models. In the top we show the estimates of the parameter 'sigma' for the BM, EB, and OU models of evolution (evolutionary models for univariate trait data (fitContinuous)). In the middle, we show the parameters 'beta' and 'alpha', which are specific from EB and OU, respectively (evolutionary models for univariate trait data (fitContinuous)). In the bottom, we show estimates of sigma for the BM model (evolutionary models for multivariate trait data (mvGLS)). In univariate models, the density represents variation in estimates across the 100 fully resolved phylogenies. In the multivariate model, the density represents variation of sigma across traits and phylogenies (112 simulated ‘landmarks’ and 100 fully resolved phylogenies).Results produced by using the dataset of 413 species.
+Fig. S2.3. Density plot showing the estimates of each model parameters for univariate and multivariate models. In the top we show the estimates of the parameter 'sigma' for the BM, EB, and OU models of evolution (evolutionary models for univariate trait data (fitContinuous)). In the middle, we show the parameters 'beta' and 'alpha', which are specific from EB and OU, respectively (evolutionary models for univariate trait data (fitContinuous)). In the bottom, we show estimates of sigma for the BM model (evolutionary models for multivariate trait data (mvGLS)). In univariate models, the density represents variation in estimates across the 100 fully resolved phylogenies. In the multivariate model, the density represents variation of sigma across traits and phylogenies (112 simulated ‘landmarks’ and 100 fully resolved phylogenies).Results produced by using the dataset of 413 species.
 
 <!-- badges: start -->
 <!-- badges: end -->
@@ -157,7 +199,7 @@ plot(panel_params)
 # and other results
 
 ```
-Fig. S2.3.Density plot showing the estimates of each model parameters for univariate and multivariate models. In the top we show the estimates of the parameter 'sigma' for the BM, EB, and OU models of evolution (evolutionary models for univariate trait data (fitContinuous)). In the middle, we show the parameters 'beta' and 'alpha', which are specific from EB and OU, respectively (evolutionary models for univariate trait data (fitContinuous)). In the bottom, we show estimates of sigma for the BM model (evolutionary models for multivariate trait data (mvGLS)). In univariate models, the density represents variation in estimates across the 100 fully resolved phylogenies. In the multivariate model, the density represents variation of sigma across traits and phylogenies (112 simulated ‘landmarks’ and 100 fully resolved phylogenies).Results produced by using the dataset of 216  species.
+Fig. S2.4.Density plot showing the estimates of each model parameters for univariate and multivariate models. In the top we show the estimates of the parameter 'sigma' for the BM, EB, and OU models of evolution (evolutionary models for univariate trait data (fitContinuous)). In the middle, we show the parameters 'beta' and 'alpha', which are specific from EB and OU, respectively (evolutionary models for univariate trait data (fitContinuous)). In the bottom, we show estimates of sigma for the BM model (evolutionary models for multivariate trait data (mvGLS)). In univariate models, the density represents variation in estimates across the 100 fully resolved phylogenies. In the multivariate model, the density represents variation of sigma across traits and phylogenies (112 simulated ‘landmarks’ and 100 fully resolved phylogenies).Results produced by using the dataset of 216  species.
 
 <!-- badges: start -->
 <!-- badges: end -->
@@ -171,7 +213,7 @@ plot(panel)
 # and other results
 
 ```
-Fig. S2.4. Bivariate plot showing the relationship between SES MPD and SES disparity, for empirical and simulated disparity. Results produced using the data set of 216 species.
+Fig. S2.5. Bivariate plot showing the relationship between SES MPD and SES disparity, for empirical and simulated disparity. Results produced using the data set of 216 species.
 
 <!-- badges: start -->
 <!-- badges: end -->
@@ -204,7 +246,7 @@ source ("./R_uncertainty_S2/Interpretation_Fig3_Size_216spp.R")
 
 
 ```
-Fig. S2.5. Map of empirical (A), null (random shuffling of species in trait matrix) (B) and simulated disparity (using the OU model) (C). In D we show the significance of SES values presented in B, and in E we show the significance of SES values presented in C. Results produced by using the dataset of 216 species.  
+Fig. S2.6. Map of empirical (A), null (random shuffling of species in trait matrix) (B) and simulated disparity (using the OU model) (C). In D we show the significance of SES values presented in B, and in E we show the significance of SES values presented in C. Results produced by using the dataset of 216 species.  
   
 <!-- badges: start -->
 <!-- badges: end -->
@@ -219,7 +261,7 @@ alternative_map1
 
 
 ```
-Fig. S2.6. Map of null (random shuffling of species in trait matrix) and simulated disparity values (using the BM, OU and EB models of evolution). The legend is common to all maps. Results produced by using the dataset of 216 species.  
+Fig. S2.7. Map of null (random shuffling of species in trait matrix) and simulated disparity values (using the BM, OU and EB models of evolution). The legend is common to all maps. Results produced by using the dataset of 216 species.  
 
 
 Table of correlation between these estimates
@@ -248,14 +290,14 @@ Bivariate plot similar to Fig. 2. This is very similar to the plots reported in 
 
 source ("./R_uncertainty_S2/Interpretation_Fig2_and_statistics_Size_oryzomyialia.R")
 
- plot(panel_params)
+plot(panel_params)
 
 # run this to get the panel with the relationship between MPD and DISPARITY
 # and other results
 
 ```
 
-Fig. S2.7. Density plot showing the estimates of each model parameters for univariate and multivariate models. In the top we show the estimates of the parameter 'sigma' for the BM, EB, and OU models of evolution (evolutionary models for univariate trait data (fitContinuous)). In the middle, we show the parameters 'beta' and 'alpha', which are specific from EB and OU, respectively (evolutionary models for univariate trait data (fitContinuous)). In the bottom, we show estimates of sigma for the BM model (evolutionary models for multivariate trait data (mvGLS)). In univariate models, the density represents variation in estimates across the 100 fully resolved phylogenies. In the multivariate model, the density represents variation of sigma across traits and phylogenies (112 simulated ‘landmarks’ and 100 fully resolved phylogenies). Results produced by using the dataset of Oryzomyalia species.
+Fig. S2.8. Density plot showing the estimates of each model parameters for univariate and multivariate models. In the top we show the estimates of the parameter 'sigma' for the BM, EB, and OU models of evolution (evolutionary models for univariate trait data (fitContinuous)). In the middle, we show the parameters 'beta' and 'alpha', which are specific from EB and OU, respectively (evolutionary models for univariate trait data (fitContinuous)). In the bottom, we show estimates of sigma for the BM model (evolutionary models for multivariate trait data (mvGLS)). In univariate models, the density represents variation in estimates across the 100 fully resolved phylogenies. In the multivariate model, the density represents variation of sigma across traits and phylogenies (112 simulated ‘landmarks’ and 100 fully resolved phylogenies). Results produced by using the dataset of Oryzomyalia species.
 
 <!-- badges: start -->
 <!-- badges: end -->
@@ -269,7 +311,7 @@ plot (panel)
 
 ```
 
-Fig. S2.8. Bivariate plot showing the relationship between SES MPD and SES disparity, for empirical and simulated disparity. Results produced by using the dataset of Oryzomyalia species.
+Fig. S2.9. Bivariate plot showing the relationship between SES MPD and SES disparity, for empirical and simulated disparity. Results produced by using the dataset of Oryzomyalia species.
 
 <!-- badges: start -->
 <!-- badges: end -->
@@ -302,7 +344,7 @@ source ("./R_uncertainty_S2/Interpretation_Fig3_Size_oryzomyialia.R")
 # and other results
 
 ```
-Fig. S2.9. Map of empirical (A), null (random shuffling of species in trait matrix) (B) and simulated disparity (using the OU model) (C). In D we show the significance of SES values presented in B, and in E we show the significance of SES values presented in C. Results produced by using the dataset of Oryzomyalia species.  
+Fig. S2.10. Map of empirical (A), null (random shuffling of species in trait matrix) (B) and simulated disparity (using the OU model) (C). In D we show the significance of SES values presented in B, and in E we show the significance of SES values presented in C. Results produced by using the dataset of Oryzomyalia species.  
 
 <!-- badges: start -->
 <!-- badges: end -->
@@ -318,7 +360,7 @@ alternative_map1
 
 
 ```
-Fig. S2.10. Map of null (random shuffling of species in trait matrix) and simulated disparity values (using the BM, OU and EB models of evolution). The legend is common to all maps. Results produced by using the dataset of Oryzomyalia species.  
+Fig. S2.11. Map of null (random shuffling of species in trait matrix) and simulated disparity values (using the BM, OU and EB models of evolution). The legend is common to all maps. Results produced by using the dataset of Oryzomyalia species.  
 
 
 
@@ -461,6 +503,7 @@ cor (data.frame (RAO_OBS$med_nulo, obsBM,obsEB,obsOU))
 None community had disparity higher than either NULL or BM models. Nonetheless, most communities had disparity lower than the null model.
 
 ```{r , echo=FALSE, fig.show="hide",fig.margin=F, message=F, warning=F}
+
 source ("./R_uncertainty_S2/Interpretation_Fig2_and_statistics_Shape_216spp.R")
 
 
@@ -553,7 +596,8 @@ cor (data.frame (RAO_OBS$med_nulo,
 ### Results for subclade Oryzomyalia, considering phylogenetic uncertainty
 
 
-```{r , echo=FALSE,fig.margin=F, message=F, warning=F}
+```{r , echo=FALSE,fig.margin=F, message=F, warning=F,fig.show="hide"}
+
 source ("./R_uncertainty_S2/Interpretation_Fig2_and_statistics_Shape_oryzomyialia.R")
 
 

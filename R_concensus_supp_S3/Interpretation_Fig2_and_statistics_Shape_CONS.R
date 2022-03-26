@@ -10,7 +10,8 @@ load (here("output_concensus_supp_S3", "RAO_BM_ALL_multivariate.RData"))
 load (here("output_concensus_supp_S3", "RAO_OBS_ALL_multivariate.RData"))
 
 # average observed disparity for each  model
-avObsBM<- rowMeans (do.call(cbind,sapply(RAO_BM, "[","Observado",simplify=T)))
+avObsBM<-apply (do.call(cbind,sapply(RAO_BM, "[","Observado",simplify=T)),1,mean)
+sdObsBM<-apply (do.call(cbind,sapply(RAO_BM, "[","Observado",simplify=T)),1,sd)
 nullRao <- rowMeans (do.call(cbind,sapply(RAO_BM, "[","med_nulo",simplify=T)))
 avMPD<- statistics.phy$SES.MPD
 
@@ -19,15 +20,14 @@ avMPD<- statistics.phy$SES.MPD
 count_cells_relative_to_models <- list (
   lower = cbind (
     lowerNULL=table(RAO_OBS$SES<=-1.96)[2],
-    lowerBM=table(((RAO_OBS$Observado - mean(avObsBM))/sd(avObsBM)) <=-1.96)[2]
+    lowerBM=table(((RAO_OBS$Observado - (avObsBM))/(sdObsBM)) <=-1.96)[2]
   ), 
   # higher than
   higher = cbind (
     highNULL=table(RAO_OBS$SES>=1.96)[2],
-    highBM=table(((RAO_OBS$Observado - mean(avObsBM))/sd(avObsBM)) >=1.96)[2]
+    highBM=table(((RAO_OBS$Observado - mean(avObsBM))/(sdObsBM)) >=1.96)[2]
   )
 )
-
 # proportion of cells in each group
 count_cells_relative_to_models
 
