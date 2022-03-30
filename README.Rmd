@@ -33,7 +33,7 @@ The values of parameters, estimated through macroevolutionary models (using 'fit
 #### The relationship between species richness and disparity
 
 
-```{r, echo = F, fig.height=7,fig.width=12,fig.align= "center",fig.margin=T, message=F, warning=F,out.width="100%",out.height="100%",fig.keep =c(3,5,7)}
+```{r, echo = F, fig.height=7,fig.width=12,fig.align= "center",fig.margin=T, message=F, warning=F,out.width="100%",out.height="100%",fig.keep =c(2,3,4,5,6,7)}
 
 source ("./R/Interpretation_Fig3_Size_413spp.R")
 
@@ -48,11 +48,11 @@ plot(rowSums(presab),
      ylab = "Observed disparity",
      xlab= "Species richness")
 # model
-mod<-lm(RAO_OBS$Observado ~ poly(rowSums(presab),2))
+#mod<-lm(RAO_OBS$Observado ~ poly(rowSums(presab),2))
 # predict
-lines (rowSums(presab)[order(rowSums(presab))],
-       predict(mod)[order(rowSums(presab))],
-       lwd=2)
+#lines (rowSums(presab)[order(rowSums(presab))],
+#       predict(mod)[order(rowSums(presab))],
+#       lwd=2)
 
 # the SES
 plot(rowSums(presab),
@@ -62,11 +62,11 @@ plot(rowSums(presab),
      ylab = "SES RAO\n(obsRAO - mean(rdmRAO)/sd(rdmRAO))",
      xlab = "Species richness")
 # model
-mod2<-lm(RAO_OBS$SES ~ poly(rowSums(presab),2))
+#mod2<-lm(RAO_OBS$SES ~ poly(rowSums(presab),2))
 # predict
-lines (rowSums(presab)[order(rowSums(presab))],
-       predict(mod2)[order(rowSums(presab))],
-       lwd=2)
+#lines (rowSums(presab)[order(rowSums(presab))],
+#       predict(mod2)[order(rowSums(presab))],
+#       lwd=2)
 
 # SES OU
 # the SES
@@ -77,11 +77,11 @@ plot(rowSums(presab),
      ylab = "SES RAO OU\n(obsRAO - mean(RAO OU)/sd(RAO OU))",
      xlab = "Species richness")
 # model
-mod2<-lm(SES_NEUTRAL ~ poly(rowSums(presab),2))
+#mod2<-lm(SES_NEUTRAL ~ poly(rowSums(presab),2))
 # predict
-lines (rowSums(presab)[order(rowSums(presab))],
-       predict(mod2)[order(rowSums(presab))],
-       lwd=2)
+#lines (rowSums(presab)[order(rowSums(presab))],
+ #      predict(mod2)[order(rowSums(presab))],
+ #      lwd=2)
 
 
 
@@ -93,7 +93,7 @@ Fig. S2.1. Relationship between assemblage-level species richness (SR) and obser
 \newpage
 
 
-```{r, echo = F, fig.height=7,fig.width=12,fig.align= "center",fig.margin=T, message=F, warning=F,out.width="100%",out.height="100%",fig.keep =c(3,5,7)}
+```{r, echo = F, fig.height=7,fig.width=12,fig.align= "center",fig.margin=T, message=F, warning=F,out.width="100%",out.height="100%",fig.keep =c(2,3,4,5,6,7)}
 
 # shape
 source ("./R/Interpretation_Fig3_Shape_413spp.R")
@@ -106,11 +106,11 @@ plot(rowSums(presab),
      ylab = "Observed disparity in skull shape",
      xlab= "Species richness")
 # model
-mod<-lm(RAO_OBS$Observado ~ poly(rowSums(presab),2))
+#mod<-lm(RAO_OBS$Observado ~ poly(rowSums(presab),2))
 # predict
-lines (rowSums(presab)[order(rowSums(presab))],
-       predict(mod)[order(rowSums(presab))],
-       lwd=2)
+#lines (rowSums(presab)[order(rowSums(presab))],
+#       predict(mod)[order(rowSums(presab))],
+#       lwd=2)
 
 # the SES
 plot(rowSums(presab),
@@ -120,11 +120,11 @@ plot(rowSums(presab),
      ylab = "SES RAO\n(obsRAO - mean(rdmRAO)/sd(rdmRAO))",
      xlab = "Species richness")
 # model
-mod2<-lm(RAO_OBS$SES ~ poly(rowSums(presab),2))
+#mod2<-lm(RAO_OBS$SES ~ poly(rowSums(presab),2))
 # predict
-lines (rowSums(presab)[order(rowSums(presab))],
-       predict(mod2)[order(rowSums(presab))],
-       lwd=2)
+#lines (rowSums(presab)[order(rowSums(presab))],
+#       predict(mod2)[order(rowSums(presab))],
+#       lwd=2)
 
 # SES OU
 # the SES
@@ -135,11 +135,11 @@ plot(rowSums(presab),
      ylab = "SES RAO BM\n(obsRAO - mean(RAO BM)/sd(RAO BM))",
      xlab = "Species richness")
 # model
-mod2<-lm(SES_NEUTRAL ~ poly(rowSums(presab),2))
+#mod2<-lm(SES_NEUTRAL ~ poly(rowSums(presab),2))
 # predict
-lines (rowSums(presab)[order(rowSums(presab))],
-       predict(mod2)[order(rowSums(presab))],
-       lwd=2)
+#lines (rowSums(presab)[order(rowSums(presab))],
+#       predict(mod2)[order(rowSums(presab))],
+#       lwd=2)
 
 
 

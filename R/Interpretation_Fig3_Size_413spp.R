@@ -11,7 +11,6 @@ load (here("output", "RAO_EB_ALL.RData"))
 load (here("output", "RAO_OU_ALL.RData"))
 load (here("output", "RAO_OBS_ALL.RData"))
 
-
 # relationship between empirical and simulated data sets
 
 # working with the average
@@ -82,7 +81,8 @@ map1 <- ggplot(melt_data_to_map[which(melt_data_to_map$variable == 'SES.EMPIRICA
                aes(x = LONG, y = LAT)) +
   geom_tile(aes(fill = SES)) +
   #facet_wrap(~variable,scales = "fixed",ncol=3)+
-  scale_fill_gradient2(midpoint = 0,
+  scale_fill_gradient2(name = "RAO",
+                       midpoint = 0,
                        limits=c(range(melt_data_to_map$SES)[1],
                                 range(melt_data_to_map$SES)[2]),
                        breaks=seq(range(melt_data_to_map$SES)[1],
