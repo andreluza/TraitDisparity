@@ -47,12 +47,13 @@ table(rownames(presab) == rownames(longlat))
 # now we need to generate the neutral SES
 # get the average and sd of disparity under BM simulations
 mean_BM <- do.call(cbind,sapply(RAO_BM, "[","Observado",simplify=T))
-mean_BM <- apply (mean_BM, 1, mean)
-mean_BMev <- mean(mean_BM)
-sd_BMev <- sd(mean_BM)
+mean_BMm <- apply (mean_BM, 1, mean)
+mean_sd <- apply (mean_BM, 1, sd)
+#mean_BMev <- mean(mean_BM)
+#sd_BMev <- sd(mean_BM)
 
 # calculate neutral SES
-SES_NEUTRAL <- (RAO_OBS$Observado - mean_BMev)/sd_BMev
+SES_NEUTRAL <- (RAO_OBS$Observado - mean_BMm)/mean_sd
 
 # data to MAP
 
@@ -375,7 +376,7 @@ alternative_map1 <- ggplot(melt_data_to_map_emp_sim,
         strip.background = element_blank())
 
 # pdf(here ("output", "vectorized","Fig8_maps.pdf"),width=5,height =2.5)
-alternative_map1
+# alternative_map1
 # dev.off()
 
 ## correlation between average null and simulated by OU

@@ -10,7 +10,8 @@ load (here("output_uncertainty_S2", "RAO_OBS_216_multivariate.RData"))
 load (here("output_uncertainty_S2", "RAO_BM_216_multivariate.RData"))
 
 # average observed disparity for each  model
-avObsBM<-rowMeans (do.call(cbind,sapply(RAO_BM, "[","Observado",simplify=T)))
+avObsBM<-apply (do.call(cbind,sapply(RAO_BM, "[","Observado",simplify=T)),1,mean)
+sdObsBM<-apply (do.call(cbind,sapply(RAO_BM, "[","Observado",simplify=T)),1,sd)
 nullRao <- rowMeans (do.call(cbind,sapply(RAO_BM, "[","med_nulo",simplify=T)))
 
 # counting cells with significant neutral SES, observed relative to the models
@@ -18,15 +19,15 @@ nullRao <- rowMeans (do.call(cbind,sapply(RAO_BM, "[","med_nulo",simplify=T)))
 count_cells_relative_to_models <- list (
   lower = cbind (
     lowerNULL=table(RAO_OBS$SES<=-1.96)[2],
-    lowerBM=table(((RAO_OBS$Observado - mean(avObsBM))/sd(avObsBM)) <=-1.96)[2]
+    lowerBM=table(((RAO_OBS$Observado - (avObsBM))/(sdObsBM)) <=-1.96)[2]
   ), 
 # higher than
   higher = cbind (
     highNULL=table(RAO_OBS$SES>=1.96)[2],
-    highBM=table(((RAO_OBS$Observado - mean(avObsBM))/sd(avObsBM)) >=1.96)[2]
+    highBM=table(((RAO_OBS$Observado - mean(avObsBM))/(sdObsBM)) >=1.96)[2]
   )
 )
-
+count_cells_relative_to_models
 #--------------------------------------------------------
 # relationship between empirical and simulated data sets
 

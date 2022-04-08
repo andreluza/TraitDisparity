@@ -11,7 +11,6 @@ load (here("output", "RAO_EB_ALL.RData"))
 load (here("output", "RAO_OU_ALL.RData"))
 load (here("output", "RAO_OBS_ALL.RData"))
 
-
 # relationship between empirical and simulated data sets
 
 # working with the average
@@ -38,14 +37,15 @@ presab <- presab [,which(colSums(presab)>0)]
 presab <- presab[order(as.numeric(rownames(presab)),decreasing=F),]
 
 # now we need to generate the neutral SES
-# get the average and sd of disparity under BM simulations
+# get the average and sd of disparity under OU simulations
 mean_BM <- do.call(cbind,sapply(RAO_OU, "[","Observado",simplify=T))
-mean_BM <- apply (mean_BM, 1, mean)
-mean_BMev <- mean(mean_BM)
-sd_BMev <- sd(mean_BM)
+mean_BMm <- apply (mean_BM, 1, mean)
+mean_sd <- apply (mean_BM, 1, sd)
+#mean_BMev <- mean(mean_BM)
+#sd_BMev <- sd(mean_BM)
 
 # calculate neutral SES
-SES_NEUTRAL <- (RAO_OBS$Observado - mean_BMev)/sd_BMev
+SES_NEUTRAL <- (RAO_OBS$Observado - mean_BMm)/mean_sd
 
 # ----------------------------- # 
 ##  Geographic coordinates data
@@ -81,7 +81,8 @@ map1 <- ggplot(melt_data_to_map[which(melt_data_to_map$variable == 'SES.EMPIRICA
                aes(x = LONG, y = LAT)) +
   geom_tile(aes(fill = SES)) +
   #facet_wrap(~variable,scales = "fixed",ncol=3)+
-  scale_fill_gradient2(midpoint = 0,
+  scale_fill_gradient2(name = "RAO",
+                       midpoint = 0,
                        limits=c(range(melt_data_to_map$SES)[1],
                                 range(melt_data_to_map$SES)[2]),
                        breaks=seq(range(melt_data_to_map$SES)[1],

@@ -11,26 +11,30 @@ load (here("output_uncertainty_S2", "RAO_EB_216.RData"))
 load (here("output_uncertainty_S2", "RAO_OU_216.RData"))
 load (here("output_uncertainty_S2", "RAO_OBS_216.RData"))
 
+
 # average observed disparity for each  model
-avObsBM<-rowMeans (do.call(cbind,sapply(RAO_BM, "[","Observado",simplify=T)))
-avObsEB<-rowMeans (do.call(cbind,sapply(RAO_EB, "[","Observado",simplify=T)))
-avObsOU<-rowMeans (do.call(cbind,sapply(RAO_OU, "[","Observado",simplify=T)))
+avObsBM.mean<-apply (do.call(cbind,sapply(RAO_BM, "[","Observado",simplify=T)),1,mean)
+avObsBM.sd<-apply (do.call(cbind,sapply(RAO_BM, "[","Observado",simplify=T)),1,sd)
+avObsEB.mean<-apply (do.call(cbind,sapply(RAO_EB, "[","Observado",simplify=T)),1,mean)
+avObsEB.sd<-apply (do.call(cbind,sapply(RAO_EB, "[","Observado",simplify=T)),1,sd)
+avObsOU.mean<-apply (do.call(cbind,sapply(RAO_OU, "[","Observado",simplify=T)),1,mean)
+avObsOU.sd<-apply (do.call(cbind,sapply(RAO_OU, "[","Observado",simplify=T)),1,sd)
 
 # counting cells with significant neutral SES, observed relative to the models
 # lower than
 count_cells_relative_to_models <- list (
   lower = cbind (
     lowerNULL=table(RAO_OBS$SES<=-1.96)[2],
-    lowerOU=table(((RAO_OBS$Observado - mean(avObsOU))/sd(avObsOU)) <=-1.96)[2],
-    lowerBM=table(((RAO_OBS$Observado - mean(avObsBM))/sd(avObsBM)) <=-1.96)[2],
-    lowerEB=table(((RAO_OBS$Observado - mean(avObsEB))/sd(avObsEB)) <=-1.96)[2]
+    lowerOU=table(((RAO_OBS$Observado - avObsOU.mean)/avObsOU.sd) <=-1.96)[2],
+    lowerBM=table(((RAO_OBS$Observado - avObsBM.mean)/avObsBM.sd) <=-1.96)[2],
+    lowerEB=table(((RAO_OBS$Observado - avObsEB.mean)/avObsEB.sd) <=-1.96)[2]
   ), 
-# higher than
+  # higher than
   higher = cbind (
     highNULL=table(RAO_OBS$SES>=1.96)[2],
-    highOU=table(((RAO_OBS$Observado - mean(avObsOU))/sd(avObsOU)) >=1.96)[2],
-    highBM=table(((RAO_OBS$Observado - mean(avObsBM))/sd(avObsBM)) >=1.96)[2],
-    highEB=table(((RAO_OBS$Observado - mean(avObsEB))/sd(avObsEB)) >=1.96)[2]
+    highOU=table(((RAO_OBS$Observado - avObsOU.mean)/avObsOU.sd) >=1.96)[2],
+    highBM=table(((RAO_OBS$Observado - avObsBM.mean)/avObsBM.sd) >=1.96)[2],
+    highEB=table(((RAO_OBS$Observado - avObsEB.mean)/avObsEB.sd) >=1.96)[2]
   )
 )
 
