@@ -159,7 +159,7 @@ plot(params_estim)
 
 ```
 
-Fig. S2.3. Density plot showing the estimates of each model parameter for univariate and multivariate macroevolutionary models. In the top we show the estimates of the parameter 'sigma' for the BM, EB, and OU models of evolution (estimated by evolutionary models (fitContinuous) applied to univariate trait data (skull size)). In the middle we show the estimates of the parameters 'beta' and 'alpha', which are specific from EB and OU, respectively. In the bottom, we show the estimates of the parameter 'sigma' for the BM model (evolutionary models (mvGLS) applied to  multivariate trait data (skull shape)). In univariate models, the density represents variation in estimates across the 100 fully resolved phylogenies. In the multivariate model, the density represents variation of sigma across traits and phylogenies (112 simulated ‘landmarks’ and 100 fully resolved phylogenies).Results for the dataset of 413 species.
+Fig. S2.3. Density plot showing the estimates of each model parameter for univariate and multivariate macroevolutionary models. In the top we show the estimates of the parameter 'sigma' for the BM, EB, and OU models of evolution (estimated by evolutionary models (fitContinuous) applied to univariate trait data (skull size)). In the middle we show the estimates of the parameters 'beta' and 'alpha', which are specific from EB and OU, respectively. In the bottom, we show the estimates of the parameter 'sigma' for the BM model (evolutionary models (mvGLS) applied to  multivariate trait data (skull shape)). In univariate models, the density represents variation in estimates across the 100 fully resolved phylogenies. In the multivariate model, the density represents variation of sigma across traits and phylogenies (112 simulated ‘landmarks’ and 100 fully resolved phylogenies). Results for the dataset of 413 species.
 
 <!-- badges: start -->
 <!-- badges: end -->
@@ -200,7 +200,7 @@ plot(panel_params)
 # and other results
 
 ```
-Fig. S2.4.Density plot showing the estimates of each model parameter for univariate and multivariate macroevolutionary models. In the top we show the estimates of the parameter 'sigma' for the BM, EB, and OU models of evolution (estimated by evolutionary models (fitContinuous) applied to univariate trait data (skull size)). In the middle we show the estimates of the parameters 'beta' and 'alpha', which are specific from EB and OU, respectively. In the bottom, we show the estimates of the parameter 'sigma' for the BM model (evolutionary models (mvGLS) applied to  multivariate trait data (skull shape)). In univariate models, the density represents variation in estimates across the 100 fully resolved phylogenies. In the multivariate model, the density represents variation of sigma across traits and phylogenies (112 simulated ‘landmarks’ and 100 fully resolved phylogenies).Results for the dataset of 216 species.
+Fig. S2.4.Density plot showing the estimates of each model parameter for univariate and multivariate macroevolutionary models. In the top we show the estimates of the parameter 'sigma' for the BM, EB, and OU models of evolution (estimated by evolutionary models (fitContinuous) applied to univariate trait data (skull size)). In the middle we show the estimates of the parameters 'beta' and 'alpha', which are specific from EB and OU, respectively. In the bottom, we show the estimates of the parameter 'sigma' for the BM model (evolutionary models (mvGLS) applied to  multivariate trait data (skull shape)). In univariate models, the density represents variation in estimates across the 100 fully resolved phylogenies. In the multivariate model, the density represents variation of sigma across traits and phylogenies (112 simulated ‘landmarks’ and 100 fully resolved phylogenies). Results for the dataset of 216 species.
 
 <!-- badges: start -->
 <!-- badges: end -->
@@ -219,8 +219,6 @@ Fig. S2.5. Bivariate plot showing the relationship between SES-MPD and SES-dispa
 <!-- badges: start -->
 <!-- badges: end -->
 
-CONFERIR ESTES VALORES
-
 As presented in the results (mapping section), we counted the number of cells with values of disparity higher, equal, or lower than the null model (randomization-based null model, NULL) and the evolutionary models. We found that 10, 11 and 11 assemblages had a disparity lower than expected by the OU, EB and BM models, respectively; three assemblages had a disparity lower than expected by the null model. None assemblage had a disparity higher than predicted by BM, OU and EB models, and 90 assemblages had a disparity lower than the null model.
 
 
@@ -235,8 +233,6 @@ count_cells_relative_to_models
 
 <!-- badges: start -->
 <!-- badges: end -->
-
-CONFERIR 
 
 When mapping the values of empirical and simulated trait values, we found a high agreement between the datasets of 413 and 216 species (Fig. S2.6).
 
