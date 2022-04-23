@@ -1,0 +1,10 @@
+DEM_Elev = raster used in the maps presented in the main text
+Lon-lat-Disparity.txt = cell coordinates (latlong)
+PresAbs_228sp_Neotropical_MainDataBase_Ordenado = composition table (sites x species)
+shape.v.RData = RData ventral skull shape
+size.v.RData = RData ventral skull size 
+Sigmodontinae.ventral.dig = output TpsDig
+Sigmodontinae.ventral.listed.pruned = list of species and individuals used in the analysis
+Sigmodontinae.ventral.listed = list of species and individuals used in the analysis
+Sigmodontinae_285speciesTree.Tre = consensus tree
+Sigmodontinae_413species100Trees.trees = 100 fully resolved phylogenies
