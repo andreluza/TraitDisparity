@@ -692,12 +692,12 @@ plot(figure1)
 # and other results
 
 ```
-Fig. S4.7. Bivariate plot showing the relationship between SES MPD and SES disparity, for empirical and simulated disparity (multivariate trait simulations using Brownian motion model evolution). Results produced by using the dataset of species in the consensus tree.
+Fig. S4.7. Bivariate plot showing the relationship between SES MPD and SES disparity, for empirical and simulated disparity (multivariate trait simulations using Brownian motion model evolution). Results for the dataset of 285 species present in the consensus tree.
 
 <!-- badges: start -->
 <!-- badges: end -->
 
-Table S4.5: Averaged GLM estimates, obtained by averaging estimates produced by each one of the 100 different phylogenies used to simulate traits and calculate disparity. Results produced by using the dataset of species in the consensus tree.
+Table S4.5: Averaged GLM estimates, obtained by averaging estimates produced by each one of the 100 different phylogenies used to simulate traits and calculate disparity. Results for the dataset of 285 species present in the consensus tree.
 
 ```{r, echo = F, fig.height=6.5,fig.width=6.5,fig.margin=F, message=F, warning=F,fig.show="hide"}
 
@@ -718,7 +718,7 @@ source ("./R_concensus_supp_S3/Interpretation_Fig3_Shape_CONS.R")
 # and other results
 
 ```
-Fig. S4.8. Map of empirical (A), null (random shuffling of species in trait matrix) (B) and simulated disparity (using the BM model) (C). In D we show the significance of SES values presented in B, and in E we show the significance of SES values presented in C. Results produced by using the dataset of species in the consensus tree. 
+Fig. S4.8. Map of empirical (A), null (random shuffling of species in trait matrix) (B) and simulated disparity (using the BM model) (C). In D we show the significance of SES values presented in B, and in E we show the significance of SES values presented in C. Results for the dataset of 285 species present in the consensus tree. 
 
 <!-- badges: start -->
 <!-- badges: end -->
@@ -732,7 +732,7 @@ plot(alternative_map1)
 # and other results
 
 ```
-Fig. S4.9. Map of null (random shuffling of species in trait matrix) and simulated disparity values (using the BM model of evolution to simulate multivariate trait datasets). The legend is common to all maps. Results produced by using the dataset of species in the consensus tree. 
+Fig. S4.9. Map of null (random shuffling of species in trait matrix) and simulated disparity values (using the BM model of evolution to simulate multivariate trait datasets). The legend is common to all maps. Results for the 285 species present in the consensus tree. 
 
 
 
@@ -758,7 +758,7 @@ alternative_map1
 # and other results
 
 ```
-Fig. S4.10. Map of null (random shuffling of species in trait matrix) and simulated disparity values (using the BM model of evolution to simulate multivariate trait datasets). The legend is common to all maps. Results produced by the dataset of 413 species and the set of 100 phylogenies. 
+Fig. S4.10. Map of null (random shuffling of species in trait matrix) and simulated disparity values (using the BM model of evolution to simulate multivariate trait datasets). The legend is common to all maps. Results for the dataset of 413 species and 100 fully resolved phylogenies. 
 
 
 

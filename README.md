@@ -83,7 +83,7 @@ applied to multivariate trait data (skull shape)). In univariate models,
 the density represents variation in estimates across the 100 fully
 resolved phylogenies. In the multivariate model, the density represents
 variation of sigma across traits and phylogenies (112 simulated
-‘landmarks’ and 100 fully resolved phylogenies).Results for the dataset
+‘landmarks’ and 100 fully resolved phylogenies). Results for the dataset
 of 413 species.
 
 <!-- badges: start -->
@@ -150,7 +150,7 @@ multivariate trait data (skull shape)). In univariate models, the
 density represents variation in estimates across the 100 fully resolved
 phylogenies. In the multivariate model, the density represents variation
 of sigma across traits and phylogenies (112 simulated ‘landmarks’ and
-100 fully resolved phylogenies).Results for the dataset of 216 species.
+100 fully resolved phylogenies). Results for the dataset of 216 species.
 
 <!-- badges: start -->
 <!-- badges: end -->
@@ -162,8 +162,6 @@ the dataset of 216 species.
 
 <!-- badges: start -->
 <!-- badges: end -->
-
-CONFERIR ESTES VALORES
 
 As presented in the results (mapping section), we counted the number of
 cells with values of disparity higher, equal, or lower than the null
@@ -184,8 +182,6 @@ models, and 90 assemblages had a disparity lower than the null model.
 
 <!-- badges: start -->
 <!-- badges: end -->
-
-CONFERIR
 
 When mapping the values of empirical and simulated trait values, we
 found a high agreement between the datasets of 413 and 216 species (Fig.
@@ -584,16 +580,16 @@ for the dataset of Oryzomyalia species.
 <img src="README_files/figure-gfm/unnamed-chunk-40-1.png" style="display: block; margin: auto;" />
 Fig. S4.7. Bivariate plot showing the relationship between SES MPD and
 SES disparity, for empirical and simulated disparity (multivariate trait
-simulations using Brownian motion model evolution). Results produced by
-using the dataset of species in the consensus tree.
+simulations using Brownian motion model evolution). Results for the
+dataset of 285 species present in the consensus tree.
 
 <!-- badges: start -->
 <!-- badges: end -->
 
 Table S4.5: Averaged GLM estimates, obtained by averaging estimates
 produced by each one of the 100 different phylogenies used to simulate
-traits and calculate disparity. Results produced by using the dataset of
-species in the consensus tree.
+traits and calculate disparity. Results for the dataset of 285 species
+present in the consensus tree.
 
     ## 
     ## Call:
@@ -620,8 +616,8 @@ species in the consensus tree.
 Fig. S4.8. Map of empirical (A), null (random shuffling of species in
 trait matrix) (B) and simulated disparity (using the BM model) (C). In D
 we show the significance of SES values presented in B, and in E we show
-the significance of SES values presented in C. Results produced by using
-the dataset of species in the consensus tree.
+the significance of SES values presented in C. Results for the dataset
+of 285 species present in the consensus tree.
 
 <!-- badges: start -->
 <!-- badges: end -->
@@ -630,7 +626,7 @@ the dataset of species in the consensus tree.
 Fig. S4.9. Map of null (random shuffling of species in trait matrix) and
 simulated disparity values (using the BM model of evolution to simulate
 multivariate trait datasets). The legend is common to all maps. Results
-produced by using the dataset of species in the consensus tree.
+for the 285 species present in the consensus tree.
 
     ##                  RAO_OBS.med_nulo     obsBM
     ## RAO_OBS.med_nulo        1.0000000 0.8845862
@@ -640,7 +636,7 @@ produced by using the dataset of species in the consensus tree.
 Fig. S4.10. Map of null (random shuffling of species in trait matrix)
 and simulated disparity values (using the BM model of evolution to
 simulate multivariate trait datasets). The legend is common to all maps.
-Results produced by the dataset of 413 species and the set of 100
+Results for the dataset of 413 species and 100 fully resolved
 phylogenies.
 
     ##                  RAO_OBS.med_nulo     obsBM
