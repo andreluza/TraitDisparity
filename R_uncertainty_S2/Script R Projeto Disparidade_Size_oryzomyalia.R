@@ -119,7 +119,7 @@ save (RAO_OBS, file = here("output_uncertainty_S2",
 
 # Set the number of computer cores to run analyses in 
 # parallel along computer cores
-ncores <- 5
+ncores <- 4
 
 # simulate parameters
 simul_param_BM <- lapply (tree.pruned, function (i) 
@@ -191,7 +191,7 @@ simul_param_EB <- lapply (tree.pruned, function (i)
 simul_EB<-lapply (seq(1,length(tree_list)), function (phy) 
   
   mvSIM(tree_list[[phy]],
-        nsim=1,
+        nsim=niter,
         model="EB",
         param = list(sigma = simul_param_EB[[phy]]$opt$sigsq,
                      theta=theta,

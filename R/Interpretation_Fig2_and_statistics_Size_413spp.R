@@ -238,7 +238,7 @@ boxplotOver1 <- boxplotOver + theme(axis.line=element_blank(),
 # arrange
 
 
-png (here ("output", "vectorized", "Fig3.png"),width=10,height=14,units = "cm",res=300)
+png (here ("output", "vectorized", "Fig2.png"),width=10,height=14,units = "cm",res=300)
 panel <- grid.arrange(figure1,
               boxplotOver1,fig2a,
              ncol=4,nrow = 9,
@@ -370,8 +370,6 @@ fig_params_multiv <- ggplot(df_multivariate,
   scale_colour_manual(values=c("sigma" = "red"))+
   theme_classic()   + 
   theme(legend.position = "none")
-
-
 
 
 # plot

@@ -45,7 +45,7 @@ mean(table(species.v))
 sd(table(species.v))
 
 ind_per_spp <- table (species.v)
-write.csv (ind_per_spp,file=here("output","excel_glm","ind_per_spp.CSV"))
+#write.csv (ind_per_spp,file=here("output","excel_glm","ind_per_spp.CSV"))
 
 # transform shape data into array
 shape.v.2d<-two.d.array(shape.v)

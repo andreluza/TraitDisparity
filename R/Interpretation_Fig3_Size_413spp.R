@@ -76,10 +76,21 @@ colnames(melt_data_to_map)[which(colnames(melt_data_to_map) == "value")] <- 'SES
 melt_data_to_map$SES<-round(melt_data_to_map$SES,3)
 
 #plot using ggplot
+# help overlap things
+# https://datacarpentry.org/r-raster-vector-geospatial/03-raster-reproject-in-r/
+# https://timogrossenbacher.ch/2016/12/beautiful-thematic-maps-with-ggplot2-only/
+
+rel <- raster(here ("data", "DEM_Elev.tif"))
+rel<-projectRaster(rel, crs="+proj=longlat +datum=WGS84") # reproject raster to fit community data
+rel_spdf <- as(rel, "SpatialPixelsDataFrame")
+rel <- as.data.frame(rel_spdf)
+
 # EMPIRICAL VS NULL MODEL
 map1 <- ggplot(melt_data_to_map[which(melt_data_to_map$variable == 'SES.EMPIRICAL'),], 
                aes(x = LONG, y = LAT)) +
-  geom_tile(aes(fill = SES)) +
+  geom_raster(data = rel, aes_string(x = "x", y = "y", 
+                                     alpha = "DEM_Elev"),show.legend=T) +
+  geom_tile(aes(fill = SES),alpha=0.65)+
   #facet_wrap(~variable,scales = "fixed",ncol=3)+
   scale_fill_gradient2(name = "RAO",
                        midpoint = 0,
@@ -110,7 +121,9 @@ common_legend_SES <- get_legend(map1) ## get the legend of a map with legend
 # map without legend
 map1 <- ggplot(melt_data_to_map[which(melt_data_to_map$variable == 'SES.EMPIRICAL'),], 
                aes(x = LONG, y = LAT)) +
-  geom_tile(aes(fill = SES)) +
+  geom_raster(data = rel, aes_string(x = "x", y = "y", 
+                                     alpha = "DEM_Elev"),show.legend=T) +
+  geom_tile(aes(fill = SES),alpha=0.65)+
   #facet_wrap(~variable,scales = "fixed",ncol=3)+
   scale_fill_gradient2(midpoint = 0,
                        limits=c(range(melt_data_to_map$SES)[1],
@@ -138,7 +151,9 @@ map1 <- ggplot(melt_data_to_map[which(melt_data_to_map$variable == 'SES.EMPIRICA
 # empirical vs neutral
 map2 <- ggplot(melt_data_to_map[which(melt_data_to_map$variable == 'SES.NEUTRAL'),], 
                aes(x = LONG, y = LAT)) +
-  geom_tile(aes(fill = SES)) +
+  geom_raster(data = rel, aes_string(x = "x", y = "y", 
+                                     alpha = "DEM_Elev"),show.legend=T) +
+  geom_tile(aes(fill = SES),alpha=0.65)+
   #facet_wrap(~variable,scales = "fixed",ncol=3)+
   scale_fill_gradient2(midpoint = 0,
                        limits=c(range(melt_data_to_map$SES)[1],
@@ -173,7 +188,9 @@ colnames(melt_data_to_map_emp)[which(colnames(melt_data_to_map_emp) == "value")]
 
 map3 <- ggplot(melt_data_to_map_emp, 
                aes(x = LONG, y = LAT)) +
-  geom_tile(aes(fill = RAO)) +
+  geom_raster(data = rel, aes_string(x = "x", y = "y", 
+                                     alpha = "DEM_Elev"),show.legend=T) +
+  geom_tile(aes(fill = RAO),alpha=0.65)+
   scale_fill_gradient2(midpoint = 0.35, 
                        limits=c(0,0.5),
                        breaks=seq(0,0.5,0.1),
@@ -227,7 +244,7 @@ melt_data_cells_higher <- melt(count_cells_relative_to_models$higher,id=c("LONG"
 colnames(melt_data_cells_higher)[which(colnames(melt_data_cells_higher) == "value")] <- 'Disparity'
 melt_data_cells_higher$Disparity <- ifelse (melt_data_cells_higher$Disparity == TRUE, 1, 0)
 
-# reunite these data
+# collate these data
 melt_data_cells_higher$Disparity <- as.factor(melt_data_cells_higher$Disparity + melt_data_cells_lower$Disparity)
 melt_data_cells_higher$variable <- gsub ("Higher.","",melt_data_cells_higher$variable)
 melt_data_cells_higher$variable<-factor(melt_data_cells_higher$variable,
@@ -237,7 +254,9 @@ melt_data_cells_higher$variable<-factor(melt_data_cells_higher$variable,
 
 panel3_NULL <- ggplot(melt_data_cells_higher[which(melt_data_cells_higher$variable=="NULL"),], 
                  aes(x = LONG, y = LAT)) +
-  geom_tile(aes(fill = Disparity)) +
+  geom_raster(data = rel, aes_string(x = "x", y = "y", 
+                                     alpha = "DEM_Elev"),show.legend=T) +
+  geom_tile(aes(fill = Disparity),alpha=0.65)+
   #facet_wrap(~variable,scales = "fixed",ncol=4)+
   scale_fill_manual(
     values = c("-1" ="#268bd2","0"= "#eee8d5","1" ="#dc322f"),
@@ -261,7 +280,10 @@ panel3_NULL <- ggplot(melt_data_cells_higher[which(melt_data_cells_higher$variab
 
 panel3_BM <- ggplot(melt_data_cells_higher[which(melt_data_cells_higher$variable=="BM"),], 
                       aes(x = LONG, y = LAT)) +
-  geom_tile(aes(fill = Disparity)) +
+  geom_raster(data = rel, aes_string(x = "x", y = "y", 
+                                     alpha = "DEM_Elev"),show.legend=T) +
+  geom_tile(aes(fill = Disparity),alpha=0.65)+
+  
   #facet_wrap(~variable,scales = "fixed",ncol=4)+
   scale_fill_manual(
     values = c("-1" ="#268bd2","0"= "#eee8d5","1" ="#dc322f"),
@@ -289,7 +311,10 @@ common_legend_significance <- get_legend(panel3_BM) ## get the legend of a map w
 # plot without legend
 panel3_BM <- ggplot(melt_data_cells_higher[which(melt_data_cells_higher$variable=="BM"),], 
                     aes(x = LONG, y = LAT)) +
-  geom_tile(aes(fill = Disparity)) +
+  geom_raster(data = rel, aes_string(x = "x", y = "y", 
+                                     alpha = "DEM_Elev"),show.legend=T) +
+  geom_tile(aes(fill = Disparity),alpha=0.65)+
+  
   #facet_wrap(~variable,scales = "fixed",ncol=4)+
   scale_fill_manual(
     values = c("-1" ="#268bd2","0"= "#eee8d5","1" ="#dc322f"),
@@ -336,7 +361,7 @@ panel2 <- cowplot::ggdraw(panel2) +
   theme(plot.background = element_rect(fill="white", color = NA))
 
 # save
-pdf(here ("output", "vectorized","Fig4_maps.pdf"),width=4,height =9)
+pdf(here ("output", "vectorized","Fig3_relief.pdf"),width=4,height =9)
 panel2
 dev.off()
 
@@ -369,7 +394,9 @@ colnames(melt_data_to_map_emp_sim)[which(colnames(melt_data_to_map_emp_sim) == "
 
 alternative_map1 <- ggplot(melt_data_to_map_emp_sim, 
                            aes(x = LONG, y = LAT)) +
-  geom_tile(aes(fill = Disparity)) +
+  geom_raster(data = rel, aes_string(x = "x", y = "y", 
+                                     alpha = "DEM_Elev"),show.legend=T) +
+  geom_tile(aes(fill = Disparity),alpha=0.7)+
   facet_wrap(~variable,scales = "fixed",ncol=2)+
   scale_fill_gradient2(midpoint = 0.3,
                        limits=c(0,0.5),
@@ -387,7 +414,11 @@ alternative_map1 <- ggplot(melt_data_to_map_emp_sim,
         panel.spacing = unit(1, "lines"),
         strip.text = element_text(size=15),
         strip.background = element_blank())
+
+pdf(here ("output", "vectorized","Fig4_relief.pdf"),width=5,height =5)
 alternative_map1
+dev.off()
+
 ## correlation between average null and simulated by OU
 
 cor (data.frame (RAO_OBS$med_nulo, 
@@ -395,3 +426,13 @@ cor (data.frame (RAO_OBS$med_nulo,
                  obsEB,
                  obsOU))
 
+# save data to produce maps in QGIS
+
+#colnames(melt_data_to_map_emp) <- c("LONG", "LAT", "variable", "values")
+#colnames(melt_data_to_map) <- c("LONG", "LAT", "variable", "values")
+#colnames(melt_data_cells_higher) <- c("LONG", "LAT", "variable", "values")
+## bind data
+#df_qgis <- rbind (melt_data_to_map_emp,
+#                  melt_data_to_map,
+#                  melt_data_cells_higher)
+#write.csv (df_qgis, file = here ("output", "df_qgis_size.csv"))

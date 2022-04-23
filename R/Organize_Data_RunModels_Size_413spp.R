@@ -92,7 +92,7 @@ tree_list <- lapply (tree_list, function (i)
 #     Empirical disparity per cell
 
 # set the number of interations (equal to the number of simulations in evol models)
-niter <- 10
+niter <- 1000
 
 # Run the 'disparity function' that we create (implement Rao's entropy and a randomization of sp. IDs across the rows of trait datasets)
 trait.pruned <- size.means.log.v[which(rownames(size.means.log.v) %in% colnames(presab)),]
@@ -112,6 +112,7 @@ RAO_OBS <- disparity_function(occ = comm.pruned,
                                n_iterations = niter)
 
 save (RAO_OBS, file = here("output","RAO_OBS_ALL.RData"))
+
 # --------------------------------------------------#
 #      now simulate using the complete phylogeny
 #                   prune after
@@ -190,7 +191,7 @@ simul_param_EB <- lapply (tree.pruned, function (i)
 simul_EB<-lapply (seq(1,length(tree_list)), function (phy) 
   
   mvSIM(tree_list[[phy]],
-        nsim=1,
+        nsim=niter,
         model="EB",
         param = list(sigma = simul_param_EB[[phy]]$opt$sigsq,
                      theta=theta,

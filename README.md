@@ -1,8 +1,8 @@
 Supplementary material, Bridging macroecology and macroevolution in the
 radiation of sigmodontine rodents
 ================
--
-March 2022
+Maestri, R., Luza, A.L., Hartz, S.M., Freitas, T.R.O., Patterson, B.D.
+April 2022
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 <!-- badges: start -->
@@ -91,14 +91,14 @@ traits and calculate disparity. Results produced by using the dataset of
 413 species.
 
     ##                  Estimate Std. Error   t value     Pr(>|t|)
-    ## (Intercept)    0.40982530 0.04247115  9.729056 3.953493e-15
-    ## MPD           -0.08292496 0.01754197 -4.754220 9.179736e-03
-    ## datasetBM     -0.31159829 0.06006328 -5.263452 4.802880e-02
-    ## datasetEB     -0.41178975 0.06006328 -6.802706 5.357712e-02
-    ## datasetOU     -0.39240788 0.06006328 -6.693931 3.936439e-02
-    ## MPD:datasetBM  0.25569218 0.02480809 10.531572 4.335038e-02
-    ## MPD:datasetEB  0.22954429 0.02480809  9.267634 5.387986e-03
-    ## MPD:datasetOU  0.12431765 0.02480809  4.947698 7.797996e-02
+    ## (Intercept)    0.41951107 0.04291587  9.836620 1.611533e-13
+    ## MPD           -0.08265248 0.01773169 -4.692754 7.277070e-03
+    ## datasetBM     -0.36583792 0.06069220 -6.111344 4.037407e-02
+    ## datasetEB     -0.39576278 0.06069220 -6.644241 5.016113e-02
+    ## datasetOU     -0.42095639 0.06069220 -6.991466 3.445204e-02
+    ## MPD:datasetBM  0.27680513 0.02507639 11.154513 2.145854e-02
+    ## MPD:datasetEB  0.25900668 0.02507639 10.463898 2.773115e-02
+    ## MPD:datasetOU  0.14709810 0.02507639  5.935941 7.554150e-02
 
 Table S2.2: Standard deviation of GLM estimates, obtained by calculating
 the standard deviation of estimates produced by each one of the 100
@@ -106,14 +106,14 @@ different phylogenies used to simulate traits and calculate disparity.
 Results produced by using the dataset of 413 species.
 
     ##                 Estimate  Std. Error   t value     Pr(>|t|)
-    ## (Intercept)   0.04142508 0.004014944  1.283517 2.293857e-14
-    ## MPD           0.02372771 0.002259534  1.341809 5.778648e-02
-    ## datasetBM     0.45877201 0.005677988  7.735252 1.469642e-01
-    ## datasetEB     0.38336910 0.005677988  6.290600 1.644169e-01
-    ## datasetOU     0.38818595 0.005677988  6.645754 1.365448e-01
-    ## MPD:datasetBM 0.23679030 0.003195463  9.663770 1.627899e-01
-    ## MPD:datasetEB 0.24993588 0.003195463 10.302941 2.207286e-02
-    ## MPD:datasetOU 0.20882780 0.003195463  8.649635 2.163838e-01
+    ## (Intercept)   0.04221835 0.003809334  1.171888 1.564391e-12
+    ## MPD           0.02360367 0.002000536  1.341819 3.814276e-02
+    ## datasetBM     0.41024451 0.005387211  6.821072 1.301869e-01
+    ## datasetEB     0.41023149 0.005387211  6.931416 1.699229e-01
+    ## datasetOU     0.42716073 0.005387211  6.978750 1.092794e-01
+    ## MPD:datasetBM 0.24336830 0.002829185  9.656811 1.057659e-01
+    ## MPD:datasetEB 0.26186764 0.002829185 10.450733 1.104965e-01
+    ## MPD:datasetOU 0.21457778 0.002829185  8.717895 1.948662e-01
 
 ### Analysis with 216 species, and considering phylogenetic uncertainty
 
@@ -261,11 +261,11 @@ EB models of evolution.
 
     ## $lower
     ##      lowerNULL lowerOU lowerBM lowerEB
-    ## <NA>        NA       8       5       6
+    ## TRUE         2      11      12      18
     ## 
     ## $higher
     ##      highNULL highOU highBM highEB
-    ## TRUE      109     NA     NA     NA
+    ## TRUE       89     NA     NA     NA
 
 <!-- badges: start -->
 <!-- badges: end -->
@@ -300,10 +300,10 @@ text and in the previous analyses (the highest correlation was found
 between NULL and OU-simulated disparity.
 
     ##                  RAO_OBS.med_nulo     obsBM     obsEB     obsOU
-    ## RAO_OBS.med_nulo        1.0000000 0.9262541 0.9363681 0.9741392
-    ## obsBM                   0.9262541 1.0000000 0.9887941 0.9644260
-    ## obsEB                   0.9363681 0.9887941 1.0000000 0.9761275
-    ## obsOU                   0.9741392 0.9644260 0.9761275 1.0000000
+    ## RAO_OBS.med_nulo        1.0000000 0.9494270 0.9593531 0.9822153
+    ## obsBM                   0.9494270 1.0000000 0.9778866 0.9691552
+    ## obsEB                   0.9593531 0.9778866 1.0000000 0.9723185
+    ## obsOU                   0.9822153 0.9691552 0.9723185 1.0000000
 
 ### Appendix S3
 
@@ -349,24 +349,24 @@ by using the data set of 285 species in the consensus tree.
     ## 
     ## Residuals:
     ##     Min      1Q  Median      3Q     Max 
-    ## -2.6745 -0.2057 -0.0143  0.0997  3.1794 
+    ## -3.2975 -0.1929 -0.0287  0.1157  2.8196 
     ## 
     ## Coefficients:
     ##             Estimate Std. Error t value Pr(>|t|)    
-    ## (Intercept)  0.17798    0.02809   6.335 2.54e-10 ***
-    ## MPD          0.02360    0.01342   1.759  0.07866 .  
-    ## DataBM      -0.11977    0.03973  -3.014  0.00258 ** 
-    ## DataEB      -0.15977    0.03973  -4.021 5.86e-05 ***
-    ## DataOU      -0.32760    0.03973  -8.245  < 2e-16 ***
-    ## MPD:DataBM   0.19331    0.01897  10.188  < 2e-16 ***
-    ## MPD:DataEB   0.13494    0.01897   7.112 1.27e-12 ***
-    ## MPD:DataOU   0.10854    0.01897   5.721 1.11e-08 ***
+    ## (Intercept)  0.14841    0.02583   5.745 9.60e-09 ***
+    ## MPD          0.04471    0.01258   3.553 0.000384 ***
+    ## DataBM      -0.12768    0.03653  -3.495 0.000477 ***
+    ## DataEB      -0.10271    0.03653  -2.812 0.004945 ** 
+    ## DataOU      -0.23521    0.03653  -6.439 1.29e-10 ***
+    ## MPD:DataBM   0.19405    0.01780  10.903  < 2e-16 ***
+    ## MPD:DataEB   0.17331    0.01780   9.738  < 2e-16 ***
+    ## MPD:DataOU   0.09605    0.01780   5.397 7.04e-08 ***
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
     ## 
-    ## Residual standard error: 0.6483 on 6280 degrees of freedom
-    ## Multiple R-squared:  0.1488, Adjusted R-squared:  0.1479 
-    ## F-statistic: 156.9 on 7 and 6280 DF,  p-value: < 2.2e-16
+    ## Residual standard error: 0.5911 on 6280 degrees of freedom
+    ## Multiple R-squared:  0.1809, Adjusted R-squared:  0.1799 
+    ## F-statistic: 198.1 on 7 and 6280 DF,  p-value: < 2.2e-16
 
 Counting the number of cells. We found a large number of cells with
 disparity lower than the BM and EB models, and a small number with
@@ -376,11 +376,11 @@ communities with disparity higher than BM, EB and NULL models.
 
     ## $lower
     ##      lowerNULL lowerOU lowerBM lowerEB
-    ## TRUE        29       1      46      12
+    ## TRUE        38       7      28      24
     ## 
     ## $higher
     ##      highNULL highOU highBM highEB
-    ## TRUE       81   1021     NA     NA
+    ## TRUE       53    467     NA     NA
 
 <!-- badges: start -->
 <!-- badges: end -->
@@ -388,7 +388,7 @@ communities with disparity higher than BM, EB and NULL models.
 Maps similar to Fig. 3, and to maps just reported considering the
 subsets of the data (Fig. S2.2 and S2.5). The maps still resemble, but
 now we did not find cells with disparity higher or lower than expected
-by BM model.
+by an OU model of evolution.
 
 <img src="README_files/figure-gfm/unnamed-chunk-23-1.png" style="display: block; margin: auto;" />
 Fig. S3.3. Map of empirical (A), null (random shuffling of species in
@@ -416,10 +416,10 @@ EB-simulated disparity (0.38). The correlation between null disparity
 and OU disparity was 0.19.
 
     ##                  RAO_OBS.med_nulo     obsBM     obsEB     obsOU
-    ## RAO_OBS.med_nulo        1.0000000 0.8359254 0.8997108 0.1353895
-    ## obsBM                   0.8359254 1.0000000 0.9563348 0.2430588
-    ## obsEB                   0.8997108 0.9563348 1.0000000 0.1057267
-    ## obsOU                   0.1353895 0.2430588 0.1057267 1.0000000
+    ## RAO_OBS.med_nulo        1.0000000 0.8019505 0.7970357 0.3668096
+    ## obsBM                   0.8019505 1.0000000 0.9557484 0.4459697
+    ## obsEB                   0.7970357 0.9557484 1.0000000 0.4662957
+    ## obsOU                   0.3668096 0.4459697 0.4662957 1.0000000
 
 ## Appendix S4
 
@@ -527,10 +527,10 @@ traits and calculate disparity. Results produced by using the dataset of
 Oryzomyalia species.
 
     ##                 Estimate Std. Error   t value      Pr(>|t|)
-    ## (Intercept)   -0.1510035 0.03583789 -4.411091  5.742072e-02
-    ## MPD            0.4167647 0.01141245 36.721034 3.290007e-164
-    ## datasetBM      0.1766651 0.05068243  3.578436  9.606984e-02
-    ## MPD:datasetBM -0.1567191 0.01613964 -9.404233  3.289399e-02
+    ## (Intercept)   -0.1494278 0.03592063 -4.361487  5.493398e-02
+    ## MPD            0.4177589 0.01146675 36.668705 4.549490e-164
+    ## datasetBM      0.1755463 0.05079944  3.554921  1.002113e-01
+    ## MPD:datasetBM -0.1572541 0.01621643 -9.384956  3.508392e-02
 
 Table S4.4: Standard deviation of GLM estimates, obtained by calculating
 the standard deviation of estimates produced by each one of the 100
@@ -538,10 +538,10 @@ different phylogenies used to simulate traits and calculate disparity.
 Results produced by using the dataset of Oryzomyalia species.
 
     ##                 Estimate  Std. Error   t value  Pr(>|t|)
-    ## (Intercept)   0.10032564 0.003424736  3.284299 0.1699255
-    ## MPD           0.04021469 0.001354627  2.904389 0.0000000
-    ## datasetBM     0.41784150 0.004843309  8.272738 0.2104372
-    ## MPD:datasetBM 0.19834231 0.001915732 11.886844 0.1370307
+    ## (Intercept)   0.09947100 0.003517084  3.258340 0.1681786
+    ## MPD           0.04021881 0.001439523  2.968131 0.0000000
+    ## datasetBM     0.41706099 0.004973908  8.257509 0.2235813
+    ## MPD:datasetBM 0.19903811 0.002035793 11.852784 0.1393277
 
 <img src="README_files/figure-gfm/unnamed-chunk-37-1.png" style="display: block; margin: auto;" />
 Fig. S4.5. Map of empirical (A), null (random shuffling of species in
@@ -599,20 +599,20 @@ species in the consensus tree.
     ## 
     ## Residuals:
     ##      Min       1Q   Median       3Q      Max 
-    ## -2.46937 -0.17904  0.01113  0.18621  2.62644 
+    ## -2.46518 -0.19241  0.01479  0.18853  2.62946 
     ## 
     ## Coefficients:
     ##             Estimate Std. Error t value Pr(>|t|)    
-    ## (Intercept) -0.40715    0.02766 -14.722  < 2e-16 ***
-    ## MPD          0.49003    0.01321  37.104  < 2e-16 ***
-    ## DataBM       0.45508    0.03911  11.636  < 2e-16 ***
-    ## MPD:DataBM   0.09476    0.01868   5.073 4.13e-07 ***
+    ## (Intercept) -0.41323    0.02814 -14.687  < 2e-16 ***
+    ## MPD          0.49420    0.01371  36.052  < 2e-16 ***
+    ## DataBM       0.47329    0.03979  11.895  < 2e-16 ***
+    ## MPD:DataBM   0.10713    0.01939   5.526 3.54e-08 ***
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
     ## 
-    ## Residual standard error: 0.6382 on 3140 degrees of freedom
-    ## Multiple R-squared:  0.5274, Adjusted R-squared:  0.5269 
-    ## F-statistic:  1168 on 3 and 3140 DF,  p-value: < 2.2e-16
+    ## Residual standard error: 0.6438 on 3140 degrees of freedom
+    ## Multiple R-squared:  0.519,  Adjusted R-squared:  0.5185 
+    ## F-statistic:  1129 on 3 and 3140 DF,  p-value: < 2.2e-16
 
 <img src="README_files/figure-gfm/unnamed-chunk-42-1.png" style="display: block; margin: auto;" />
 Fig. S4.8. Map of empirical (A), null (random shuffling of species in
@@ -642,5 +642,5 @@ Results produced by the dataset of 413 species and the set of 100
 phylogenies.
 
     ##                  RAO_OBS.med_nulo     obsBM
-    ## RAO_OBS.med_nulo        1.0000000 0.9113367
-    ## obsBM                   0.9113367 1.0000000
+    ## RAO_OBS.med_nulo        1.0000000 0.9351824
+    ## obsBM                   0.9351824 1.0000000
